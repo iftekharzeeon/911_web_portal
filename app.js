@@ -1,7 +1,6 @@
 const express = require('express');
-const oracledb = require('oracledb');
 
-const userRoutes = require('./routes/userRoutes');
+const routes = require('./routes/routes');
 
 const app = express();
 const port = 3000;
@@ -12,4 +11,4 @@ app.use(express.urlencoded({
 }));
 
 //User Routes
-app.use('/', userRoutes);
+app.use('/', routes);
