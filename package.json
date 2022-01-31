@@ -14,5 +14,13 @@
     "express": "^4.17.2",
     "nodemon": "^2.0.15",
     "oracledb": "^5.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iftekharzeeon/911_web_portal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iftekharzeeon/911_web_portal/issues"
+  },
+  "homepage": "https://github.com/iftekharzeeon/911_web_portal#readme"
 }

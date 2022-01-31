@@ -8,9 +8,10 @@ const saltRounds = 10;
 let connection;
 let result;
 
-let responses = {};
-
 const user_create = async (req, res) => {
+
+    let responses = {};
+    console.log(req.body);
 
     const user = req.body;
     let memberExist = 0;
@@ -39,6 +40,8 @@ const user_create = async (req, res) => {
         registration_date = new Date();
         member_type = 1;
         member_password = user.password;
+
+        console.log(user);
 
         let memberCheckQuery = 'SELECT * FROM member WHERE email = :email';
         memberExist = await connection.execute(memberCheckQuery, [email], { outFormat: oracledb.OUT_FORMAT_OBJECT });
@@ -110,6 +113,7 @@ const user_create = async (req, res) => {
 };
 
 const login_user = async (req, res) => {
+    let responses = {};
     const user = req.body;
     let memberId;
     let memberInfo;
