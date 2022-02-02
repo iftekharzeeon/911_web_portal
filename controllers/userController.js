@@ -11,7 +11,6 @@ let result;
 const user_create = async (req, res) => {
 
     let responses = {};
-    console.log(req.body);
 
     const user = req.body;
     let memberExist = 0;
@@ -102,7 +101,9 @@ const user_create = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
@@ -118,6 +119,7 @@ const login_user = async (req, res) => {
     let memberId;
     let memberInfo;
     let passwordKey;
+    let locationInfo;
     try {
         connection = await oracledb.getConnection({
             user: serverInfo.dbUser,
@@ -145,9 +147,13 @@ const login_user = async (req, res) => {
                 responses.ResponseText = 'Login Successful';
                 responses.MemberId = memberId;
                 responses.MemberInfo = memberInfo.rows[0];
+                let location_id = memberInfo.rows[0].LOCATION_ID;
+                let locationQuery = 'SELECT * FROM location WHERE location_id = :location_id';
+                locationInfo = await connection.execute(locationQuery, [location_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
             } else {
                 //Password Incorrect
-                responses.ResponseCode = 0;
+                responses.ResponseCode = -2;
                 responses.ResponseText = 'Incorrect Password';
             }
 
@@ -159,7 +165,9 @@ const login_user = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
