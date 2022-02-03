@@ -3,12 +3,27 @@ const serverInfo = require('../serverInfomation');
 const syRegister = require('../util/syRegister');
 
 let connection;
-let result;
-let memberExist;
-let responses = {};
-let request_id;
 
 const add_request = async (req, res) => {
+
+    let responses = {};
+
+    let request_id;
+    let result;
+    let memberExist;
+    let isMyLocation;
+    let location_id;
+    let servicesObjectArr;
+    let locationObj;
+
+    let resolved_status = -1; //Pending
+    let employee_accepted = -1; //Pending
+    let vehicle_accepted = -1; //Pending
+
+    let service_id;
+    let request_people;
+
+    let request_employee_id;
 
     const requestObj = req.body;
     try {
@@ -27,11 +42,40 @@ const add_request = async (req, res) => {
         let memberCheckQuery = 'SELECT * FROM member WHERE member_id = :citizen_id';
         memberExist = await connection.execute(memberCheckQuery, [citizen_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
+
+
         if (memberExist.rows.length === 0) {
             responses.ResponseCode = 0;
             responses.ResponseText = 'Member Not Found';
         } else {
-            location_id = memberExist.rows[0].LOCATION_ID;
+
+            isMyLocation = requestObj.is_my_location;
+
+            servicesObjectArr = requestObj.services;
+
+            if (isMyLocation) {
+                location_id = requestObj.location_id;
+
+            } else {
+                //Add the New Location
+
+                //Get Location Info
+                locationObj = requestObj.location_obj;
+
+                block = locationObj.block;
+                street = locationObj.street;
+                house_no = locationObj.house_no;
+
+                //Get Next Location Id
+                await syRegister.getNextId(connection, 2).then(function (data) {
+                    location_id = data;
+                });
+
+                let insertLocationQuery = 'INSERT INTO location(location_id, block, street, house_no) VALUES(:location_id, :block, :street, :house_no)';
+
+                result = await connection.execute(insertLocationQuery, [location_id, block, street, house_no]);
+
+            }
 
             //Get Next Request ID
             await syRegister.getNextId(connection, 3).then(function (data) {
@@ -39,10 +83,34 @@ const add_request = async (req, res) => {
             });
 
             //Insert Into Request Table
-            let insertRequestQuery = 'INSERT INTO request(request_id, request_time, citizen_id, location_id) ' +
-                'VALUES(:request_id, :request_time, :citizen_id, :location_id)';
+            let insertRequestQuery = 'INSERT INTO request(request_id, request_time, citizen_id, location_id, resolved_status) ' +
+                'VALUES(:request_id, :request_time, :citizen_id, :location_id, :resolved_status)';
 
-            result = await connection.execute(insertRequestQuery, [request_id, request_time, citizen_id, location_id]);
+            result = await connection.execute(insertRequestQuery, [request_id, request_time, citizen_id, location_id, resolved_status]);
+            
+            //Get All The Services
+            let serviceIndex = 0;
+            do {
+                service_id = servicesObjectArr[serviceIndex].service_id;
+                request_people = servicesObjectArr[serviceIndex].request_people;
+                let m = 0;
+                do {
+                    await syRegister.getNextId(connection, 4).then(function (data) {
+                        request_employee_id = data;
+                    });
+
+                    console.log(request_employee_id);
+                    m++;
+
+                    // Insert Into Request Employee Table
+                    let insertRequestEmployeeQuery = 'INSERT INTO request_employee(request_employee_id, request_id, service_id, employee_accepted, vehicle_accepted) ' +
+                        'VALUES(:request_employee_id, :request_id, :service_id, :employee_accepted, :vehicle_accepted)';
+
+                    result = await connection.execute(insertRequestEmployeeQuery, [request_employee_id, request_id, service_id, employee_accepted, vehicle_accepted]);
+                } while (m < request_people);
+                serviceIndex++;
+            } while (serviceIndex < servicesObjectArr.length);
+
             connection.commit();
 
             if (result) {
@@ -63,13 +131,16 @@ const add_request = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
             console.log('Connection Closed');
         }
         res.send(responses);
+        
     }
 }
 
