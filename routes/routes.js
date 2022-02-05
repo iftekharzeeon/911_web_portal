@@ -3,6 +3,7 @@ const bodyParser = require('body-parser').json();
 const userController = require('../controllers/userController');
 const serviceController = require('../controllers/serviceController');
 const requestController = require('../controllers/requestController');
+const employeeController = require('../controllers/employeeController');
 
 const router = express.Router();
 
@@ -17,5 +18,8 @@ router.get('/api/getServices/', bodyParser, serviceController.get_services);
 
 //Add Request
 router.post('/api/addRequest/', bodyParser, requestController.add_request);
+
+//Get Request Employee Info
+router.post('/api/getEmployeeRequestInfo/', bodyParser, employeeController.get_employee_request_info);
 
 module.exports = router;

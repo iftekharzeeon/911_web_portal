@@ -42,8 +42,6 @@ const add_request = async (req, res) => {
         let memberCheckQuery = 'SELECT * FROM member WHERE member_id = :citizen_id';
         memberExist = await connection.execute(memberCheckQuery, [citizen_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-
-
         if (memberExist.rows.length === 0) {
             responses.ResponseCode = 0;
             responses.ResponseText = 'Member Not Found';
