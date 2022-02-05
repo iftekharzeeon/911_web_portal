@@ -1,0 +1,119 @@
+body{
+    background: linear-gradient(180deg, #FFB7B7 0%, #727272 100%), radial-gradient(60.91% 100% at 50% 0%, #FFD1D1 0%, #260000 100%), linear-gradient(238.72deg, #FFDDDD 0%, #720066 100%), linear-gradient(127.43deg, #00FFFF 0%, #FF4444 100%), radial-gradient(100.22% 100% at 70.57% 0%, #FF0000 0%, #00FFE0 100%), linear-gradient(127.43deg, #B7D500 0%, #3300FF 100%);
+    background-blend-mode: screen, overlay, hard-light, color-burn, color-dodge, normal;
+    position: relative;
+    font-family: 'Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#base{
+    position: absolute;
+    width: 100rem;
+    height: 50rem;
+    left: 150px;
+    top: 50px;
+
+    background: linear-gradient(255.2deg, rgba(255, 0, 0, 0.53) 2.7%, rgba(0, 10, 255, 0.3) 97.71%);
+    opacity: 0.8;
+    border-radius: 64px;
+}
+
+#topBar{
+    position: relative;
+    width: 90em;
+    height: 8em;
+    left: 100px;
+    top: 50px;
+
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
+}
+
+#readyToHelp{
+    margin: auto;
+    width: 50%;
+    padding: 35px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 54px;
+    /* identical to box height */
+    text-align: center;
+    color: #FFFFFF;
+}
+
+label{
+    position: absolute;
+    height: 54px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    color: #FFFFFF;
+}
+
+input{
+    position: absolute;
+    width: 451px;
+    height: 95px;
+    font-size: 30px;
+
+    background: #C4C4C4;
+    border-radius: 20px;
+}
+
+#temail{
+    width: 250px; 
+    left: 480px; 
+    top: 295px;
+}
+
+#tpassword{
+    width: 250px; 
+    left: 480px;
+    top: 420px;
+}
+
+#femail{
+    left: 650px;
+    top: 275px;
+}
+
+#fpassword{
+    left: 650px;
+    top: 400px;
+}
+
+
+#login{
+    position: absolute;
+    width: 400px;
+    height: 100px;
+    left: 600px;
+    top: 599px;
+
+    background: linear-gradient(207.47deg, rgba(255, 0, 0, 0.53) 5.07%, rgba(0, 10, 255, 0.3) 97.74%);
+    border-radius: 20px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 75px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+
+    mix-blend-mode: normal;
+
+}
+
+#back{
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+}

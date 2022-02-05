@@ -6,7 +6,7 @@ body{
 }
 
 #base{
-    position: relative;
+    position: absolute;
     width: 100rem;
     height: 50rem;
     left: 150px;
@@ -164,6 +164,7 @@ input{
 }
 
 #register{
+    cursor: pointer;
     position: relative;
     width: 300px;
     height: 80px;
@@ -178,4 +179,10 @@ input{
 
     background: rgba(0, 0, 0, 0.26);
     border-radius: 20px;
+}
+
+#back{
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
 }

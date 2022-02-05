@@ -6,7 +6,7 @@ body{
 }
 
 #base{
-    position: relative;
+    position: absolute;
     width: 100rem;
     height: 50rem;
     left: 150px;
@@ -65,6 +65,7 @@ input{
 }
 
 #findHelp{
+    cursor: pointer;
     position: absolute;
     width: 400px;
     height: 100px;
@@ -87,6 +88,12 @@ input{
 }
 
 #LoginLogo{
+    width: 35px;
+    height: 35px;
+}
+
+#back{
+    cursor: pointer;
     width: 35px;
     height: 35px;
 }

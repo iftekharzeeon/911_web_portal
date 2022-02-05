@@ -47,6 +47,7 @@ body{
 }
 
 #employee{
+    cursor: pointer;
     position: relative;
     width: 200px;
     height: 80px;
@@ -64,6 +65,7 @@ body{
 }
 
 #customerCare{
+    cursor: pointer;
     position: relative;
     width: 300px;
     height: 80px;
@@ -110,6 +112,7 @@ body{
 }
 
 #register{
+    cursor: pointer;
     position: relative;
     width: 300px;
     height: 80px;
@@ -127,6 +130,7 @@ body{
 }
 
 #findHelp{
+    cursor: pointer;
     position: absolute;
     width: 400px;
     height: 100px;

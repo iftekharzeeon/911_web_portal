@@ -37,3 +37,7 @@ const showData = async() => {
         }
     } 
 }
+
+const back = async() => {
+    window.location.replace("/");
+}

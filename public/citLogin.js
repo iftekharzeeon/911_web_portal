@@ -35,3 +35,7 @@ const loginUser = async() => {
         console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
     }
 }
+
+const backL = async() => {
+    window.location.replace("/");
+}
