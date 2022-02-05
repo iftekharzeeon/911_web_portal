@@ -33,6 +33,7 @@ const loginUser = async() => {
         window.alert("Login Successful");
         sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
         console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
+        window.location.replace("/selectService");
     }
 }
 
