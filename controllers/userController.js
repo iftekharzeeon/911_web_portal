@@ -180,4 +180,4 @@ const login_user = async (req, res) => {
 module.exports = {
     user_create,
     login_user
-};
+}
