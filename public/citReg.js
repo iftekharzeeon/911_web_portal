@@ -21,7 +21,7 @@ const showData = async() => {
 
     var regJSON = JSON.stringify(regObj);
 
-    console.log(regJSON)
+    //console.log(regJSON)
 
     const response = await fetch('http://localhost:3000/api/addUser',{
         method: 'POST',
@@ -33,6 +33,5 @@ const showData = async() => {
 
     const responseJSON = await response.json();
     console.log(responseJSON);
-    
-    //window.location.replace("/");
+    window.location.replace("/");
 }

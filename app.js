@@ -21,3 +21,7 @@ app.get('/', (req, res) => {
 app.get('/citReg', (req, res) => {
     res.sendFile('./views/citReg.html', {root: __dirname});
     });
+
+app.get('/citLogin', (req, res) => {
+    res.sendFile('./views/citLogin.html', {root: __dirname});
+    });

@@ -1,0 +1,65 @@
+body{
+    background: linear-gradient(rgb(0, 3, 70) 0%, rgba(255, 160, 0, 1) 100%), linear-gradient(60deg, rgb(0, 5, 34) 0%, rgb(0, 255, 229) 100%), radial-gradient(100% 165% at 100% 100%, rgb(255, 0, 168) 0%, rgb(0, 255, 120) 100%), radial-gradient(100% 150% at 0% 0%, rgb(255, 245, 0) 0%, rgb(81, 213, 0) 100%);
+    background-blend-mode: overlay, soft-light, difference, normal;
+    position: relative;
+    font-family: 'Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#base{
+    position: relative;
+    width: 100rem;
+    height: 50rem;
+    left: 150px;
+    top: 50px;
+
+    background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%);
+    opacity: 0.8;
+    border-radius: 64px;
+}
+
+label{
+    position: absolute;
+    height: 54px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    color: #FFFFFF;
+}
+
+input{
+    position: absolute;
+    width: 451px;
+    height: 95px;
+    font-size: 30px;
+
+    background: #C4C4C4;
+    border-radius: 20px;
+}
+
+#temail{
+    width: 250px; 
+    left: 800px; 
+    top: 245px;
+}
+
+#tpassword{
+    width: 250px; 
+    left: 800px;
+    top: 370px;
+}
+
+#femail{
+    left: 950px;
+    top: 225px;
+}
+
+#fpassword{
+    left: 950px;
+    top: 350px;
+}
