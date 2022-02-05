@@ -19,7 +19,7 @@ body{
 
 #gridCont{
     position: relative;
-    top: 136px;
+    top: 173px;
 
     color: gainsboro;
 }
@@ -90,8 +90,8 @@ body{
     position: absolute;
     width: 1000px;
     height: 100px;
-    left: 444px;
-    top: 40px;
+    left: 323px;
+    top: 33px;
 
     font-weight: normal;
     font-size: 40px;
@@ -104,4 +104,15 @@ body{
     cursor: pointer;
     width: 35px;
     height: 35px;
+}
+
+#topBar{
+    position: absolute;
+    width: 90em;
+    height: 8em;
+    left: 100px;
+    top: 50px;
+
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
 }
