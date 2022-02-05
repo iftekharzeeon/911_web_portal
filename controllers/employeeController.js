@@ -1,6 +1,9 @@
 const oracledb = require('oracledb');
 const serverInfo = require('../serverInfomation');
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 let connection;
 
 const get_employee_request_info = async (req, res) => {
@@ -258,7 +261,72 @@ const accept_request = async (req, res) => {
 
 }
 
+const login_employee = async (req, res) => {
+    let responses = {};
+    const user = req.body;
+    let memberId;
+    let memberInfo;
+    let passwordKey;
+    let locationInfo;
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        let userEmail = user.email;
+        let userPassword = user.password;
+
+        let memberCheckQuery = 'SELECT * FROM member WHERE email = :userEmail AND member_type = 2';
+        memberInfo = await connection.execute(memberCheckQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (memberInfo.rows.length) {
+            memberId = memberInfo.rows[0].MEMBER_ID;
+            let passwordCheckQuery = 'SELECT password_key FROM member_password WHERE member_id = :memberId';
+            passwordKey = await connection.execute(passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+            passwordKey = passwordKey.rows[0].PASSWORD_KEY;
+
+            if (bcrypt.compareSync(userPassword, passwordKey)) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Login Successful';
+                responses.MemberId = memberId;
+                responses.MemberInfo = memberInfo.rows[0];
+                let location_id = memberInfo.rows[0].LOCATION_ID;
+                let locationQuery = 'SELECT * FROM location WHERE location_id = :location_id';
+                locationInfo = await connection.execute(locationQuery, [location_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
+            } else {
+                //Password Incorrect
+                responses.ResponseCode = -2;
+                responses.ResponseText = 'Incorrect Password';
+            }
+
+        } else {
+            //Member Not Found
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'Employee Not Found';
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 module.exports = {
     get_employee_request_info,
-    accept_request
+    accept_request,
+    login_employee
 }

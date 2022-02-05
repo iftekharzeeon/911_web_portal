@@ -132,7 +132,7 @@ const login_user = async (req, res) => {
         let userEmail = user.email;
         let userPassword = user.password;
 
-        let memberCheckQuery = 'SELECT * FROM member WHERE email = :userEmail';
+        let memberCheckQuery = 'SELECT * FROM member WHERE email = :userEmail AND member_type = 1';
         memberInfo = await connection.execute(memberCheckQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberInfo.rows.length) {

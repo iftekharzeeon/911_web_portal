@@ -25,4 +25,7 @@ router.get('/api/getEmployeeRequestInfo/', bodyParser, employeeController.get_em
 //Employee Accept Request
 router.post('/api/acceptRequest/', bodyParser, employeeController.accept_request);
 
+//Employee Login
+router.post('/api/loginEmployee/', bodyParser, employeeController.login_employee);
+
 module.exports = router;
