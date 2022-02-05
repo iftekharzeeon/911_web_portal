@@ -11,18 +11,29 @@ const showData = async() => {
     }
 
     var regJSON = JSON.stringify(regObj);
+    var response;
+    var isEmpty = false;
+    for(const mem in regObj){
+        if(regObj[mem] == "") isEmpty = true;
+    }
 
-    //console.log(regJSON)
-
-    const response = await fetch('http://localhost:3000/api/addUser',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: regJSON
-    });
-
-    const responseJSON = await response.json();
-    console.log(responseJSON);
-    window.location.replace("/");
+    if(isEmpty){
+        window.alert("No field can be empty");
+    }else{
+        response = await fetch('http://localhost:3000/api/addUser',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: regJSON
+        });
+        const responseObj = await response.json();
+        console.log(responseObj);
+        if(responseObj.ResponseCode == 0){
+            window.alert("Member Already Exists");
+        }else if(responseObj.ResponseCode == 1){
+            window.alert("Member Added");
+            window.location.replace("/");
+        }
+    } 
 }
