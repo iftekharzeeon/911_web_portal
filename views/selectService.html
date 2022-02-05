@@ -4,13 +4,15 @@
 </head>
 
 <body>
+    <img src="../BackLogo.png" id="back" onclick="backS()">
     <div id="base">
+        <div id ="ExtraText">"Select the amount of service you need"</div>
         <div id="gridCont">
             <form>
                 <div class="selectGrid">
                     <div class="grid-item-left" id="1">
                         <input type="checkbox" id="Medicle" onchange="displayMedicle()">
-                        <label> Medicle</label><br>
+                        <label> Medical</label><br>
                     </div>
                     <div class="grid-item-right" id="2"></div>
                     <div class="grid-item-left" id="3">
@@ -31,7 +33,7 @@
                 </div>
             </form>
         </div>
-        <div id ="customerCare">Can't seem to find your need?</div>
-        <button id = "findHelp" onclick="loginUser()">Find Help <img src="./LoginLogo.png" id="LoginLogo"></button>
+        <div id ="customerCare"><u>Can't seem to find your need?</u></div>
+        <button id = "findHelp" onclick="loginUser()">Find Help <img src="../LoginLogo.png" id="LoginLogo"></button>
     </div>
 </body>
