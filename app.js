@@ -33,3 +33,7 @@ app.get('/empLogin', (req, res) => {
 app.get('/careLogin', (req, res) => {
     res.sendFile('./views/careLogin.html', {root: __dirname});
     });
+
+app.get('/selectService', (req, res) => {
+    res.sendFile('./views/selectService.html', {root: __dirname});
+    });

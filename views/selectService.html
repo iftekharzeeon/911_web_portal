@@ -1,0 +1,37 @@
+<head>
+    <link href="./selectService.css" rel="stylesheet" type="text/css"/>
+    <script src="./selectService.js"></script>
+</head>
+
+<body>
+    <div id="base">
+        <div id="gridCont">
+            <form>
+                <div class="selectGrid">
+                    <div class="grid-item-left" id="1">
+                        <input type="checkbox" id="Medicle" onchange="displayMedicle()">
+                        <label> Medicle</label><br>
+                    </div>
+                    <div class="grid-item-right" id="2"></div>
+                    <div class="grid-item-left" id="3">
+                        <input type="checkbox" id="Fire" onchange="displayFire()">
+                        <label> Fire</label><br>
+                    </div>
+                    <div class="grid-item-right" id="4"></div>
+                    <div class="grid-item-left" id="5">
+                        <input type="checkbox" id="Law" onchange="displayLaw()">
+                        <label> Law</label><br>
+                    </div>
+                    <div class="grid-item-right" id="6"></div>
+                    <div class="grid-item-left" id="7">
+                        <input type="checkbox" id="SuperHero" onchange="displaySuper()">
+                        <label> SuperHero</label><br>
+                    </div>
+                    <div class="grid-item-right" id="8"></div>
+                </div>
+            </form>
+        </div>
+        <div id ="customerCare">Can't seem to find your need?</div>
+        <button id = "findHelp" onclick="loginUser()">Find Help <img src="./LoginLogo.png" id="LoginLogo"></button>
+    </div>
+</body>
