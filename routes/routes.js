@@ -20,6 +20,9 @@ router.get('/api/getServices/', bodyParser, serviceController.get_services);
 router.post('/api/addRequest/', bodyParser, requestController.add_request);
 
 //Get Request Employee Info
-router.post('/api/getEmployeeRequestInfo/', bodyParser, employeeController.get_employee_request_info);
+router.get('/api/getEmployeeRequestInfo/', bodyParser, employeeController.get_employee_request_info);
+
+//Employee Accept Request
+router.post('/api/acceptRequest/', bodyParser, employeeController.accept_request);
 
 module.exports = router;

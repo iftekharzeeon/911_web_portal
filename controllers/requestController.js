@@ -16,9 +16,9 @@ const add_request = async (req, res) => {
     let servicesObjectArr;
     let locationObj;
 
-    let resolved_status = -1; //Pending
-    let employee_accepted = -1; //Pending
-    let vehicle_accepted = -1; //Pending
+    let resolved_status = -1; //Pending 0->Accepted 1-> Finished
+    let employee_accepted = -1; //Pending 0->Accepted 1-> Finished
+    let vehicle_accepted = -1; //Pending 0->Accepted 1-> Finished
 
     let service_id;
     let request_people;
