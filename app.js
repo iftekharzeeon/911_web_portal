@@ -21,3 +21,19 @@ app.get('/', (req, res) => {
 app.get('/citReg', (req, res) => {
     res.sendFile('./views/citReg.html', {root: __dirname});
     });
+
+app.get('/citLogin', (req, res) => {
+    res.sendFile('./views/citLogin.html', {root: __dirname});
+    });
+
+app.get('/empLogin', (req, res) => {
+    res.sendFile('./views/empLogin.html', {root: __dirname});
+    });
+
+app.get('/careLogin', (req, res) => {
+    res.sendFile('./views/careLogin.html', {root: __dirname});
+    });
+
+app.get('/selectService', (req, res) => {
+    res.sendFile('./views/selectService.html', {root: __dirname});
+    });

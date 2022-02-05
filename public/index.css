@@ -47,6 +47,7 @@ body{
 }
 
 #employee{
+    cursor: pointer;
     position: relative;
     width: 200px;
     height: 80px;
@@ -64,6 +65,7 @@ body{
 }
 
 #customerCare{
+    cursor: pointer;
     position: relative;
     width: 300px;
     height: 80px;
@@ -110,6 +112,7 @@ body{
 }
 
 #register{
+    cursor: pointer;
     position: relative;
     width: 300px;
     height: 80px;
@@ -124,4 +127,48 @@ body{
 
     background: rgba(0, 0, 0, 0.26);
     border-radius: 20px;
+}
+
+#findHelp{
+    cursor: pointer;
+    position: absolute;
+    width: 400px;
+    height: 100px;
+    left: 1000px;
+    top: 420px;
+
+    background: linear-gradient(207.47deg, rgba(175, 214, 101, 0.49) 5.07%, #1E9430 97.74%);
+    border-radius: 20px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 75px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+
+    mix-blend-mode: normal;
+}
+
+#LoginLogo{
+    width: 35px;
+    height: 35px;
+}
+
+#loginText{
+    position: absolute;
+    left: 1155px;
+    top: 250px;
+
+    text-align: right;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 75px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
 }
