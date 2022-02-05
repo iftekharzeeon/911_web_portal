@@ -16,16 +16,19 @@ router.post('/api/loginUser/', bodyParser, userController.login_user);
 //Get Service List
 router.get('/api/getServices/', bodyParser, serviceController.get_services);
 
-//Add Request
+//User Add Request
 router.post('/api/addRequest/', bodyParser, requestController.add_request);
 
 //Get Request Employee Info
 router.get('/api/getEmployeeRequestInfo/', bodyParser, employeeController.get_employee_request_info);
 
 //Employee Accept Request
-router.post('/api/acceptRequest/', bodyParser, employeeController.accept_request);
+router.post('/api/acceptRequest/', bodyParser, requestController.accept_request);
 
 //Employee Login
 router.post('/api/loginEmployee/', bodyParser, employeeController.login_employee);
+
+//Employee Finish Request
+router.post('/api/finishRequest/', bodyParser, requestController.finish_request);
 
 module.exports = router;
