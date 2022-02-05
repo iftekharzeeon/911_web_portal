@@ -1,22 +1,13 @@
 const showData = async() => {
-    var citizenFirstName = document.getElementById("ffirstname").value;
-    var citizenLastName = document.getElementById("flastname").value;
-    var citizenEmail = document.getElementById("femail").value;
-    var citizenPassword = document.getElementById("fpassword").value;
-    var citizenBlock = document.getElementById("fblock").value;
-    var citizenStreet = document.getElementById("fstreet").value;
-    var citizenHouse = document.getElementById("fhouse").value;
-    var citizenPhone = document.getElementById("fphoneNumber").value;
-
     var regObj = {
-        first_name : citizenFirstName,
-        last_name : citizenLastName,
-        email : citizenEmail,
-        phone_number: citizenPhone,
-        block : citizenBlock,
-        street : citizenStreet,
-        house_no : citizenHouse,
-        password : citizenPassword
+        first_name : document.getElementById("ffirstname").value,
+        last_name : document.getElementById("flastname").value,
+        email : document.getElementById("femail").value,
+        phone_number: document.getElementById("fphoneNumber").value,
+        block : document.getElementById("fblock").value,
+        street : document.getElementById("fstreet").value,
+        house_no : document.getElementById("fhouse").value,
+        password : document.getElementById("fpassword").value
     }
 
     var regJSON = JSON.stringify(regObj);

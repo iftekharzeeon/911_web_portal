@@ -63,3 +63,30 @@ input{
     left: 950px;
     top: 350px;
 }
+
+#findHelp{
+    position: absolute;
+    width: 400px;
+    height: 100px;
+    left: 600px;
+    top: 599px;
+
+    background: linear-gradient(207.47deg, rgba(175, 214, 101, 0.49) 5.07%, #1E9430 97.74%);
+    border-radius: 20px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 75px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+
+    mix-blend-mode: normal;
+}
+
+#LoginLogo{
+    width: 35px;
+    height: 35px;
+}
