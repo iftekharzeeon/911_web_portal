@@ -1,3 +1,5 @@
+var serviceList;
+
 const medicleHTML =`
 <div id="2Add">
     <input type="radio" id="Medicle1" name="Medicle" value="1">
@@ -80,8 +82,8 @@ const superHeroHTML = `
 `;
 
 const displaySuper = async() => {
-    const superHero = document.getElementById('SuperHero');
-    if(superHero.checked){
+    const superhero = document.getElementById('SuperHero');
+    if(superhero.checked){
         console.log("SuperHero Checked");
         const addBox = document.getElementById('8');
         addBox.insertAdjacentHTML("beforeend", superHeroHTML);
@@ -89,5 +91,36 @@ const displaySuper = async() => {
         console.log("SuperHero Unchecked");
         var myobj = document.getElementById("8Add");
         myobj.remove();
+    }
+}
+
+window.onload = async () => {
+    const response = await fetch('http://localhost:3000/api/getServices',{
+            method: 'GET'
+        });
+    serviceList = await response.json();
+    console.log(serviceList);
+};
+
+const backS = async() => {
+    window.location.replace("/");
+}
+
+//left to code
+var requestedService =[];
+const confirmService = async() => {
+    const medical = document.getElementById('Medicle');
+    if(medical.checked){
+        var ele = document.getElementByName('Medicle');
+        for(i = 0; i < ele.length; i++){
+            if(ele[i].checked){
+                requestedService.push({
+                    "service_id" : serviceList[0].SERVICE_ID,
+                    "request_people" : parseInt(ele[i].value)
+                }
+                )
+                
+            }
+        }
     }
 }

@@ -19,7 +19,9 @@ body{
 
 #gridCont{
     position: relative;
-    top: 100px;
+    top: 136px;
+
+    color: gainsboro;
 }
 
 .selectGrid {
@@ -76,10 +78,30 @@ body{
     left: 600px;
     top: 650px;
 
-    font-style: unset;
+    font-style: italic;
     font-weight: normal;
     font-size: 28px;
     line-height: 75px;
 
     color: #FFFFFF;
+}
+
+#ExtraText{
+    position: absolute;
+    width: 1000px;
+    height: 100px;
+    left: 444px;
+    top: 40px;
+
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 75px;
+
+    color: #FFFFFF;  
+}
+
+#back{
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
 }

@@ -1,4 +1,5 @@
 const loginUser = async() => {
+    var responseObj;
     var loginObj = {
         email : document.getElementById("femail").value,
         password : document.getElementById("fpassword").value
@@ -20,21 +21,20 @@ const loginUser = async() => {
             },
             body: loginJSON
         });
+        responseObj = await response.json();
+        console.log(responseObj);
+
+        if(responseObj.ResponseCode == -2){
+            window.alert("Wrong Password");
+        }else if(responseObj.ResponseCode == 0){
+            window.alert("Member Not Found");
+        }else if(responseObj.ResponseCode == 1){
+            window.alert("Login Successful");
+            sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
+            console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
+            window.location.replace("/userLogin/selectService");
+        }
     }  
-
-    const responseObj = await response.json();
-    console.log(responseObj);
-
-    if(responseObj.ResponseCode == -2){
-        window.alert("Wrong Password");
-    }else if(responseObj.ResponseCode == 0){
-        window.alert("Member Not Found");
-    }else if(responseObj.ResponseCode == 1){
-        window.alert("Login Successful");
-        sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
-        console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
-        window.location.replace("/userLogin/selectService");
-    }
 }
 
 const backL = async() => {
