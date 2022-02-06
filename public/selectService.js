@@ -163,4 +163,6 @@ const confirmService = async() => {
     sessionStorage.setItem("services", JSON.stringify(requestedService));
     console.log(sessionStorage.getItem("services"));
     console.log(sessionStorage.getItem("user"));
+
+    window.location.replace("/userLogin/selectLocation")
 }

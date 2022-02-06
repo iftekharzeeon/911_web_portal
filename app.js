@@ -37,3 +37,7 @@ app.get('/careLogin', (req, res) => {
 app.get('/userLogin/selectService', (req, res) => {
     res.sendFile('./views/selectService.html', {root: __dirname});
     });
+
+app.get('/userLogin/selectLocation', (req, res) => {
+    res.sendFile('./views/selectLocation.html', {root: __dirname});
+    });
