@@ -158,11 +158,14 @@ const confirmService = async() => {
             }
         }
     }
+    if(requestedService.length == 0){
+        window.alert("You have to select atleast one service. If your confused you can talk with customer care.");
+    }else{
+        //console.log(requestedService);
+        sessionStorage.setItem("services", JSON.stringify(requestedService));
+        //console.log(sessionStorage.getItem("services"));
+        //console.log(sessionStorage.getItem("user"));
 
-    //console.log(requestedService);
-    sessionStorage.setItem("services", JSON.stringify(requestedService));
-    console.log(sessionStorage.getItem("services"));
-    console.log(sessionStorage.getItem("user"));
-
-    window.location.replace("/userLogin/selectLocation")
+        window.location.replace("/userLogin/selectLocation")
+    }
 }
