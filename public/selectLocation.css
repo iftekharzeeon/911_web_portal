@@ -139,11 +139,12 @@ label{
 }
 
 #locationData{
-    position: relative;
+    position: absolute;
     left: 624px;
-    top: 129px;
+    top: 258px;
     font-style: normal;
     font-weight: normal;
+    text-align: center;
     font-size: 50;
     line-height: 60px;
     color: #FFFFFF;
@@ -152,7 +153,7 @@ label{
 #NoText{
     position: relative;
     left: 680px;
-    top: 181px;
+    top: 360px;
     font-style: normal;
     font-weight: normal;
     font-size: 50;
@@ -163,7 +164,7 @@ label{
 #no{
     position: relative;
     left: 763px;
-    top: 136px;
+    top: 314px;
     width: 30px;
     height: 30px;
 }
