@@ -28,7 +28,8 @@ window.onload = async() => {
         },
         body: fetchJSON
     });
-    const RequestObj = JSON.parse(response);
+    RequestObj = await response.json();
+    console.log(RequestObj);
     const MainContent = document.getElementById("MainContent");
     for(var i = 0; i < RequestObj.RequestInfo.length; i++){
         const Time = RequestObj.RequestInfo[i].REQUEST_TIME;
