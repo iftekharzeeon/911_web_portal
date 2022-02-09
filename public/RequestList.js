@@ -31,22 +31,24 @@ window.onload = async() => {
     RequestObj = await response.json();
     console.log(RequestObj);
     const MainContent = document.getElementById("MainContent");
+    const arrContent = []
     for(var i = 0; i < RequestObj.RequestInfo.length; i++){
         let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
         Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-        MainContent.insertAdjacentHTML("beforeend", `
+        arrContent.push(`
         <div class="option">
                 <div class="content">
-                    Citizen Name = ${RequestObj.RequestInfo[i].CITIZEN_NAME}; 
-                    Location = B#${RequestObj.RequestInfo[i].BLOCK}, S#${RequestObj.RequestInfo[i].STREET}, H#${RequestObj.RequestInfo[i].HOUSE_NO}; 
-                    Request Time = #${Time}; 
-                    <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton">Accept</button>
+                    Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                    Location : Block#${RequestObj.RequestInfo[i].BLOCK}, Street#${RequestObj.RequestInfo[i].STREET}, House#${RequestObj.RequestInfo[i].HOUSE_NO}<br>
+                    Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
                 </div>
         </div>
         `)
     }
+    MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
 }
 
 const accept = async(requestID) => {
