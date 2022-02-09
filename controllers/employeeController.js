@@ -35,7 +35,7 @@ const get_employee_request_info = async (req, res) => {
         employee_id = requestObj.employee_id;
 
         //Check Employee Existence
-        let memberCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id AND member_type = 2';
+        let memberCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id';
         memberExist = await connection.execute(memberCheckQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberExist.rows.length === 0) {
