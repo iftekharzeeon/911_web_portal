@@ -30,10 +30,18 @@ app.get('/empLogin', (req, res) => {
     res.sendFile('./views/empLogin.html', {root: __dirname});
     });
 
+app.get('/empLogin/RequestList', (req, res) => {
+    res.sendFile('./views/RequestList.html', {root: __dirname});
+    });
+
 app.get('/careLogin', (req, res) => {
     res.sendFile('./views/careLogin.html', {root: __dirname});
     });
 
 app.get('/userLogin/selectService', (req, res) => {
     res.sendFile('./views/selectService.html', {root: __dirname});
+    });
+
+app.get('/userLogin/selectLocation', (req, res) => {
+    res.sendFile('./views/selectLocation.html', {root: __dirname});
     });

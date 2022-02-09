@@ -41,79 +41,48 @@ body{
     color: #FFFFFF;
 }
 
-label{
-    position: absolute;
-    height: 54px;
+.option{
+    position: relative;
+    margin-top: 20px;
+    width: 90em;
+    height: 7em;
+    left: 100px;
+    top: 50px;
 
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
+}
+
+.content{
+    margin: auto;
+    width: 50%;
+    padding: 14px;
     font-style: normal;
     font-weight: normal;
-    font-size: 30px;
-    line-height: 54px;
+    font-size: 20px;
     /* identical to box height */
-
-    text-align: left;
-
+    text-align: center;
     color: #FFFFFF;
 }
 
-input{
-    position: absolute;
-    width: 451px;
-    height: 95px;
-    font-size: 30px;
+#RefreshButton{
+    position: relative;
+    margin-top: 20px;
+    width: 10em;
+    height: 5em;
+    left: 50%;
+    top: 50px;
 
-    background: #C4C4C4;
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
 }
 
-#temail{
-    width: 250px; 
-    left: 480px; 
-    top: 295px;
-}
+.AcceptButton{
+    position: relative;
+    margin-top: 20px;
+    width: 10em;
+    height: 3em;
 
-#tpassword{
-    width: 250px; 
-    left: 480px;
-    top: 420px;
-}
-
-#femail{
-    left: 650px;
-    top: 275px;
-}
-
-#fpassword{
-    left: 650px;
-    top: 400px;
-}
-
-
-#login{
-    position: absolute;
-    width: 400px;
-    height: 100px;
-    left: 600px;
-    top: 599px;
-
-    background: linear-gradient(207.47deg, rgba(255, 0, 0, 0.53) 5.07%, rgba(0, 10, 255, 0.3) 97.74%);
-    border-radius: 20px;
-
-    font-style: normal;
-    font-weight: normal;
-    font-size: 50px;
-    line-height: 75px;
-    /* identical to box height */
-
-
-    color: #FFFFFF;
-
-    mix-blend-mode: normal;
-
-}
-
-#back{
-    cursor: pointer;
-    width: 35px;
-    height: 35px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
 }

@@ -1,0 +1,28 @@
+<head>
+    <link href="../selectLocation.css" rel="stylesheet" type="text/css"/>
+    <script src="../selectLocation.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
+    <title>Select Location</title>
+    <link rel="icon" href="../favcon.png">
+</head>
+
+<body>
+    <img src="../BackLogo.png" id="back" onclick="backSL()">
+    <div id="base">
+        <div id="topBar">
+            <div class="intro">Hello, </div><div id="name" class="intro"></div><div class="intro"> Send service to this location?</div>
+        </div>
+        <div id="fixedLocation">
+            <div id="locationData">
+                <div id="block">Block: </div>
+                <div id="street">Street: </div>
+                <div id="house">House: </div>
+            </div>
+            <div id="NoText">No</div>
+            <input type="checkbox" id="No" onclick="manualLocationToggle()">
+        </div>
+        <div id="manualLocation">
+        </div>
+        <button id = "findHelp" onclick="sendRequest()" style="font-family: 'Rajdhani'">Find Help <img src="../LoginLogo.png" id="LoginLogo"></button>
+    </div>
+</body>

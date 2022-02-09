@@ -1,17 +1,26 @@
 <head>
     <link href="./citLogin.css" rel="stylesheet" type="text/css"/>
     <script src="./citLogin.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
+    <title>Citizen Login</title>
+    <link rel="icon" href="./favcon.png">
 </head>
 
 <body>
     <img src="./BackLogo.png" id="back" onclick="backL()">
     <div id="base">
+        <div id="topBar">
+            <div id="readyToHelp">
+                Citizen Login
+            </div>
+        </div>
+        <img src="./ServiceMadeEasy.png" id="motto">
         <form>
             <label for="email" id="temail">Email</label><br>
             <input type="text" id="femail" name="email">
             <label for="password" id="tpassword">Password</label><br>
             <input type="password" id="fpassword" name="password">
           </form>
-          <button id = "findHelp" onclick="loginUser()">Find Help <img src="./LoginLogo.png" id="LoginLogo"></button>
+          <button id = "findHelp" onclick="loginUser()" style="font-family: 'Rajdhani'">Find Help <img src="./LoginLogo.png" id="LoginLogo"></button>
     </div>
 </body>
