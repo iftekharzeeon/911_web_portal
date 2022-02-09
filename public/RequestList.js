@@ -22,7 +22,7 @@ window.onload = async() => {
     }
     const fetchJSON = JSON.stringify(fetchObj);
     const response = await fetch('http://localhost:3000/api/getEmployeeRequestInfo',{
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -47,4 +47,8 @@ window.onload = async() => {
 
 const accept = async(requestID) => {
     window.alert(requestID + ' ' + JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
+}
+
+const Refresh = async() => {
+    location.reload();
 }
