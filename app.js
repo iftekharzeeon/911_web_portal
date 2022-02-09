@@ -45,3 +45,8 @@ app.get('/userLogin/selectService', (req, res) => {
 app.get('/userLogin/selectLocation', (req, res) => {
     res.sendFile('./views/selectLocation.html', {root: __dirname});
     });
+
+//For testing    
+app.get('/googleMap', (req, res) => {
+    res.sendFile('./views/google_map.html', {root: __dirname});
+    });

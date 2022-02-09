@@ -132,7 +132,7 @@ const login_user = async (req, res) => {
 
         if (memberInfo.rows.length) {
             memberId = memberInfo.rows[0].MEMBER_ID;
-            
+
             passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             passwordKey = passwordKey.rows[0].PASSWORD_KEY;
@@ -144,7 +144,7 @@ const login_user = async (req, res) => {
                 responses.MemberInfo = memberInfo.rows[0];
                 let location_id = memberInfo.rows[0].LOCATION_ID;
 
-                locationInfo = await connection.execute(queries.locationQuery, [location_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                locationInfo = await connection.execute(queries.locationQuery, [location_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
                 responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
             } else {
                 //Password Incorrect
@@ -218,47 +218,65 @@ const get_user_request_info = async (req, res) => {
 
             //Check for ongoing request
             let ongoingRequestCheckQuery = 'SELECT * FROM request WHERE citizen_id = :member_id AND (resolved_status = -1 OR resolved_status = 0)';
-            request_info = await connection.execute(ongoingRequestCheckQuery, [member_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-            
+            request_info = await connection.execute(ongoingRequestCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
             if (request_info.rows.length) {
                 resolved_status = request_info.rows[0].RESOLVED_STATUS;
                 request_id = request_info.rows[0].REQUEST_ID;
 
                 //Number of request made
                 let requestCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id';
-                number_of_request = await connection.execute(requestCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                number_of_request = await connection.execute(requestCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_request = number_of_request.rows[0].COUNTER;
 
                 //Number of employee accepted
-                let employeeCounterQuery= 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = 0 OR employee_accepted = 1)';
-                number_of_employees = await connection.execute(employeeCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                let employeeCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = 0 OR employee_accepted = 1)';
+                number_of_employees = await connection.execute(employeeCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_employees = number_of_employees.rows[0].COUNTER;
 
                 //Number of vehicle accepted
                 let vehicleCounterQuery = 'SELECT DISTINCT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (vehicle_accepted = 0 OR vehicle_accepted = 1)';
-                number_of_vehicle = await connection.execute(vehicleCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                number_of_vehicle = await connection.execute(vehicleCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_vehicle = number_of_vehicle.rows[0].COUNTER;
 
-                //Get Employees and Vehicle Information
-                let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER `
-                'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R '
-                'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
-                'AND RE.REQUEST_ID = R.REQUEST_ID '
-                'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
-                'AND E.MEMBER_ID = M.MEMBER_ID ' +
-                'AND E.JOB_ID = J.JOB_ID ' +
-                'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
-                'AND D.SERVICE_ID = S.SERVICE_ID ' +
-                'AND R.REQUEST_ID = :request_id;';
+                if (number_of_employees && number_of_vehicle) {
+                    //Get Employees and Vehicle Information
+                    let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER ` +
+                        'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R ' +
+                        'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                        'AND RE.REQUEST_ID = R.REQUEST_ID ' +
+                        'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
+                        'AND E.MEMBER_ID = M.MEMBER_ID ' +
+                        'AND E.JOB_ID = J.JOB_ID ' +
+                        'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                        'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                        'AND R.REQUEST_ID = :request_id';
 
-                information = await connection.execute(informationQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-                responses.RequestInformation = information.rows[0];
+                    information = await connection.execute(informationQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                    responses.RequestInformation = information.rows[0];
+                    responses.ResponseCode = 1;
+                    responses.ResponseText = 'Data found';
+                } else {
+                    responses.RequestInformation = {};
+                    responses.ResponseText = 'No Data Found';
+                    responses.ResponseCode = 0;
+                }
+
+                numbers = {
+                    "NumberOfRequest": number_of_request,
+                    "NumberOfEmployees": number_of_employees,
+                    "NumberOfVehicle": number_of_vehicle
+                }
+
+                responses.Numbers = numbers;
 
             } else {
                 //No ongoing request
+                responses.ResponseCode = -2;
+                responses.ResponseText = 'You have no on going requests.'
 
             }
         }

@@ -31,4 +31,7 @@ router.post('/api/loginEmployee/', bodyParser, employeeController.login_employee
 //Employee Finish Request
 router.post('/api/finishRequest/', bodyParser, requestController.finish_request);
 
+//User Get Request Info
+router.post('/api/getCitizenRequestInfo/', bodyParser, userController.get_user_request_info);
+
 module.exports = router;
