@@ -32,7 +32,10 @@ window.onload = async() => {
     console.log(RequestObj);
     const MainContent = document.getElementById("MainContent");
     for(var i = 0; i < RequestObj.RequestInfo.length; i++){
-        const Time = RequestObj.RequestInfo[i].REQUEST_TIME;
+        let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
+        var dateArr = Time.split(' ');
+        var timeArr = dateArr[1].split('.');
+        Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
         MainContent.insertAdjacentHTML("beforeend", `
         <div class="option">
                 <div class="content">
