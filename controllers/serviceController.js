@@ -1,6 +1,7 @@
 const oracledb = require('oracledb');
 const serverInfo = require('../serverInfomation');
 const syRegister = require('../util/syRegister');
+const queries = require('../util/query');
 
 let connection;
 let result;
@@ -22,8 +23,8 @@ const get_services = async (req, res) => {
 
         
 
-        let getServicesQuery = 'SELECT * FROM service';
-        result = await connection.execute(getServicesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        
+        result = await connection.execute(queries.getServicesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
 
         if (result) {
             responses = result.rows;

@@ -1,6 +1,7 @@
 const oracledb = require('oracledb');
 const serverInfo = require('../serverInfomation');
 const syRegister = require('../util/syRegister');
+const queries = require('../util/query');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -42,8 +43,7 @@ const user_create = async (req, res) => {
 
         console.log(user);
 
-        let memberCheckQuery = 'SELECT * FROM member WHERE email = :email';
-        memberExist = await connection.execute(memberCheckQuery, [email], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        memberExist = await connection.execute(queries.memberEmailCheckQuery, [email], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         memberExist = memberExist.rows.length;
 
@@ -60,24 +60,20 @@ const user_create = async (req, res) => {
             });
 
             //Insert Into Location Table
-            let insertLocationQuery = 'INSERT INTO location(location_id, block, street, house_no) VALUES(:location_id, :block, :street, :house_no)';
 
-            result = await connection.execute(insertLocationQuery, [location_id, block, street, house_no]);
+            result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
 
             //Insert Into Member Table
-            let insertMemberQuery = 'INSERT INTO member(member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id) ' +
-                ' VALUES(:member_id, :first_name, :last_name, :email, :phone_number, :registration_date, :member_type, :location_id)';
 
-            result = await connection.execute(insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
+            result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
 
             //Insert Password Info
             let salt = '';
             let password_key = '';
             salt = bcrypt.genSaltSync(saltRounds);
             password_key = bcrypt.hashSync(member_password, salt);
-            let memberPasswordQuery = 'INSERT INTO member_password(member_password_id, member_id, password_key) VALUES(:member_id, :member_id, :password_key)';
 
-            result = await connection.execute(memberPasswordQuery, [member_id, member_id, password_key]);
+            result = await connection.execute(queries.memberPasswordQuery, [member_id, member_id, password_key]);
             connection.commit();
 
             if (result) {
@@ -132,13 +128,12 @@ const login_user = async (req, res) => {
         let userEmail = user.email;
         let userPassword = user.password;
 
-        let memberCheckQuery = 'SELECT * FROM member WHERE email = :userEmail AND member_type = 1';
-        memberInfo = await connection.execute(memberCheckQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        memberInfo = await connection.execute(queries.memberEmailCheckQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberInfo.rows.length) {
             memberId = memberInfo.rows[0].MEMBER_ID;
-            let passwordCheckQuery = 'SELECT password_key FROM member_password WHERE member_id = :memberId';
-            passwordKey = await connection.execute(passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            
+            passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             passwordKey = passwordKey.rows[0].PASSWORD_KEY;
 
@@ -148,8 +143,8 @@ const login_user = async (req, res) => {
                 responses.MemberId = memberId;
                 responses.MemberInfo = memberInfo.rows[0];
                 let location_id = memberInfo.rows[0].LOCATION_ID;
-                let locationQuery = 'SELECT * FROM location WHERE location_id = :location_id';
-                locationInfo = await connection.execute(locationQuery, [location_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+                locationInfo = await connection.execute(queries.locationQuery, [location_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
                 responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
             } else {
                 //Password Incorrect
