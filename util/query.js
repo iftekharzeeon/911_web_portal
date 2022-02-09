@@ -16,7 +16,24 @@ let passwordCheckQuery = 'SELECT password_key FROM member_password WHERE member_
 let locationQuery = 'SELECT * FROM location WHERE location_id = :location_id';
 
 //User Get Request Info
+let ongoingRequestCheckQuery = 'SELECT * FROM request WHERE citizen_id = :member_id AND (resolved_status = -1 OR resolved_status = 0)';
 
+let requestCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id';
+
+let employeeCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = 0 OR employee_accepted = 1)';
+
+let vehicleCounterQuery = 'SELECT DISTINCT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (vehicle_accepted = 0 OR vehicle_accepted = 1)';
+
+let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER ` +
+                        'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R ' +
+                        'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                        'AND RE.REQUEST_ID = R.REQUEST_ID ' +
+                        'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
+                        'AND E.MEMBER_ID = M.MEMBER_ID ' +
+                        'AND E.JOB_ID = J.JOB_ID ' +
+                        'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                        'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                        'AND R.REQUEST_ID = :request_id';
 //Employee Controller
 //Employee Get Request Info
 let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id';
@@ -117,5 +134,10 @@ module.exports = {
     updateRequestStatusQuery,
     updateEmployeeOccupiedStatusQuery,
     updateEmployeeAcceptedStatusto1Query,
-    employeeAcceptCheckQuery
+    employeeAcceptCheckQuery,
+    ongoingRequestCheckQuery,
+    requestCounterQuery,
+    employeeCounterQuery,
+    vehicleCounterQuery,
+    informationQuery
 }
