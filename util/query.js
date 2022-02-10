@@ -87,16 +87,16 @@ let insertRequestEmployeeQuery = 'INSERT INTO request_employee(request_employee_
 
 //Accept Request
 let longRequestInfoQuery = `SELECT RE.REQUEST_EMPLOYEE_ID, R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, L.BLOCK, L.HOUSE_NO, L.STREET, M.MEMBER_ID AS CITIZEN_ID, L.LOCATION_ID ` +
-                    'FROM REQUEST R, MEMBER M, LOCATION L, REQUEST_EMPLOYEE RE, EMPLOYEES E ' +
-                    'WHERE R.CITIZEN_ID = M.MEMBER_ID ' +
-                    'AND R.LOCATION_ID = L.LOCATION_ID ' +
-                    'AND R.REQUEST_ID = RE.REQUEST_ID ' +
-                    'AND RE.EMPLOYEE_ID = E.MEMBER_ID ' +
-                    'AND E.MEMBER_ID = :employee_id ' +
-                    'AND RE.EMPLOYEE_ACCEPTED = 0';
+                            'FROM REQUEST R, MEMBER M, LOCATION L, REQUEST_EMPLOYEE RE, EMPLOYEES E ' +
+                            'WHERE R.CITIZEN_ID = M.MEMBER_ID ' +
+                            'AND R.LOCATION_ID = L.LOCATION_ID ' +
+                            'AND R.REQUEST_ID = RE.REQUEST_ID ' +
+                            'AND RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                            'AND E.MEMBER_ID = :employee_id ' +
+                            'AND RE.EMPLOYEE_ACCEPTED = 0';
 
 let requestAvailableInfoQuery = 'SELECT REQUEST_EMPLOYEE_ID FROM REQUEST_EMPLOYEE ' +
-                    'WHERE EMPLOYEE_ACCEPTED = -1 AND SERVICE_ID = :service_id AND REQUEST_ID = :request_id';
+                                'WHERE EMPLOYEE_ACCEPTED = -1 AND SERVICE_ID = :service_id AND REQUEST_ID = :request_id';
 
 let updateEmployeeAcceptStatusQuery = 'UPDATE request_employee SET employee_accepted = :employee_accepted_status, employee_id = :employee_id WHERE request_employee_id = :request_employee_id';
 
@@ -109,6 +109,19 @@ let updateEmployeeOccupiedStatusQuery = 'UPDATE employees SET occupied = :occupi
 let updateEmployeeAcceptedStatusto1Query = 'UPDATE request_employee SET employee_accepted = :employee_accepted_status WHERE request_employee_id = :request_employee_id';
 
 let employeeAcceptCheckQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = -1 OR employee_accepted = 0)';
+
+
+//Vehicle Controller
+//Add Vehicle Request
+let vehicleCheckQuery = 'SELECT * FROM vehicle WHERE service_id = :service_id AND occupied = 0';
+
+let updateRequestVehicleInfoQuery = 'UPDATE request_employee SET vehicle_id = :vehicle_id, vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
+
+let updateVehicleOccupiedStatusQuery = 'UPDATE vehicle SET occupied_status = :vehicle_occupied_status WHERE vehicle_id = :vehicle_id';
+
+let getServiceIdQuery = 'SELECT service_id FROM request_employee WHERE request_employee_id = :request_employee_id';
+
+let updateVehicleAcceptedStatusto1Query = 'UPDATE request_employee SET vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
 
 module.exports = {
     memberEmailCheckQuery,
@@ -139,5 +152,10 @@ module.exports = {
     requestCounterQuery,
     employeeCounterQuery,
     vehicleCounterQuery,
-    informationQuery
+    informationQuery,
+    vehicleCheckQuery,
+    updateRequestVehicleInfoQuery,
+    updateVehicleOccupiedStatusQuery,
+    getServiceIdQuery,
+    updateVehicleAcceptedStatusto1Query
 }

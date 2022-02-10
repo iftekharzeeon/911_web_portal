@@ -4,6 +4,7 @@ const userController = require('../controllers/userController');
 const serviceController = require('../controllers/serviceController');
 const requestController = require('../controllers/requestController');
 const employeeController = require('../controllers/employeeController');
+const vehicleController = require('../controllers/vehicleController');
 
 const router = express.Router();
 
@@ -33,5 +34,8 @@ router.post('/api/finishRequest/', bodyParser, requestController.finish_request)
 
 //User Get Request Info
 router.post('/api/getCitizenRequestInfo/', bodyParser, userController.get_user_request_info);
+
+//Add Vehicle Request
+router.post('/api/addVehicleRequest/', bodyParser, vehicleController.add_vehicle_to_the_request);
 
 module.exports = router;

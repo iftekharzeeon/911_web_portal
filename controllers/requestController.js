@@ -205,15 +205,15 @@ const accept_request = async (req, res) => {
 
                     //Update Employee Accepted Status
                     
-                    result = await connection.execute(queries.updateEmployeeAcceptStatusQuery, [employee_accepted_status, employee_id, request_employee_id]);
+                    let result1 = await connection.execute(queries.updateEmployeeAcceptStatusQuery, [employee_accepted_status, employee_id, request_employee_id]);
 
                     //Update Request Resolved Status
                     
-                    result = await connection.execute(queries.updateRequestStatusQuery, [resolved_status, request_id]);
+                    let result2 = await connection.execute(queries.updateRequestStatusQuery, [resolved_status, request_id]);
 
                     //Update Employee Occupied Status
                     
-                    result = await connection.execute(queries.updateEmployeeOccupiedStatusQuery, [occupied_status, employee_id]);
+                    let result3 = await connection.execute(queries.updateEmployeeOccupiedStatusQuery, [occupied_status, employee_id]);
 
                     connection.commit();
 
@@ -260,6 +260,7 @@ const finish_request = async (req, res) => {
     let request_info;
     let occupied_info;
     let counter;
+    let vehicle_accepted_status = 1;//Finished 0->Accepted -1->Pending
 
     let employee_accepted_status = 1; //Finished 0->Accepted -1->Pending
     let resolved_status = 1; //Finished 0->Accepted -1-> Pending
@@ -296,6 +297,14 @@ const finish_request = async (req, res) => {
                 //Update Request Employee Accept Status
                 
                 result = await connection.execute(queries.updateEmployeeAcceptedStatusto1Query, [employee_accepted_status, request_employee_id]);
+
+                //Update Request Vehicle Accept Status
+                //Get Service Id for update
+                
+                let service_id = await connection.execute(queries.getServiceIdQuery, [request_employee_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+                service_id = service_id.rows[0].SERVICE_ID;
+
+                result = await connection.execute(queries.updateVehicleAcceptedStatusto1Query, [vehicle_accepted_status, request_id, service_id]);
 
                 //Update Employee Occupied Status
 
