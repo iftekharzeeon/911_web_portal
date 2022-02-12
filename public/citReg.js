@@ -3,6 +3,7 @@ const showData = async() => {
         first_name : document.getElementById("ffirstname").value,
         last_name : document.getElementById("flastname").value,
         email : document.getElementById("femail").value,
+        username : document.getElementById("fusername").value,
         phone_number: document.getElementById("fphoneNumber").value,
         block : document.getElementById("fblock").value,
         street : document.getElementById("fstreet").value,
@@ -30,9 +31,9 @@ const showData = async() => {
         const responseObj = await response.json();
         console.log(responseObj);
         if(responseObj.ResponseCode == 0){
-            window.alert("Member Already Exists");
+            window.alert(responseObj.ResponseText);
         }else if(responseObj.ResponseCode == 1){
-            window.alert("Member Added");
+            window.alert("Sign Up Successful");
             window.location.replace("/");
         }
     } 

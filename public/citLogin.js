@@ -1,7 +1,7 @@
 const loginUser = async() => {
     var responseObj;
     var loginObj = {
-        email : document.getElementById("femail").value,
+        username : document.getElementById("fusername").value,
         password : document.getElementById("fpassword").value
     }
     var loginJSON = JSON.stringify(loginObj);

@@ -1,16 +1,26 @@
-<!-- <html>
+es (59 sloc)  1.86 KB
+   
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <style>
-        #map {
-            height: 100%;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime location tracker</title>
 
-        html,
+    <!-- leaflet css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <style>
         body {
-            height: 100%;
             margin: 0;
             padding: 0;
+        }
+
+        #map {
+            width: 30%;
+            height: 100vh;
         }
     </style>
 </head>
@@ -18,78 +28,57 @@
 <body>
     <div id="map"></div>
 </body>
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnFepDTPq3UUwjQMGyqp6kq0bhsNYUrNg&callback=initMap"></script>
-<script>
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            console.log(position.coords.latitude, ' _____ ', position.coords.longitude);
-            initMap(position.coords.latitude, position.coords.longitude);
-        },
-        function errorCallback(error) {
-            console.log(error);
-        }
-    );
-    function initMap(lat, lng) {
-        var myLatLng = {
-            lat,
-            lng,
-        };
-
-        var map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: myLatLng,
-        });
-
-        var marker = new google.maps.Marker({
-            position: myLatLng,
-            map: map,
-        });
-    }
-</script>
-
-</html> -->
-
-
-<!DOCTYPE HTML>
-<html>
-<head>
-<title>OpenLayers Simplest Example</title>
-</head>
-<body>
-<div id="Map" style="height:550px"></div>
-<script src="OpenLayers.js"></script>
-<script>
-    var lat;
-    var lon;
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            console.log(position.coords.latitude, ' _____ ', position.coords.longitude);
-            lat = position.coords.latitude;
-            lon = position.coords.longitude;
-            // initMap(position.coords.latitude, position.coords.longitude);
-        },
-        function errorCallback(error) {
-            console.log(error);
-        }
-    );
-    console.log(lat + ' ' + lon);
-    
-    var zoom           = 18;
-
-    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
-
-    map = new OpenLayers.Map("Map");
-    var mapnik         = new OpenLayers.Layer.OSM();
-    map.addLayer(mapnik);
-
-    var markers = new OpenLayers.Layer.Markers( "Markers" );
-    map.addLayer(markers);
-    markers.addMarker(new OpenLayers.Marker(position));
-
-    map.setCenter(position, zoom);
-</script>
-</body>
 </html>
+
+<!-- leaflet js  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script>
+    // Map initialization 
+    var map = L.map('map').setView([14.0860746, 100.608406], 18);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    osm.addTo(map);
+
+    if(!navigator.geolocation) {
+        console.log("Your browser doesn't support geolocation feature!")
+    } else {
+        navigator.geolocation.getCurrentPosition(getPosition)
+        // setInterval(() => {
+        //     navigator.geolocation.getCurrentPosition(getPosition)
+        // }, 5000);
+    }
+
+    var marker, circle;
+
+    function getPosition(position){
+        // console.log(position)
+        var lat = position.coords.latitude
+        var long = position.coords.longitude
+        var accuracy = position.coords.accuracy
+
+        if(marker) {
+            map.removeLayer(marker)
+        }
+
+        if(circle) {
+            map.removeLayer(circle)
+        }
+
+        marker = L.marker([lat, long])
+        circle = L.circle([lat, long], {radius: accuracy})
+
+        var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+
+        map.fitBounds(featureGroup.getBounds())
+        
+
+        console.log("Your coordinate is: Lat: "+ lat +" Long: "+ long+ " Accuracy: "+ accuracy)
+    }
+
+    L.Control.geocoder().addTo(map);
+
+</script>

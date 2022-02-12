@@ -144,16 +144,17 @@ const login_employee = async (req, res) => {
 
         console.log('Database Connected');
 
-        let userEmail = user.email;
+        let username = user.username;
         let userPassword = user.password;
 
-
-        memberInfo = await connection.execute(queries.employeeCheckEmailQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        //Check Employee Existence
+        memberInfo = await connection.execute(queries.employeeCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberInfo.rows.length) {
             memberId = memberInfo.rows[0].MEMBER_ID;
             employee_id = memberId;
 
+            //Password Check
             passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             passwordKey = passwordKey.rows[0].PASSWORD_KEY;

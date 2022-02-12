@@ -1,0 +1,338 @@
+<!-- <html>
+
+<head>
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+</body>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnFepDTPq3UUwjQMGyqp6kq0bhsNYUrNg&callback=initMap"></script>
+<script>
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            console.log(position.coords.latitude, ' _____ ', position.coords.longitude);
+            initMap(position.coords.latitude, position.coords.longitude);
+        },
+        function errorCallback(error) {
+            console.log(error);
+        }
+    );
+    function initMap(lat, lng) {
+        var myLatLng = {
+            lat,
+            lng,
+        };
+
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: myLatLng,
+        });
+
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+        });
+    }
+</script>
+
+</html> -->
+
+
+<!-- <!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>OpenLayers Simplest Example</title>
+</head>
+
+<body>
+    <div id="Map" style="height:550px"></div>
+    <script src="OpenLayers.js"></script>
+    <script>
+        
+        var lat;
+        var lon;
+        var zoom = 18;
+
+        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+        let position;
+
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                console.log(position.coords.latitude, ' _____ ', position.coords.longitude);
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+                initMap(position);
+                // initMap(position.coords.latitude, position.coords.longitude);
+            },
+            function errorCallback(error) {
+                console.log(error);
+            }
+        );
+
+        function initMap(position) {
+            map = new OpenLayers.Map("Map");
+            var mapnik = new OpenLayers.Layer.OSM();
+            map.addLayer(mapnik);
+
+            var markers = new OpenLayers.Layer.Markers("Markers");
+            map.addLayer(markers);
+            markers.addMarker(new OpenLayers.Marker(position));
+
+            map.setCenter(position, zoom);
+            
+            
+            map.on('click', function(event){
+                console.log(event.coordinate);
+            });
+        }
+        console.log(lat + ' ' + lon);
+
+        
+
+
+    </script>
+</body>
+
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html>
+   <head>
+      <title>Leaflet Polygons</title>
+      <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+      <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   </head>
+   
+   <body>
+      <div id = "map" style = "width: 900px; height: 580px"></div>
+      <script>
+         // Creating map options
+         var mapOptions = {
+            center: [16.506174, 80.648015],
+            zoom: 7
+         }
+         var map = new L.map('map', mapOptions);    // Creating a map object
+         
+         // Creating a Layer object
+         var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+         map.addLayer(layer); // Adding layer to the map
+         
+         map.on("click", function(e){
+             
+            new L.Marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+         })
+      </script>
+   </body>
+   
+</html> -->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>OpenLayers Tutorials: Display a map</title>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/css/ol.css"
+        type="text/css" />
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.7.0/build/ol.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol-mapbox-style@6.1.4/dist/olms.js"></script>
+
+    <script src="https://unpkg.com/@esri/arcgis-rest-request@3.0.0/dist/umd/request.umd.js"></script>
+    <script src="https://unpkg.com/@esri/arcgis-rest-geocoding@3.0.0/dist/umd/geocoding.umd.js"></script>
+    <script src="https://unpkg.com/@esri/arcgis-rest-auth@3.0.0/dist/umd/auth.umd.js"></script>
+    <script src="https://unpkg.com/ol-popup@4.0.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ol-popup@4.0.0/src/ol-popup.css" />
+    <style>
+        html,
+        body,
+        #map {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #323232;
+        }
+
+        #basemaps-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #basemaps {
+            padding: 4px 8px;
+            font-size: 16px;
+        }
+
+        .search {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #geocode-input,
+        #geocode-button {
+            font-size: 16px;
+            margin: 0 2px 0 0;
+            padding: 4px 8px;
+        }
+
+        #geocode-input {
+            width: 300px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="map"></div>
+    <!-- <div id="basemaps-wrapper">
+        <select id="basemaps">
+            <option value="ArcGIS:Streets">Streets</option>
+            <option value="ArcGIS:Navigation">Navigation</option>
+            <option value="ArcGIS:Topographic">Topographic</option>
+            <option value="ArcGIS:LightGray">Light Gray</option>
+            <option value="ArcGIS:DarkGray">Dark gray</option>
+            <option value="ArcGIS:StreetsRelief">Streets Relief</option>
+            <option value="ArcGIS:Imagery:Standard">Imagery</option>
+            <option value="ArcGIS:ChartedTerritory">ChartedTerritory</option>
+            <option value="ArcGIS:ColoredPencil">ColoredPencil</option>
+            <option value="ArcGIS:Nova">Nova</option>
+            <option value="ArcGIS:Midcentury">Midcentury</option>
+            <option value="OSM:Standard">OSM</option>
+            <option value="OSM:Streets">OSM:Streets</option>
+        </select>
+    </div> -->
+
+    <div class="search">
+        <input id="geocode-input" type="text" placeholder="Enter an address or place e.g. 1 York St" size="50" />
+        <button id="geocode-button">Geocode</button>
+    </div>
+    <script>
+        const map = new ol.Map({ target: "map" });
+
+        map.setView(
+            new ol.View({
+                center: ol.proj.fromLonLat([90.372, 23.739]), // Sydney
+                zoom: 18
+            })
+        );
+
+        const apiKey = "AAPK3d4fbfec5a284ad39884f0ea4bd28889cYTKsB05DhxgmDmQy0XHYqdudck3iJprcwZMTRJjGubEa5P9AKbd7-L8VeMq45Vg";
+        // const baseUrl = "https://basemaps-api.arcgis.com/arcgis/rest/services/styles";
+        // const url = (name) => `${baseUrl}/${name}?type=style&token=${apiKey}`;
+
+        // const setBasemap = (name) => {
+        //     // Clear out existing layers.
+        //     map.setLayerGroup(new ol.layer.Group());
+
+        //     // Instantiate the given basemap layer.
+        //     olms(map, url(name));
+        // };
+
+        // setBasemap("ArcGIS:Navigation");
+
+        // const basemapsSelectElement = document.querySelector("#basemaps");
+
+        // basemapsSelectElement.addEventListener("change", (e) => {
+        //     setBasemap(e.target.value);
+        // });
+        const basemapId = "ArcGIS:Navigation";
+
+        const basemapURL = "https://basemaps-api.arcgis.com/arcgis/rest/services/styles/" + basemapId + "?type=style&token=" + apiKey;
+
+        olms(map, basemapURL);
+
+        const popup = new Popup();
+        map.addOverlay(popup);
+
+        map.on("click", (e) => {
+
+            const coords = ol.proj.transform(e.coordinate, "EPSG:3857", "EPSG:4326");
+            const authentication = new arcgisRest.ApiKey({
+                key: apiKey
+            });
+
+            arcgisRest
+                .reverseGeocode(coords, {
+                    authentication
+                })
+                .then((result) => {
+                    const message =
+                        `${result.address.LongLabel}<br>` + `${result.location.x.toLocaleString()}, ${result.location.y.toLocaleString()}`;
+
+                    popup.show(e.coordinate, message);
+                })
+                .catch((error) => {
+                    popup.hide();
+                    console.error(error);
+                });
+
+        });
+
+        document.getElementById("geocode-button").addEventListener("click", () => {
+            console.log('Hello');
+            const query = document.getElementById("geocode-input").value;
+            const authentication = new arcgisRest.ApiKey({
+                key: apiKey
+            });
+            const center = ol.proj.transform(map.getView().getCenter(), "EPSG:3857", "EPSG:4326");
+            arcgisRest
+                .geocode({
+                    singleLine: query,
+                    authentication,
+
+                    params: {
+                        outFields: "*",
+                        location: center.join(","),
+                        outSR: 3857 // Request coordinates in Web Mercator to simplify displaying
+                    }
+                })
+                .then((response) => {
+                    const result = response.candidates[0];
+                    if (!result === 0) {
+                        alert("That query didn't match any geocoding results.");
+                        return;
+                    }
+
+                    const coords = [result.location.x, result.location.y];
+                    console.log(coords);
+
+                    map.setView(
+                        new ol.View({
+                            center: ol.proj.fromLonLat([result.location.x, result.location.y]), // Sydney
+                            zoom: 12
+                        })
+                    );
+
+
+                })
+                .catch((error) => {
+                    alert("There was a problem using the geocoder. See the console for details.");
+                    console.error(error);
+                });
+        });
+
+    </script>
+</body>
+
+</html>

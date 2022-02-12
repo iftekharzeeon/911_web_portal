@@ -14,7 +14,8 @@ const user_create = async (req, res) => {
     let responses = {};
 
     const user = req.body;
-    let memberExist = 0;
+    let memberEmailExist = 0;
+    let usernameExist;
     let member_id;
     let location_id;
 
@@ -35,6 +36,7 @@ const user_create = async (req, res) => {
         //User Info
         first_name = user.first_name;
         last_name = user.last_name;
+        username = user.username;
         email = user.email;
         phone_number = user.phone_number;
         registration_date = new Date();
@@ -43,56 +45,69 @@ const user_create = async (req, res) => {
 
         console.log(user);
 
-        memberExist = await connection.execute(queries.memberEmailCheckQuery, [email], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        //Check username existence
 
-        memberExist = memberExist.rows.length;
+        usernameExist = await connection.execute(queries.memberCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-        if (memberExist === 0) {
+        usernameExist = usernameExist.rows.length;
 
-            //Get Next Location Id
-            await syRegister.getNextId(connection, 2).then(function (data) {
-                location_id = data;
-            });
+        if (usernameExist === 0) {
 
-            //Get Next Member Id
-            await syRegister.getNextId(connection, 1).then(function (data) {
-                member_id = data;
-            });
+            memberEmailExist = await connection.execute(queries.memberCheckEmailQuery, [email], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-            //Insert Into Location Table
+            memberEmailExist = memberEmailExist.rows.length;
 
-            result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+            if (memberEmailExist === 0) {
 
-            //Insert Into Member Table
+                //Get Next Location Id
+                await syRegister.getNextId(connection, 2).then(function (data) {
+                    location_id = data;
+                });
 
-            result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
+                //Get Next Member Id
+                await syRegister.getNextId(connection, 1).then(function (data) {
+                    member_id = data;
+                });
 
-            //Insert Password Info
-            let salt = '';
-            let password_key = '';
-            salt = bcrypt.genSaltSync(saltRounds);
-            password_key = bcrypt.hashSync(member_password, salt);
+                //Insert Into Location Table
 
-            result = await connection.execute(queries.memberPasswordQuery, [member_id, member_id, password_key]);
-            connection.commit();
+                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
 
-            if (result) {
-                if (result.rowsAffected == 1) {
-                    responses.ResponseCode = 1;
-                    responses.ResponseText = 'New Member Added';
-                    responses.MemberId = member_id;
+                //Insert Into Member Table
+
+                result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
+
+                //Insert Password Info
+                let salt = '';
+                let password_key = '';
+                salt = bcrypt.genSaltSync(saltRounds);
+                password_key = bcrypt.hashSync(member_password, salt);
+
+                result = await connection.execute(queries.memberPasswordQuery, [member_id, member_id, password_key]);
+                connection.commit();
+
+                if (result) {
+                    if (result.rowsAffected == 1) {
+                        responses.ResponseCode = 1;
+                        responses.ResponseText = 'Sign up successful';
+                        responses.MemberId = member_id;
+                    } else {
+                        responses.ResponseCode = -1;
+                        responses.ResponseText = 'Something Went Wrong.';
+                    }
                 } else {
                     responses.ResponseCode = -1;
-                    responses.ResponseText = 'Something Went Wrong.';
+                    responses.ResponseText = 'Something Went Wrong. Data Could Not Be Inserted';
                 }
             } else {
-                responses.ResponseCode = -1;
-                responses.ResponseText = 'Something Went Wrong. Data Could Not Be Inserted';
+                //Email Found
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'Member With Same Email Already Exists';
             }
         } else {
-            //Member Not Found
+            //Username Found
             responses.ResponseCode = 0;
-            responses.ResponseText = 'Member Already Exists';
+            responses.ResponseText = 'Member With Same Username Already Exists';
         }
 
     } catch (err) {
@@ -125,14 +140,16 @@ const login_user = async (req, res) => {
 
         console.log('Database Connected');
 
-        let userEmail = user.email;
+        let username = user.username;
         let userPassword = user.password;
 
-        memberInfo = await connection.execute(queries.memberEmailCheckQuery, [userEmail], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        //User existence check
+        memberInfo = await connection.execute(queries.memberCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberInfo.rows.length) {
             memberId = memberInfo.rows[0].MEMBER_ID;
 
+            //Password check
             passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             passwordKey = passwordKey.rows[0].PASSWORD_KEY;
@@ -179,7 +196,7 @@ const get_user_request_info = async (req, res) => {
     const requestObj = req.body;
     let request_id;
     let member_id;
-    let memberExist;
+    let memberEmailExist;
     let requestCounter;
     let employee_dept_id;
     let employee_service_id;
@@ -217,7 +234,7 @@ const get_user_request_info = async (req, res) => {
         } else {
 
             //Check for ongoing request
-            
+
             request_info = await connection.execute(queries.ongoingRequestCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             if (request_info.rows.length) {
@@ -225,19 +242,19 @@ const get_user_request_info = async (req, res) => {
                 request_id = request_info.rows[0].REQUEST_ID;
 
                 //Number of request made
-                
+
                 number_of_request = await connection.execute(requestCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_request = number_of_request.rows[0].COUNTER;
 
                 //Number of employee accepted
-                
+
                 number_of_employees = await connection.execute(queries.employeeCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_employees = number_of_employees.rows[0].COUNTER;
 
                 //Number of vehicle accepted
-                
+
                 number_of_vehicle = await connection.execute(queries.vehicleCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_vehicle = number_of_vehicle.rows[0].COUNTER;

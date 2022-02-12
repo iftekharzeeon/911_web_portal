@@ -161,6 +161,11 @@ label{
     color: #FFFFFF;
 }
 
+#map {
+    width: 30%;
+    height: 50vh;
+}
+
 #no{
     position: relative;
     left: 763px;

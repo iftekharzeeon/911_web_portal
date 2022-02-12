@@ -8,8 +8,10 @@ let insertMemberQuery = 'INSERT INTO member(member_id, first_name, last_name, em
 
 let memberPasswordQuery = 'INSERT INTO member_password(member_password_id, member_id, password_key) VALUES(:member_id, :member_id, :password_key)';
 
+let memberCheckEmailQuery = 'SELECT * FROM member WHERE email = :email AND member_type = 1';
+
 //User Login
-let memberEmailCheckQuery = 'SELECT * FROM member WHERE email = :userEmail AND member_type = 1';
+let memberCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 1';
 
 let passwordCheckQuery = 'SELECT password_key FROM member_password WHERE member_id = :memberId';
 
@@ -66,7 +68,7 @@ let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' '
                         'AND R.REQUEST_ID = :request_id ';
 
 //Employee Login
-let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :userEmail AND member_type = 2';
+let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 2';
 
 
 //Service Controller
@@ -124,7 +126,8 @@ let getServiceIdQuery = 'SELECT service_id FROM request_employee WHERE request_e
 let updateVehicleAcceptedStatusto1Query = 'UPDATE request_employee SET vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
 
 module.exports = {
-    memberEmailCheckQuery,
+    memberCheckUsernameQuery,
+    memberCheckEmailQuery,
     insertLocationQuery,
     insertMemberQuery,
     memberPasswordQuery,
@@ -136,7 +139,7 @@ module.exports = {
     getEmployeeInfoQuery,
     getRequestIdQuery,
     requestInfoQuery,
-    employeeCheckEmailQuery,
+    employeeCheckUsernameQuery,
     getServicesQuery,
     memberIdCheckQuery,
     insertRequestQuery,

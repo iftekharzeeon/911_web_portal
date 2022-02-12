@@ -8,7 +8,7 @@ body{
 #base{
     position: absolute;
     width: 100rem;
-    height: 50rem;
+    height: 55rem;
     left: 150px;
     top: 50px;
 
@@ -62,10 +62,16 @@ input{
     top: 370px;
 }
 
-#tpassword{
+#tusername{
     width: 250px; 
     left: 80px;
     top: 495px;
+}
+
+#tpassword{
+    width: 250px; 
+    left: 80px;
+    top: 620px;
 }
 
 #tblock{  
@@ -109,9 +115,14 @@ input{
     top: 350px;
 }
 
-#fpassword{
+#fusername{
     left: 250px;
     top: 475px;
+}
+
+#fpassword{
+    left: 250px;
+    top: 600;
 }
 
 #fblock{
@@ -139,7 +150,7 @@ input{
     width: 90em;
     height: 8em;
     left: 100px;
-    top: 403px;
+    top: 485px;
 
     background: rgba(255, 255, 255, 0.1);
     border-radius: 36px;

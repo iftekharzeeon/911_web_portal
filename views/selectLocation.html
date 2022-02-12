@@ -1,16 +1,22 @@
 <head>
-    <link href="../selectLocation.css" rel="stylesheet" type="text/css"/>
+    <link href="../selectLocation.css" rel="stylesheet" type="text/css" />
     <script src="../selectLocation.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
     <title>Select Location</title>
     <link rel="icon" href="../favcon.png">
+
+    <!-- leaflet css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 </head>
 
 <body>
     <img src="../BackLogo.png" id="back" onclick="backSL()">
     <div id="base">
         <div id="topBar">
-            <div class="intro">Hello, </div><div id="name" class="intro"></div><div class="intro"> Send service to this location?</div>
+            <div class="intro">Hello, </div>
+            <div id="name" class="intro"></div>
+            <div class="intro"> Send service to this location?</div>
         </div>
         <div id="fixedLocation">
             <div id="locationData">
@@ -23,6 +29,61 @@
         </div>
         <div id="manualLocation">
         </div>
-        <button id = "findHelp" onclick="sendRequest()" style="font-family: 'Rajdhani'">Find Help <img src="../LoginLogo.png" id="LoginLogo"></button>
+        <div id="map"></div>
+        <button id="findHelp" onclick="sendRequest()" style="font-family: 'Rajdhani'">Find Help <img
+                src="../LoginLogo.png" id="LoginLogo"></button>
     </div>
 </body>
+
+<!-- leaflet js  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<script>
+    // Map initialization 
+    var map = L.map('map').setView([14.0860746, 100.608406], 18);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    osm.addTo(map);
+
+    if (!navigator.geolocation) {
+        console.log("Your browser doesn't support geolocation feature!")
+    } else {
+        navigator.geolocation.getCurrentPosition(getPosition)
+        // setInterval(() => {
+        //     navigator.geolocation.getCurrentPosition(getPosition)
+        // }, 5000);
+    }
+
+    var marker, circle;
+
+    function getPosition(position) {
+        // console.log(position)
+        var lat = position.coords.latitude
+        var long = position.coords.longitude
+        var accuracy = position.coords.accuracy
+
+        if (marker) {
+            map.removeLayer(marker)
+        }
+
+        if (circle) {
+            map.removeLayer(circle)
+        }
+
+        marker = L.marker([lat, long])
+        circle = L.circle([lat, long], { radius: accuracy })
+
+        var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+
+        map.fitBounds(featureGroup.getBounds())
+
+
+        console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
+    }
+
+    L.Control.geocoder().addTo(map);
+</script>
