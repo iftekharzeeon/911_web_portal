@@ -59,7 +59,7 @@ let getEmployeeInfoQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TIT
                             'AND E.MEMBER_ID = :employee_id';
 
 
-let getRequestIdQuery = 'SELECT DISTINCT service_id, request_id FROM request_employee WHERE employee_accepted = -1 AND service_id = :employee_service_id ORDER BY request_id DESC';
+let getRequestIdQuery = 'SELECT DISTINCT service_id, request_id FROM request_employee WHERE employee_accepted = -1 AND service_id = :employee_service_id ORDER BY request_id ASC';
 
 let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, L.BLOCK, L.HOUSE_NO, L.STREET, M.MEMBER_ID AS CITIZEN_ID, L.LOCATION_ID ` +
                         'FROM REQUEST R, MEMBER M, LOCATION L ' +
