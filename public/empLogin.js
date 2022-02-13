@@ -4,7 +4,7 @@ const backE = async() => {
 
 const loginEmp = async() => {
     const loginObj = {
-        "email" : document.getElementById("femail").value,
+        "username" : document.getElementById("femail").value,
         "password" : document.getElementById("fpassword").value
     }
     var loginJSON = JSON.stringify(loginObj);
