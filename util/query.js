@@ -132,6 +132,26 @@ let getServiceIdQuery = 'SELECT service_id FROM request_employee WHERE request_e
 
 let updateVehicleAcceptedStatusto1Query = 'UPDATE request_employee SET vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
 
+
+//Department Controller
+//Get Departments Service Wise
+
+let getServiceDepartmentQuery = 'SELECT * FROM departments WHERE service_id = :service_id';
+
+
+
+//Job Controller
+//Get Jobs Department Wise
+
+let getDepartmentJobQuery = 'SELECT * FROM jobs WHERE department_id = :department_id';
+
+
+//Shift Controller
+//Get Shifts
+
+let getShiftsQuery = 'SELECT * FROM shifts';
+
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -169,5 +189,8 @@ module.exports = {
     updateVehicleOccupiedStatusQuery,
     getServiceIdQuery,
     updateVehicleAcceptedStatusto1Query,
-    insertEmployeeQuery
+    insertEmployeeQuery,
+    getServiceDepartmentQuery,
+    getDepartmentJobQuery,
+    getShiftsQuery
 }

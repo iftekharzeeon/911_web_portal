@@ -5,7 +5,7 @@ const queries = require('../util/query');
 
 let connection;
 
-const get_services = async (req, res) => {
+const get_shifts = async (req, res) => {
 
     let result;
 
@@ -20,7 +20,7 @@ const get_services = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getServicesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.getShiftsQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
 
         if (result) {
             responses = result.rows;
@@ -39,5 +39,5 @@ const get_services = async (req, res) => {
 }
 
 module.exports = {
-    get_services
+    get_shifts
 }

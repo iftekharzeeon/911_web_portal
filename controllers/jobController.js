@@ -5,11 +5,15 @@ const queries = require('../util/query');
 
 let connection;
 
-const get_services = async (req, res) => {
+const get_jobs_department_wise = async (req, res) => {
 
     let result;
 
     let responses = {};
+    
+    const department = req.body;
+
+    let department_id;
 
     try {
         connection = await oracledb.getConnection({
@@ -20,7 +24,9 @@ const get_services = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getServicesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        department_id = department.department_id;
+        
+        result = await connection.execute(queries.getDepartmentJobQuery, [department_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
 
         if (result) {
             responses = result.rows;
@@ -39,5 +45,5 @@ const get_services = async (req, res) => {
 }
 
 module.exports = {
-    get_services
+    get_jobs_department_wise
 }

@@ -8,125 +8,7 @@ const saltRounds = 10;
 
 let connection;
 
-const get_employee_request_info = async (req, res) => {
-
-    let responses = {};
-
-    const requestObj = req.body;
-    let request_id;
-    let employee_id;
-    let memberExist;
-    let requestCounter;
-    let employee_dept_id;
-    let employee_service_id;
-    let employee_job_id;
-    let employee_info;
-    let request_employee_info;
-    let request_info;
-    let employee_occupied;
-    let request_info_arr = [];
-
-    try {
-        connection = await oracledb.getConnection({
-            user: serverInfo.dbUser,
-            password: serverInfo.dbPassword,
-            connectionString: serverInfo.connectionString
-        });
-
-        console.log('Database Connected');
-
-        employee_id = requestObj.employee_id;
-
-        //Check Employee Existence
-        
-        memberExist = await connection.execute(queries.employeeCheckQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-
-        if (memberExist.rows.length === 0) {
-            //Employee Not Found
-            responses.ResponseCode = 0;
-            responses.ResponseText = 'Employee Not Found';
-
-        } else {
-            //Check if Occupied
-            employee_occupied = memberExist.rows[0].OCCUPIED;
-            if (employee_occupied) {
-
-                //Employee is occupied
-
-                request_info = await connection.execute(queries.occupiedInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-
-                responses.ResponseCode = 2;
-                responses.ResponseText = 'You have a request on going';
-                responses.RequestInfo = request_info.rows[0];
-
-            } else {
-                //Employee is free
-                
-                requestCounter = await connection.execute(queries.requestCheckQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-
-                requestCounter = requestCounter.rows[0].COUNTER;
-                console.log(requestCounter);
-
-                if (requestCounter > 0) {
-                    //Check if same service
-
-                    employee_info = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-
-                    employee_dept_id = employee_info.rows[0].DEPARTMENT_ID;
-                    employee_job_id = employee_info.rows[0].JOB_ID;
-                    employee_service_id = employee_info.rows[0].SERVICE_ID;
-
-                    request_employee_info = await connection.execute(queries.getRequestIdQuery, [employee_service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-                    console.log(request_employee_info);
-                    if (request_employee_info.rows.length > 0) {
-
-                        let i = 0;
-                        do {
-                            request_id = request_employee_info.rows[i].REQUEST_ID;
-
-                            request_info = await connection.execute(queries.requestInfoQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-                            i++;
-                            console.log(request_info.rows);
-                            request_info_arr.push(request_info.rows[0]);
-                        } while (i < request_employee_info.rows.length);
-
-                        responses.ResponseCode = 1;
-                        responses.ResponseText = 'There are pending requests at the moment. Please respond.';
-                        responses.EmployeeServiceId = employee_service_id;
-                        responses.RequestInfo = request_info_arr;
-
-                    } else {
-                        //No same service request available
-                        responses.ResponseCode = 0;
-                        responses.ResponseText = 'No available request at this moment.';
-
-                    }
-
-                } else {
-                    //No Request At This Moment
-                    responses.ResponseCode = 0;
-                    responses.ResponseText = 'No available request at this moment.';
-
-                }
-            }
-        }
-
-    } catch (err) {
-        console.log(err);
-        responses.ResponseCode = -1;
-        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
-        responses.ErrorMessage = err.message;
-    } finally {
-        if (connection) {
-            await connection.close();
-            console.log('Connection Closed');
-        }
-        res.send(responses);
-
-    }
-}
-
-const login_employee = async (req, res) => {
+const login_cc = async (req, res) => {
     let responses = {};
     const user = req.body;
     let memberId;
@@ -146,10 +28,9 @@ const login_employee = async (req, res) => {
 
         let username = user.username;
         let userPassword = user.password;
-        let member_type = user.member_type;
 
-        //Check Employee Existence
-        memberInfo = await connection.execute(queries.employeeCheckUsernameQuery, [username, member_type], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        //Check Customer Care Existence
+        memberInfo = await connection.execute(queries.employeeCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberInfo.rows.length) {
             memberId = memberInfo.rows[0].MEMBER_ID;
@@ -201,7 +82,7 @@ const login_employee = async (req, res) => {
     }
 }
 
-const employee_register = async (req, res) => {
+const cc_register = async (req, res) => {
     let responses = {};
 
     const employee = req.body;
@@ -232,7 +113,7 @@ const employee_register = async (req, res) => {
         let email = employee.email;
         let phone_number = employee.phone_number;
         let registration_date = new Date();
-        let member_type = employee.member_type; //1-> Citizen 2->Employee 3->Customer Care
+        let member_type = 2; //1-> Citizen 2->Employee 3->Customer Care
         let member_password = employee.password;
         let occupied = 0; //Free 1->Occupied
         let job_id = employee.job_id;
@@ -243,7 +124,7 @@ const employee_register = async (req, res) => {
 
         //Check username existence
 
-        usernameExist = await connection.execute(queries.employeeCheckUsernameQuery, [username, member_type], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        usernameExist = await connection.execute(queries.employeeCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         usernameExist = usernameExist.rows.length;
 
@@ -324,10 +205,4 @@ const employee_register = async (req, res) => {
     }
 
 
-}
-
-module.exports = {
-    get_employee_request_info,
-    login_employee,
-    employee_register
 }

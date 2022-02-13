@@ -5,6 +5,9 @@ const serviceController = require('../controllers/serviceController');
 const requestController = require('../controllers/requestController');
 const employeeController = require('../controllers/employeeController');
 const vehicleController = require('../controllers/vehicleController');
+const departmentController = require('../controllers/departmentController');
+const jobController = require('../controllers/jobController');
+const shiftController = require('../controllers/shiftController');
 
 const router = express.Router();
 
@@ -40,5 +43,14 @@ router.post('/api/addVehicleRequest/', bodyParser, vehicleController.add_vehicle
 
 //Employee Sign Up
 router.post('/api/addEmployee/', bodyParser, employeeController.employee_register);
+
+//Get Service Departments
+router.post('/api/getServiceDepartments', bodyParser, departmentController.get_departments_service_wise);
+
+//Get Department Jobs
+router.post('/api/getDepartmentJobs', bodyParser, jobController.get_jobs_department_wise);
+
+//Get Shifts
+router.post('/api/getShifts', bodyParser, shiftController.get_shifts);
 
 module.exports = router;
