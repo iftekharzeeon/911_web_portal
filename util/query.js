@@ -36,6 +36,8 @@ let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOY
                         'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                         'AND D.SERVICE_ID = S.SERVICE_ID ' +
                         'AND R.REQUEST_ID = :request_id';
+
+ 
 //Employee Controller
 //Employee Get Request Info
 let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id';
@@ -70,6 +72,11 @@ let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' '
 //Employee Login
 let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 2';
 
+
+//Employee Register
+let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :email';
+
+let insertEmployeeQuery = 'INSERT INTO employees(member_id, hire_date, occupied, job_id, shift_id, status) VALUES(:member_id, :hire_date, :occupied, :job_id, :shift_id, :status)';
 
 //Service Controller
 //Get Services
@@ -151,6 +158,7 @@ module.exports = {
     updateEmployeeOccupiedStatusQuery,
     updateEmployeeAcceptedStatusto1Query,
     employeeAcceptCheckQuery,
+    employeeCheckEmailQuery,
     ongoingRequestCheckQuery,
     requestCounterQuery,
     employeeCounterQuery,
@@ -160,5 +168,6 @@ module.exports = {
     updateRequestVehicleInfoQuery,
     updateVehicleOccupiedStatusQuery,
     getServiceIdQuery,
-    updateVehicleAcceptedStatusto1Query
+    updateVehicleAcceptedStatusto1Query,
+    insertEmployeeQuery
 }

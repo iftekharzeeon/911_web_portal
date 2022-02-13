@@ -38,4 +38,7 @@ router.post('/api/getCitizenRequestInfo/', bodyParser, userController.get_user_r
 //Add Vehicle Request
 router.post('/api/addVehicleRequest/', bodyParser, vehicleController.add_vehicle_to_the_request);
 
+//Employee Sign Up
+router.post('/api/addEmployee/', bodyParser, employeeController.employee_register);
+
 module.exports = router;
