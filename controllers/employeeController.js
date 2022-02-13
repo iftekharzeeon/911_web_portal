@@ -93,7 +93,7 @@ const get_employee_request_info = async (req, res) => {
                         responses.ResponseCode = 1;
                         responses.ResponseText = 'There are pending requests at the moment. Please respond.';
                         responses.EmployeeServiceId = employee_service_id;
-                        responses.RequestInfo = request_info.rows;
+                        responses.RequestInfo = request_info_arr;
 
                     } else {
                         //No same service request available
