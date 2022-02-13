@@ -16,6 +16,10 @@
 // }
 
 window.onload = async() => {
+    if(sessionStorage.getItem("user") == null){
+        window.location.replace("/empLogin")
+    }
+
     const Member_Id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     const fetchObj = {
         "employee_id": Member_Id

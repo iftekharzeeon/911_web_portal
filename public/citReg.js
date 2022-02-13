@@ -34,7 +34,7 @@ const showData = async() => {
             window.alert(responseObj.ResponseText);
         }else if(responseObj.ResponseCode == 1){
             window.alert("Sign Up Successful");
-            window.location.replace("/");
+            window.location.replace("/citLogin");
         }
     } 
 }

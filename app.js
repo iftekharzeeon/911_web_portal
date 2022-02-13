@@ -38,11 +38,11 @@ app.get('/careLogin', (req, res) => {
     res.sendFile('./views/careLogin.html', {root: __dirname});
     });
 
-app.get('/userLogin/selectService', (req, res) => {
+app.get('/citLogin/selectService', (req, res) => {
     res.sendFile('./views/selectService.html', {root: __dirname});
     });
 
-app.get('/userLogin/selectLocation', (req, res) => {
+app.get('/citLogin/selectLocation', (req, res) => {
     res.sendFile('./views/selectLocation.html', {root: __dirname});
     });
 

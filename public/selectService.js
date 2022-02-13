@@ -1,6 +1,6 @@
 const medicleHTML =`
 <div id="2Add">
-    <input type="radio" id="Medicle1" name="Medicle" value="1">
+    <input type="radio" id="Medicle1" name="Medicle" value="1" checked="checked">
     <label> 1</label>
     <input type="radio" id="Medicle3" name="Medicle" value="3">
     <label> 3</label>
@@ -10,7 +10,7 @@ const medicleHTML =`
 `;
 const fireHTML = `
 <div id="4Add">
-    <input type="radio" id="Fire1" name="Fire" value="1">
+    <input type="radio" id="Fire1" name="Fire" value="1" checked="checked">
     <label> 1</label>
     <input type="radio" id="Fire3" name="Fire" value="3">
     <label> 3</label>
@@ -20,7 +20,7 @@ const fireHTML = `
 `;
 const lawHTML =`
 <div id ="6Add">
-    <input type="radio" id="Law1" name="Law" value="1">
+    <input type="radio" id="Law1" name="Law" value="1" checked="checked">
     <label> 1</label>
     <input type="radio" id="Law3" name="Law" value="3">
     <label> 3</label>
@@ -30,7 +30,7 @@ const lawHTML =`
 `;
 const superHeroHTML = `
 <div id="8Add">
-    <input type="radio" id="SuperHero1" name="SuperHero" value="1">
+    <input type="radio" id="SuperHero1" name="SuperHero" value="1" checked="checked">
     <label> 1</label>
     <input type="radio" id="SuperHero2" name="SuperHero" value="2">
     <label> 2</label>
@@ -89,6 +89,10 @@ const displaySuper = async() => {
 
 var serviceList;
 window.onload = async () => {
+    if(sessionStorage.getItem("user") == null){
+        window.location.replace("/citLogin")
+    }
+
     const response = await fetch('http://localhost:3000/api/getServices',{
             method: 'GET'
         });
@@ -166,6 +170,6 @@ const confirmService = async() => {
         //console.log(sessionStorage.getItem("services"));
         //console.log(sessionStorage.getItem("user"));
 
-        window.location.replace("/userLogin/selectLocation")
+        window.location.replace("/citLogin/selectLocation")
     }
 }

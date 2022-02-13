@@ -12,6 +12,10 @@ const backSL = async() => {
 }
 
 window.onload = async() => {
+    if(sessionStorage.getItem("user") == null){
+        window.location.replace("/citLogin")
+    }
+
     const name = document.getElementById("name");
     name.textContent += ' ' + JSON.parse(sessionStorage.getItem("user")).FIRST_NAME + ', ';
 

@@ -79,34 +79,34 @@ label{
 
 #tblock{  
     width: 250px; 
-    left: 130px;
+    left: 840px;
     top: 270px;
 }
 
 #tstreet{
     width: 250px; 
-    left: 130px;  
+    left: 840px; 
     top: 395px;
 }
 
 #thouse{
     width: 250px; 
-    left: 130px; 
+    left: 840px; 
     top: 520px;
 }
 
 #fblock{
-    left: 300px;
+    left: 944px;
     top: 250px;
 }
 
 #fstreet{
-    left: 300px;
+    left: 944px;
     top: 375px;
 }
 
 #fhouse{
-    left: 300px;
+    left: 944px;
     top: 500px;
 }
 
