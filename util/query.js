@@ -37,6 +37,19 @@ let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOY
                         'AND D.SERVICE_ID = S.SERVICE_ID ' +
                         'AND R.REQUEST_ID = :request_id';
 
+let userRequestHistoryQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.VEHICLE_ID, E.HIRE_DATE AS EMPLOYEE_HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID AS EMPLOYEE_JOB_ID, J.JOB_TITLE AS EMPLOYEE_JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER AS EMPLOYEE_PHONE, D.FIRST_NAME || ' ' || D.LAST_NAME AS DRIVER_NAME, D.PHONE_NUMBER AS DRIVER_PHONE, R.RESOLVED_STATUS ` +
+                            'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R, MEMBER D, EMPLOYEES DR ' +
+                            'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                            'AND RE.REQUEST_ID = R.REQUEST_ID ' +
+                            'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
+                            'AND DR.MEMBER_ID = V.DRIVER_ID ' + 
+                            'AND D.MEMBER_ID = DR.MEMBER_ID ' +
+                            'AND E.MEMBER_ID = M.MEMBER_ID ' +
+                            'AND E.JOB_ID = J.JOB_ID ' +
+                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND R.CITIZEN_ID = :member_id';
+
  
 //Employee Controller
 //Employee Get Request Info
@@ -85,7 +98,7 @@ let getServicesQuery = 'SELECT * FROM service';
 
 //Request Controller
 //Add Request
-let memberIdCheckQuery = 'SELECT * FROM member WHERE member_id = :member_id';
+let memberIdCheckQuery = 'SELECT * FROM member WHERE member_id = :member_id AND member_type = 1';
 
 let insertRequestQuery = 'INSERT INTO request(request_id, request_time, citizen_id, location_id, resolved_status) ' +
                         'VALUES(:request_id, :request_time, :member_id, :location_id, :resolved_status)';
@@ -201,5 +214,6 @@ module.exports = {
     getDepartmentJobQuery,
     getShiftsQuery,
     updateApproveQuery,
-    adminCheckUsernameQuery
+    adminCheckUsernameQuery,
+    userRequestHistoryQuery
 }

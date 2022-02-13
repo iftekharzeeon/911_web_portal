@@ -63,4 +63,7 @@ router.post('/api/adminLogin/', bodyParser, adminController.admin_login);
 //Admin Create
 router.post('/api/adminCreate/', bodyParser, adminController.admin_create);
 
+//User Request History
+router.post('/api/getUserRequestHistory', bodyParser, userController.user_request_history);
+
 module.exports = router;
