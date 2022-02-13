@@ -152,6 +152,13 @@ let getDepartmentJobQuery = 'SELECT * FROM jobs WHERE department_id = :departmen
 let getShiftsQuery = 'SELECT * FROM shifts';
 
 
+//Admin Controller
+//Action Employee
+
+let updateApproveQuery = 'UPDATE employees SET status = :status WHERE member_id = :employee_id';
+
+let adminCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 0';
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -192,5 +199,7 @@ module.exports = {
     insertEmployeeQuery,
     getServiceDepartmentQuery,
     getDepartmentJobQuery,
-    getShiftsQuery
+    getShiftsQuery,
+    updateApproveQuery,
+    adminCheckUsernameQuery
 }

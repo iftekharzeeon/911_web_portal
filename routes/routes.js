@@ -8,6 +8,7 @@ const vehicleController = require('../controllers/vehicleController');
 const departmentController = require('../controllers/departmentController');
 const jobController = require('../controllers/jobController');
 const shiftController = require('../controllers/shiftController');
+const adminController = require('../controllers/adminController');
 
 const router = express.Router();
 
@@ -45,12 +46,21 @@ router.post('/api/addVehicleRequest/', bodyParser, vehicleController.add_vehicle
 router.post('/api/addEmployee/', bodyParser, employeeController.employee_register);
 
 //Get Service Departments
-router.post('/api/getServiceDepartments', bodyParser, departmentController.get_departments_service_wise);
+router.post('/api/getServiceDepartments/', bodyParser, departmentController.get_departments_service_wise);
 
 //Get Department Jobs
-router.post('/api/getDepartmentJobs', bodyParser, jobController.get_jobs_department_wise);
+router.post('/api/getDepartmentJobs/', bodyParser, jobController.get_jobs_department_wise);
 
 //Get Shifts
-router.post('/api/getShifts', bodyParser, shiftController.get_shifts);
+router.post('/api/getShifts/', bodyParser, shiftController.get_shifts);
+
+//Update Employee Status
+router.post('/api/updateEmployeeStatus/', bodyParser, adminController.action_employee);
+
+//Admin Login
+router.post('/api/adminLogin/', bodyParser, adminController.admin_login);
+
+//Admin Create
+router.post('/api/adminCreate/', bodyParser, adminController.admin_create);
 
 module.exports = router;
