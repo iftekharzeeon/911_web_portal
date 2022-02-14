@@ -53,7 +53,7 @@ let userRequestHistoryQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE
  
 //Employee Controller
 //Employee Get Request Info
-let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id';
+let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id AND status = 1';
 
 let occupiedInfoQuery = `SELECT RE.REQUEST_EMPLOYEE_ID, R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, L.BLOCK, L.HOUSE_NO, L.STREET, M.MEMBER_ID AS CITIZEN_ID, L.LOCATION_ID ` +
                         'FROM REQUEST R, MEMBER M, LOCATION L, REQUEST_EMPLOYEE RE, EMPLOYEES E ' +
@@ -97,6 +97,18 @@ let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :email';
 
 let insertEmployeeQuery = 'INSERT INTO employees(member_id, hire_date, occupied, job_id, shift_id, status) VALUES(:member_id, :hire_date, :occupied, :job_id, :shift_id, :status)';
 
+//Employee Request History
+let employeeRequestHistoryQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.VEHICLE_ID, V.VEHICLE_TYPE, V.DRIVER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, M.PHONE_NUMBER AS CITIZEN_PHONE, S.SERVICE_ID, S.DESCRIPTION, D.FIRST_NAME || ' ' || D.LAST_NAME AS DRIVER_NAME, D.PHONE_NUMBER AS DRIVER_PHONE, R.RESOLVED_STATUS ` +
+                            'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, SERVICE S, MEMBER M, REQUEST R, MEMBER D, EMPLOYEES DR ' +
+                            'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                            'AND RE.REQUEST_ID = R.REQUEST_ID ' +
+                            'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
+                            'AND DR.MEMBER_ID = V.DRIVER_ID ' + 
+                            'AND D.MEMBER_ID = DR.MEMBER_ID ' +
+                            'AND R.CITIZEN_ID = M.MEMBER_ID ' +
+                            'AND RE.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND RE.EMPLOYEE_ID = :employee_id';
+                            
 //Service Controller
 //Get Services
 let getServicesQuery = 'SELECT * FROM service';
@@ -222,5 +234,6 @@ module.exports = {
     updateApproveQuery,
     adminCheckUsernameQuery,
     userRequestHistoryQuery,
-    serviceIdCheckQuery
+    serviceIdCheckQuery,
+    employeeRequestHistoryQuery
 }

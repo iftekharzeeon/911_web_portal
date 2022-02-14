@@ -344,8 +344,66 @@ const employee_register = async (req, res) => {
 
 }
 
+const employee_request_history = async (req, res) => {
+    let responses = {};
+
+    const employee = req.body;
+
+    let result;
+
+    let employee_id;
+    let member_exist;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        employee_id = employee.employee_id;
+
+        member_exist = await connection.execute(queries.employeeCheckQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (member_exist.rows.length > 0) {
+
+            result = await connection.execute(queries.employeeRequestHistoryQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+            if (result.rows.length) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Data found';
+                responses.RequestInfos = result.rows;
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'Np Data found';
+            }
+
+        } else {
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'Employee Not Found';
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+
+}
+
+
 module.exports = {
     get_employee_request_info,
     login_employee,
-    employee_register
+    employee_register,
+    employee_request_history
 }
