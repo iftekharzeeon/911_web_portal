@@ -1,0 +1,256 @@
+body{
+    background: linear-gradient(180deg, #FFB7B7 0%, #727272 100%), radial-gradient(60.91% 100% at 50% 0%, #FFD1D1 0%, #260000 100%), linear-gradient(238.72deg, #FFDDDD 0%, #720066 100%), linear-gradient(127.43deg, #00FFFF 0%, #FF4444 100%), radial-gradient(100.22% 100% at 70.57% 0%, #FF0000 0%, #00FFE0 100%), linear-gradient(127.43deg, #B7D500 0%, #3300FF 100%);
+    background-blend-mode: screen, overlay, hard-light, color-burn, color-dodge, normal;
+    position: relative;
+    font-family: 'Rajdhani', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva' , Verdana, 'sans-serif';
+}
+
+#base{
+    position: absolute;
+    width: 100rem;
+    height: 50rem;
+    left: 150px;
+    top: 50px;
+
+    background: linear-gradient(255.2deg, rgba(255, 0, 0, 0.53) 2.7%, rgba(0, 10, 255, 0.3) 97.71%);
+    opacity: 0.8;
+    border-radius: 64px;
+}
+
+label{
+    position: absolute;
+    height: 54px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    color: #FFFFFF;
+}
+
+input{
+    position: absolute;
+    width: 451px;
+    height: 95px;
+    font-size: 30px;
+
+    background: #C4C4C4;
+    border-radius: 20px;
+}
+
+/*label*/
+
+#tfirstname{  
+    width: 250px; 
+    left: 80px;
+    top: 100px;
+}
+
+#tlastname{
+    width: 250px; 
+    left: 80px;  
+    top: 225px;
+}
+
+#temail{
+    width: 250px; 
+    left: 80px; 
+    top: 350px;
+}
+
+#tusername{
+    width: 250px; 
+    left: 80px;
+    top: 475px;
+}
+
+#tpassword{
+    width: 250px; 
+    left: 80px;
+    top: 600px;
+}
+
+#tblock{  
+    width: 250px; 
+    left: 800px;
+    top: 100px;
+}
+
+#tstreet{
+    width: 250px; 
+    left: 800px; 
+    top: 225px;
+}
+
+#thouse{
+    width: 250px; 
+    left: 800px;
+    top: 350px;
+}
+
+#tphoneNumber{
+    width: 250px; 
+    left: 800px;
+    top: 475px;
+}
+
+/*form*/
+
+#ffirstname{
+    left: 250px;
+    top: 80px;
+}
+
+#flastname{
+    left: 250px;
+    top: 205px;
+}
+
+#femail{
+    left: 250px;
+    top: 330px;
+}
+
+#fusername{
+    left: 250px;
+    top: 455px;
+}
+
+#fpassword{
+    left: 250px;
+    top: 580;
+}
+
+#fblock{
+    left: 950px;
+    top: 80px;
+}
+
+#fstreet{
+    left: 950px;
+    top: 205px;
+}
+
+#fhouse{
+    left: 950px;
+    top: 330px;
+}
+
+#fphoneNumber{
+    left: 950px;
+    top: 455px;
+}
+
+#notInService{
+    position: relative;
+    width: 400px;
+    height: 54px;
+    left: 10px;
+    top: 35px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: right;
+
+    color: #FFFFFF;
+}
+
+#register{
+    cursor: pointer;
+    position: absolute;
+    width: 300px;
+    height: 80px;
+    left: 641px;
+    top: 710px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    color: #FFFFFF;
+    line-height: 54px;
+
+    background: rgba(0, 0, 0, 0.26);
+    border-radius: 20px;
+}
+
+#back{
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+}
+
+#Service{
+    position: absolute;
+    height: 54px;
+
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    background-color: #C4C4C4;;
+    color: black;
+    left: 760px;
+    top: 601px;
+    border-radius: 20px;
+}
+
+#Department{
+    position: absolute;
+    height: 54px;
+
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    background-color: #C4C4C4;;
+    color: black;
+    left: 980px;
+    top: 601px;
+    border-radius: 20px;
+}
+
+#Job{
+    position: absolute;
+    height: 54px;
+
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    background-color: #C4C4C4;;
+    color: black;
+    left: 1380px;
+    top: 601px;
+    border-radius: 20px;
+}
+
+#Shift{
+    position: absolute;
+    height: 54px;
+
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    background-color: #C4C4C4;;
+    color: black;
+    left: 641px;
+    top: 5px;
+    border-radius: 20px;
+}

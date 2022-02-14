@@ -38,3 +38,7 @@ const loginEmp = async() => {
         }
     }  
 }
+
+const RegisterEmp = async() => {
+    window.location.replace("/empReg");
+}

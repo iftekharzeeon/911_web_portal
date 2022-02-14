@@ -30,8 +30,17 @@ app.get('/empLogin', (req, res) => {
     res.sendFile('./views/empLogin.html', {root: __dirname});
     });
 
+
+app.get('/empReg', (req, res) => {
+    res.sendFile('./views/empReg.html', {root: __dirname});
+    });
+
 app.get('/empLogin/RequestList', (req, res) => {
     res.sendFile('./views/RequestList.html', {root: __dirname});
+    });
+
+app.get('/empLogin/empHistory', (req, res) => {
+    res.sendFile('./views/empHistory.html', {root: __dirname});
     });
 
 app.get('/careLogin', (req, res) => {
