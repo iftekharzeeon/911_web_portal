@@ -66,4 +66,7 @@ router.post('/api/adminCreate/', bodyParser, adminController.admin_create);
 //User Request History
 router.post('/api/getUserRequestHistory', bodyParser, userController.user_request_history);
 
+//Employee Request History
+router.post('/api/getEmployeeRequestHistory', bodyParser, employeeController.employee_request_history);
+
 module.exports = router;
