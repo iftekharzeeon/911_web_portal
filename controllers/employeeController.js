@@ -38,7 +38,7 @@ const get_employee_request_info = async (req, res) => {
         employee_id = requestObj.employee_id;
 
         //Check Employee Existence
-        
+
         memberExist = await connection.execute(queries.employeeCheckQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberExist.rows.length === 0) {
@@ -61,7 +61,7 @@ const get_employee_request_info = async (req, res) => {
 
             } else {
                 //Employee is free
-                
+
                 requestCounter = await connection.execute(queries.requestCheckQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 requestCounter = requestCounter.rows[0].COUNTER;
@@ -135,6 +135,7 @@ const login_employee = async (req, res) => {
     let locationInfo;
     let employeeInfo;
     let employee_id;
+    let employee_service_id;
     try {
         connection = await oracledb.getConnection({
             user: serverInfo.dbUser,
@@ -147,6 +148,7 @@ const login_employee = async (req, res) => {
         let username = user.username;
         let userPassword = user.password;
         let member_type = user.member_type;
+        let service_id = user.service_id;
 
         //Check Employee Existence
         memberInfo = await connection.execute(queries.employeeCheckUsernameQuery, [username, member_type], { outFormat: oracledb.OUT_FORMAT_OBJECT });
@@ -155,30 +157,46 @@ const login_employee = async (req, res) => {
             memberId = memberInfo.rows[0].MEMBER_ID;
             employee_id = memberId;
 
-            //Password Check
-            passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            //Service Id Check
+            employee_service_id = await connection.execute(queries.serviceIdCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            employee_service_id = employee_service_id.rows[0].SERVICE_ID;
 
-            passwordKey = passwordKey.rows[0].PASSWORD_KEY;
+            if (service_id == employee_service_id) {
+                //Password Check
+                passwordKey = await connection.execute(queries.passwordCheckQuery, [memberId], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-            if (bcrypt.compareSync(userPassword, passwordKey)) {
-                responses.ResponseCode = 1;
-                responses.ResponseText = 'Login Successful';
-                responses.MemberId = memberId;
-                responses.MemberInfo = memberInfo.rows[0];
+                passwordKey = passwordKey.rows[0].PASSWORD_KEY;
 
-                let location_id = memberInfo.rows[0].LOCATION_ID;
+                if (bcrypt.compareSync(userPassword, passwordKey)) {
+                    responses.ResponseCode = 1;
+                    responses.ResponseText = 'Login Successful';
+                    responses.MemberId = memberId;
+                    responses.MemberInfo = memberInfo.rows[0];
 
-                locationInfo = await connection.execute(queries.locationQuery, [location_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                    let location_id = memberInfo.rows[0].LOCATION_ID;
 
-                employeeInfo = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                    locationInfo = await connection.execute(queries.locationQuery, [location_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-                responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
-                responses.MemberInfo.EMPLOYEE_INFO = employeeInfo.rows[0];
+                    employeeInfo = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+                    if (employeeInfo.rows[0].STATUS) {
+                        responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
+                        responses.MemberInfo.EMPLOYEE_INFO = employeeInfo.rows[0];
+                    } else {
+                        responses.ResponseCode = -4;
+                        responses.ResponseText = 'You are not approved yet. Please contact with your department manager.';
+                    }
+
+                } else {
+                    //Password Incorrect
+                    responses.ResponseCode = -2;
+                    responses.ResponseText = 'Incorrect Password';
+                }
 
             } else {
-                //Password Incorrect
-                responses.ResponseCode = -2;
-                responses.ResponseText = 'Incorrect Password';
+                //Not same service id
+                responses.ResponseCode = -3;
+                responses.ResponseText = 'Not in this service';
             }
 
         } else {
@@ -275,8 +293,8 @@ const employee_register = async (req, res) => {
 
                 //Insert Into Employee Table
 
-                result = await connection.execute(queries.insertEmployeeQuery, [member_id, registration_date, occupied, job_id, shift_id, status], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-                
+                result = await connection.execute(queries.insertEmployeeQuery, [member_id, registration_date, occupied, job_id, shift_id, status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
                 //Insert Password Info
                 let salt = '';
                 let password_key = '';

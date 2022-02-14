@@ -66,7 +66,7 @@ let occupiedInfoQuery = `SELECT RE.REQUEST_EMPLOYEE_ID, R.REQUEST_ID, R.REQUEST_
 
 let requestCheckQuery = 'SELECT count(*) AS counter FROM request_employee WHERE employee_accepted = -1';
 
-let getEmployeeInfoQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESCRIPTION, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESCRIPTION, J.SALARY ' +
+let getEmployeeInfoQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESCRIPTION, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESCRIPTION, J.SALARY, E.STATUS ' +
                             'FROM EMPLOYEES E, JOBS J, DEPARTMENTS D, SERVICE S, SHIFT SH ' +
                             'WHERE E.JOB_ID = J.JOB_ID AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
@@ -85,6 +85,12 @@ let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' '
 //Employee Login
 let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = :member_type';
 
+let serviceIdCheckQuery = 'SELECT S.SERVICE_ID ' +
+                        'FROM EMPLOYEES E, JOBS J, DEPARTMENTS D, SERVICE S ' +
+                        'WHERE E.JOB_ID = J.JOB_ID ' +
+                        'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                        'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                        'AND E.MEMBER_ID = :member_id';
 
 //Employee Register
 let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :email';
@@ -215,5 +221,6 @@ module.exports = {
     getShiftsQuery,
     updateApproveQuery,
     adminCheckUsernameQuery,
-    userRequestHistoryQuery
+    userRequestHistoryQuery,
+    serviceIdCheckQuery
 }
