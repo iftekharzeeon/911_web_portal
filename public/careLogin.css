@@ -94,7 +94,30 @@ input{
     width: 400px;
     height: 100px;
     left: 600px;
-    top: 599px;
+    top: 560px;
+
+    background: linear-gradient(207.47deg, rgba(255, 0, 0, 0.53) 5.07%, rgba(0, 10, 255, 0.3) 97.74%);
+    border-radius: 20px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 75px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+
+    mix-blend-mode: normal;
+
+}
+
+#register{
+    position: absolute;
+    width: 450px;
+    height: 100px;
+    left: 580px;
+    top: 680px;
 
     background: linear-gradient(207.47deg, rgba(255, 0, 0, 0.53) 5.07%, rgba(0, 10, 255, 0.3) 97.74%);
     border-radius: 20px;
