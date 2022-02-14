@@ -28,15 +28,7 @@ const loginEmp = async() => {
         responseObj = await response.json();
         console.log(responseObj);
 
-        if(responseObj.ResponseCode == -2){
-            window.alert("Wrong Password");
-        }else if(responseObj.ResponseCode == 0){
-            window.alert("Member Not Found");
-        }else if(responseObj.ResponseCode == -1){
-                window.alert(responseObj.ResponseText);
-        }else if(responseObj.ResponseCode == -3){
-            window.alert(responseObj.ResponseText);
-        }else if(responseObj.ResponseCode == -4){
+        if(responseObj.ResponseCode != 1){
             window.alert(responseObj.ResponseText);
         }else if(responseObj.ResponseCode == 1){
             window.alert("Login Successful");
@@ -45,4 +37,8 @@ const loginEmp = async() => {
             window.location.replace("/empLogin/RequestList");
         }
     }  
+}
+
+const RegisterEmp = async() => {
+    window.location.replace("/empReg");
 }

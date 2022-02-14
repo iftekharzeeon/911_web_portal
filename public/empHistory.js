@@ -1,19 +1,6 @@
-// const RequestObj = {
-//     "ResponseCode": 1,
-//     "ResponseText": "There are pending requests at the moment. Please respond.",
-//     "RequestInfo": [
-//         {
-//             "REQUEST_ID": 123,
-//             "REQUEST_TIME": "06-FEB-22 11.16.35.986000000 AM",
-//             "CITIZEN_NAME": "Shamit Fatin",
-//             "BLOCK": "A",
-//             "HOUSE_NO": "144",
-//             "STREET": "1",
-//             "CITIZEN_ID": 110,
-//             "LOCATION_ID": 110
-//         }
-//     ]
-// }
+const RequestList = async() => {
+    window.location.replace("/empLogin/RequestList")
+}
 
 window.onload = async() => {
     if(sessionStorage.getItem("user") == null){
@@ -25,7 +12,7 @@ window.onload = async() => {
         "employee_id": Member_Id
     }
     const fetchJSON = JSON.stringify(fetchObj);
-    const response = await fetch('http://localhost:3000/api/getEmployeeRequestInfo',{
+    const response = await fetch('http://localhost:3000/api/getEmployeeRequestHistoryList',{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -53,16 +40,4 @@ window.onload = async() => {
         `)
     }
     MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
-}
-
-const accept = async(requestID) => {
-    window.alert(requestID + ' ' + JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
-}
-
-const Refresh = async() => {
-    location.reload();
-}
-
-const History = async() => {
-    window.location.replace("/empLogin/empHistory")
 }
