@@ -83,7 +83,7 @@ let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' '
                         'AND R.REQUEST_ID = :request_id ';
 
 //Employee Login
-let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 2';
+let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = :member_type';
 
 
 //Employee Register
