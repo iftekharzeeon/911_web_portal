@@ -32,6 +32,12 @@ const loginEmp = async() => {
             window.alert("Wrong Password");
         }else if(responseObj.ResponseCode == 0){
             window.alert("Member Not Found");
+        }else if(responseObj.ResponseCode == -1){
+                window.alert(responseObj.ResponseText);
+        }else if(responseObj.ResponseCode == -3){
+            window.alert(responseObj.ResponseText);
+        }else if(responseObj.ResponseCode == -4){
+            window.alert(responseObj.ResponseText);
         }else if(responseObj.ResponseCode == 1){
             window.alert("Login Successful");
             sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
