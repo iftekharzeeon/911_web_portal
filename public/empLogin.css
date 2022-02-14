@@ -69,23 +69,45 @@ input{
 #temail{
     width: 250px; 
     left: 480px; 
-    top: 295px;
+    top: 245px;
 }
 
 #tpassword{
     width: 250px; 
     left: 480px;
-    top: 420px;
+    top: 370px;
+}
+
+#tService{
+    left: 480px;
+    top: 500px;
 }
 
 #femail{
     left: 650px;
-    top: 275px;
+    top: 225px;
 }
 
 #fpassword{
     left: 650px;
-    top: 400px;
+    top: 350px;
+}
+
+#Service{
+    position: absolute;
+    height: 54px;
+
+    font-size: 30px;
+    line-height: 54px;
+    /* identical to box height */
+
+    text-align: left;
+
+    background-color: #C4C4C4;;
+    color: black;
+    left: 800px;
+    top: 500px;
+    border-radius: 20px;
 }
 
 
