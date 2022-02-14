@@ -249,13 +249,13 @@ const get_user_request_info = async (req, res) => {
 
                 //Number of employee accepted
 
-                number_of_employees = await connection.execute(queries.employeeCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                number_of_employees = await connection.execute(queries.ongoingEmployeeCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_employees = number_of_employees.rows[0].COUNTER;
 
                 //Number of vehicle accepted
 
-                number_of_vehicle = await connection.execute(queries.vehicleCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                number_of_vehicle = await connection.execute(queries.ongoingVehicleCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_vehicle = number_of_vehicle.rows[0].COUNTER;
 
@@ -328,7 +328,7 @@ const user_request_history = async (req, res) => {
 
         if (member_exist.rows.length > 0) {
 
-            result = await connection.execute(queries.userRequestHistoryQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            result = await connection.execute(queries.userRequestHistoryListQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             if (result.rows.length) {
                 responses.ResponseCode = 1;
@@ -336,7 +336,7 @@ const user_request_history = async (req, res) => {
                 responses.RequestInfos = result.rows;
             } else {
                 responses.ResponseCode = 0;
-                responses.ResponseText = 'Np Data found';
+                responses.ResponseText = 'No Data Found';
             }
 
         } else {
@@ -358,6 +358,7 @@ const user_request_history = async (req, res) => {
     }
 
 }
+
 
 module.exports = {
     user_create,

@@ -246,7 +246,7 @@ const employee_register = async (req, res) => {
         //Employee Info
         let first_name = employee.first_name;
         let last_name = employee.last_name;
-        let username = employee.employeename;
+        let username = employee.username;
         let email = employee.email;
         let phone_number = employee.phone_number;
         let registration_date = new Date();
@@ -369,7 +369,7 @@ const employee_request_history = async (req, res) => {
 
         if (member_exist.rows.length > 0) {
 
-            result = await connection.execute(queries.employeeRequestHistoryQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            result = await connection.execute(queries.employeeRequestHistoryListQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             if (result.rows.length) {
                 responses.ResponseCode = 1;

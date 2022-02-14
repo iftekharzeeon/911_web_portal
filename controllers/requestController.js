@@ -353,8 +353,68 @@ const finish_request = async (req, res) => {
     }
 }
 
+const request_history_details = async (req, res) => {
+    let responses = {};
+
+    const employee = req.body;
+
+    let result;
+
+    let employee_id;
+    let member_exist;
+    let request_id;
+    let request_count;
+    let employee_count;
+    let vehicle_count;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        request_id = employee.request_id;
+
+        //Get total number of employees requested
+        request_count = await connection.execute(queries.requestCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        request_count = request_count.rows[0].COUNTER;
+
+        //Get number of employees accepted
+        employee_count = await connection.execute(queries.employeeCountQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        employee_count = employee_count.rows[0].COUNTER;
+
+        //Get number of vehicle accepted
+        vehicle_count = await connection.execute(queries.vehicleCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        vehicle_count = vehicle_count.rows[0].COUNTER;
+
+        result = await connection.execute(queries.requestHistoryDetailsQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+        responses.ResponseCode = 1;
+        responses.ResponseData = result.rows;
+        responses.TotalEmployeesRequested = request_count;
+        responses.NumberofEmployeesAccepted = employee_count;
+        responses.NumberofVehicleAccepted = vehicle_count;
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+
+}
+
 module.exports = {
     add_request,
     accept_request,
-    finish_request
+    finish_request,
+    request_history_details
 }

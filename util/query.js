@@ -22,9 +22,9 @@ let ongoingRequestCheckQuery = 'SELECT * FROM request WHERE citizen_id = :member
 
 let requestCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id';
 
-let employeeCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = 0 OR employee_accepted = 1)';
+let ongoingEmployeeCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = 0 OR employee_accepted = 1)';
 
-let vehicleCounterQuery = 'SELECT DISTINCT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (vehicle_accepted = 0 OR vehicle_accepted = 1)';
+let ongoingVehicleCounterQuery = 'SELECT DISTINCT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (vehicle_accepted = 0 OR vehicle_accepted = 1)';
 
 let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER ` +
                         'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R ' +
@@ -37,20 +37,13 @@ let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOY
                         'AND D.SERVICE_ID = S.SERVICE_ID ' +
                         'AND R.REQUEST_ID = :request_id';
 
-let userRequestHistoryQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.VEHICLE_ID, E.HIRE_DATE AS EMPLOYEE_HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID AS EMPLOYEE_JOB_ID, J.JOB_TITLE AS EMPLOYEE_JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER AS EMPLOYEE_PHONE, D.FIRST_NAME || ' ' || D.LAST_NAME AS DRIVER_NAME, D.PHONE_NUMBER AS DRIVER_PHONE, R.RESOLVED_STATUS ` +
-                            'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R, MEMBER D, EMPLOYEES DR ' +
-                            'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
-                            'AND RE.REQUEST_ID = R.REQUEST_ID ' +
-                            'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
-                            'AND DR.MEMBER_ID = V.DRIVER_ID ' + 
-                            'AND D.MEMBER_ID = DR.MEMBER_ID ' +
-                            'AND E.MEMBER_ID = M.MEMBER_ID ' +
-                            'AND E.JOB_ID = J.JOB_ID ' +
-                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
-                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
-                            'AND R.CITIZEN_ID = :member_id';
 
- 
+//User RequestHistory List
+let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ` +
+                                'FROM REQUEST R, LOCATION L ' +
+                                'WHERE R.CITIZEN_ID = :member_id ' +
+                                'AND L.LOCATION_ID = R.LOCATION_ID';
+
 //Employee Controller
 //Employee Get Request Info
 let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id AND status = 1';
@@ -98,17 +91,37 @@ let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :email';
 let insertEmployeeQuery = 'INSERT INTO employees(member_id, hire_date, occupied, job_id, shift_id, status) VALUES(:member_id, :hire_date, :occupied, :job_id, :shift_id, :status)';
 
 //Employee Request History
-let employeeRequestHistoryQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.VEHICLE_ID, V.VEHICLE_TYPE, V.DRIVER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, M.PHONE_NUMBER AS CITIZEN_PHONE, S.SERVICE_ID, S.DESCRIPTION, D.FIRST_NAME || ' ' || D.LAST_NAME AS DRIVER_NAME, D.PHONE_NUMBER AS DRIVER_PHONE, R.RESOLVED_STATUS ` +
-                            'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, SERVICE S, MEMBER M, REQUEST R, MEMBER D, EMPLOYEES DR ' +
-                            'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
-                            'AND RE.REQUEST_ID = R.REQUEST_ID ' +
-                            'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
-                            'AND DR.MEMBER_ID = V.DRIVER_ID ' + 
-                            'AND D.MEMBER_ID = DR.MEMBER_ID ' +
-                            'AND R.CITIZEN_ID = M.MEMBER_ID ' +
-                            'AND RE.SERVICE_ID = S.SERVICE_ID ' +
-                            'AND RE.EMPLOYEE_ID = :employee_id';
-                            
+let employeeRequestHistoryListQuery = `SELECT R.REQUEST_TIME, RE.EMPLOYEE_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, R.RESOLVED_STATUS, S.DESCRIPTION AS SERVICE_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ` +
+                                    'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, SERVICE S, MEMBER M, REQUEST R, LOCATION L ' +
+                                    'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
+                                    'AND RE.REQUEST_ID = R.REQUEST_ID ' +
+                                    'AND R.CITIZEN_ID = M.MEMBER_ID ' +
+                                    'AND RE.SERVICE_ID = S.SERVICE_ID ' +
+                                    'AND L.LOCATION_ID = R.LOCATION_ID ' +
+                                    'AND RE.EMPLOYEE_ID = :employee_id';
+
+
+//Employee Request History Details
+let requestHistoryDetailsQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ACCEPTED, RE.EMPLOYEE_ID, RE.SERVICE_ID, ` +
+                                        `RE.VEHICLE_ID, EX.HIRE_DATE, MEX.FIRST_NAME || ' ' || MEX.LAST_NAME AS OTHER_EMPLOYEE_NAME, ` +
+                                        'MEX.PHONE_NUMBER AS OTHER_EMPLOYEE_PHONE, MEX.EMAIL AS OTHER_EMPLOYEE_EMAIL, V.DRIVER_ID, RE.VEHICLE_ACCEPTED, '  +
+                                        `DR.FIRST_NAME || ' ' || DR.LAST_NAME AS DRIVER_NAME, DR.PHONE_NUMBER AS DRIVER_PHONE, ` +
+                                        'DR.EMAIL AS DRIVER_EMAIL, J.JOB_TITLE, D.DEPARTMENT_NAME, J.JOB_TITLE AS EMPLOYEE_JOB ' +
+                                        'FROM REQUEST R, REQUEST_EMPLOYEE RE, EMPLOYEES EX, VEHICLE V, MEMBER MEX, MEMBER DR, JOBS J, DEPARTMENTS D ' +
+                                        'WHERE R.REQUEST_ID = RE.REQUEST_ID ' +
+                                        'AND RE.EMPLOYEE_ID = EX.MEMBER_ID ' +
+                                        'AND EX.MEMBER_ID = MEX.MEMBER_ID ' +
+                                        'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
+                                        'AND V.DRIVER_ID = DR.MEMBER_ID ' +
+                                        'AND EX.JOB_ID = J.JOB_ID ' +
+                                        'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                                        'AND R.REQUEST_ID = :request_id';
+
+let employeeCountQuery = 'SELECT COUNT(employee_id) AS COUNTER FROM request_employee WHERE request_id = :request_id';
+
+let vehicleCounterQuery = 'SELECT COUNT(DISTINCT vehicle_id) AS COUNTER FROM request_employee WHERE request_id = :request_id';
+
+
 //Service Controller
 //Get Services
 let getServicesQuery = 'SELECT * FROM service';
@@ -170,7 +183,6 @@ let updateVehicleAcceptedStatusto1Query = 'UPDATE request_employee SET vehicle_a
 let getServiceDepartmentQuery = 'SELECT * FROM departments WHERE service_id = :service_id';
 
 
-
 //Job Controller
 //Get Jobs Department Wise
 
@@ -219,8 +231,8 @@ module.exports = {
     employeeCheckEmailQuery,
     ongoingRequestCheckQuery,
     requestCounterQuery,
-    employeeCounterQuery,
-    vehicleCounterQuery,
+    ongoingEmployeeCounterQuery,
+    ongoingVehicleCounterQuery,
     informationQuery,
     vehicleCheckQuery,
     updateRequestVehicleInfoQuery,
@@ -233,7 +245,10 @@ module.exports = {
     getShiftsQuery,
     updateApproveQuery,
     adminCheckUsernameQuery,
-    userRequestHistoryQuery,
+    userRequestHistoryListQuery,
     serviceIdCheckQuery,
-    employeeRequestHistoryQuery
+    employeeRequestHistoryListQuery,
+    requestHistoryDetailsQuery,
+    vehicleCounterQuery,
+    employeeCountQuery
 }
