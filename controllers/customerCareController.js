@@ -53,8 +53,13 @@ const login_cc = async (req, res) => {
 
                 employeeInfo = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-                responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
-                responses.MemberInfo.EMPLOYEE_INFO = employeeInfo.rows[0];
+                if (employeeInfo.rows[0].STATUS) {
+                    responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
+                    responses.MemberInfo.EMPLOYEE_INFO = employeeInfo.rows[0];
+                } else {
+                    responses.ResponseCode = -4;
+                    responses.ResponseText = 'You are not approved yet. Please contact with your department manager.';
+                }
 
             } else {
                 //Password Incorrect
@@ -205,4 +210,9 @@ const cc_register = async (req, res) => {
     }
 
 
+}
+
+module.exports = {
+    login_cc,
+    cc_register
 }
