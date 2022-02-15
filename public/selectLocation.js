@@ -8,7 +8,7 @@ const manualLocationHTML =`
 `
 var is_my_location;
 const backSL = async() => {
-    window.location.replace("/");
+    window.location.replace("/citLogin/selectService");
 }
 
 window.onload = async() => {

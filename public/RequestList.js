@@ -34,25 +34,49 @@ window.onload = async() => {
     });
     RequestObj = await response.json();
     console.log(RequestObj);
-    const MainContent = document.getElementById("MainContent");
-    const arrContent = []
-    for(var i = 0; i < RequestObj.RequestInfo.length; i++){
-        let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
+
+    if(RequestObj.ResponseCode == 2){
+        const MainText = document.getElementById("readyToHelp");
+        MainText.innerHTML = RequestObj.ResponseText
+        const MainContent = document.getElementById("MainContent");
+        let Time = RequestObj.RequestInfo.REQUEST_TIME;
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
         Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-        arrContent.push(`
+        MainContent.innerHTML = `
         <div class="option">
-                <div class="content">
-                    Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
-                    Location : Block#${RequestObj.RequestInfo[i].BLOCK}, Street#${RequestObj.RequestInfo[i].STREET}, House#${RequestObj.RequestInfo[i].HOUSE_NO}&nbsp&nbsp
-                    Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
-                </div>
+            <div class="content">
+                Citizen Name : ${RequestObj.RequestInfo.CITIZEN_NAME} &nbsp&nbsp&nbsp
+                Location : Block#${RequestObj.RequestInfo.BLOCK}, Street#${RequestObj.RequestInfo.STREET}, House#${RequestObj.RequestInfo.HOUSE_NO}&nbsp&nbsp
+                Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <button onclick ="finish(${RequestObj.RequestInfo.REQUEST_ID}, ${RequestObj.RequestInfo.REQUEST_EMPLOYEE_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Finish</button>
+            </div>
         </div>
-        `)
+        `
+    }else if(RequestObj.ResponseCode == 0){
+        const MainText = document.getElementById("readyToHelp");
+        MainText.innerHTML = RequestObj.ResponseText
+    }else{
+        const MainContent = document.getElementById("MainContent");
+        const arrContent = []
+        for(var i = 0; i < RequestObj.RequestInfo.length; i++){
+            let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
+            var dateArr = Time.split(' ');
+            var timeArr = dateArr[1].split('.');
+            Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
+            arrContent.push(`
+            <div class="option">
+                    <div class="content">
+                        Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                        Location : Block#${RequestObj.RequestInfo[i].BLOCK}, Street#${RequestObj.RequestInfo[i].STREET}, House#${RequestObj.RequestInfo[i].HOUSE_NO}&nbsp&nbsp
+                        Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
+                    </div>
+            </div>
+            `)
+        }
+        MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
     }
-    MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
 }
 
 const accept = async(requestID) => {
@@ -75,10 +99,37 @@ const accept = async(requestID) => {
     console.log(RequestObj);
 }
 
+const finish = async(requestID, requestEmployeeId) => {
+    const acceptObj = {
+        "employee_id" : JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
+        "request_id" : requestID,
+        "request_employee_id" : requestEmployeeId
+    }
+    const acceptJSON = JSON.stringify(acceptObj);
+    console.log(acceptJSON)
+    
+    const response = await fetch('http://localhost:3000/api/finishRequest',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: acceptJSON
+    });
+    RequestObj = await response.json();
+    console.log(RequestObj);
+    location.reload();
+    
+}
+
 const Refresh = async() => {
     location.reload();
 }
 
 const History = async() => {
     window.location.replace("/empLogin/empHistory")
+}
+
+const Logout = async() => {
+    sessionStorage.removeItem("user")
+    window.location.replace("/empLogin")
 }

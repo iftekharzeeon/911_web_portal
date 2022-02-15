@@ -101,7 +101,7 @@ window.onload = async () => {
 }
 
 const backS = async() => {
-    window.location.replace("/");
+    window.location.replace("/citLogin");
 }
 
 const confirmService = async() => {
@@ -172,4 +172,9 @@ const confirmService = async() => {
 
         window.location.replace("/citLogin/selectLocation")
     }
+}
+
+const Logout = async() => {
+    sessionStorage.removeItem("user")
+    window.location.replace("/citLogin");
 }
