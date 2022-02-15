@@ -56,7 +56,23 @@ window.onload = async() => {
 }
 
 const accept = async(requestID) => {
-    window.alert(requestID + ' ' + JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
+    const acceptObj = {
+        "employee_id" : JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
+        "request_id" : requestID,
+        "service_id" : JSON.parse(sessionStorage.getItem("user")).EMPLOYEE_INFO.SERVICE_ID
+    }
+    const acceptJSON = JSON.stringify(acceptObj);
+    console.log(acceptJSON)
+    
+    const response = await fetch('http://localhost:3000/api/acceptRequest',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: acceptJSON
+    });
+    RequestObj = await response.json();
+    console.log(RequestObj);
 }
 
 const Refresh = async() => {
