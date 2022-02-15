@@ -9,6 +9,7 @@ const departmentController = require('../controllers/departmentController');
 const jobController = require('../controllers/jobController');
 const shiftController = require('../controllers/shiftController');
 const adminController = require('../controllers/adminController');
+const ccController = require('../controllers/customerCareController');
 
 const router = express.Router();
 
@@ -71,5 +72,11 @@ router.post('/api/getEmployeeRequestHistoryList/', bodyParser, employeeControlle
 
 //Request History Details
 router.post('/api/getRequestHistoryDetails/', bodyParser, requestController.request_history_details);
+
+//Customer Care Login
+router.post('/api/customerCareLogin/', bodyParser, ccController.login_cc);
+
+//Customer Care Sign Up
+router.post('/api/customerCareSignUp', bodyParser, ccController.cc_register);
 
 module.exports = router;
