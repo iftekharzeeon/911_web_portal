@@ -1,5 +1,3 @@
-const { response } = require("express")
-
 const changeMessage = async() => {
     console.log(document.getElementById("Service").value)
     const Department = document.getElementById("Department")
@@ -95,4 +93,8 @@ const empReg = async() => {
         console.log(response)
         window.location.replace("/empLogin");
     }
+}
+
+const backER = async() => {
+    window.location.replace('/empLogin')
 }
