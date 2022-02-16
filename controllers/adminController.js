@@ -197,6 +197,7 @@ const action_employee = async (req, res) => {
 
     let employee_id;
     let status;
+    let occupied;
 
     try {
         connection = await oracledb.getConnection({
@@ -210,15 +211,46 @@ const action_employee = async (req, res) => {
         employee_id = employee.employee_id;
         status = employee.approval_status;//0-> Disapproved 1->Approved
 
-        result = await connection.execute(queries.updateApproveQuery, [status, employee_id]);
+        if (status) {
+            //Approve the employee
+            result = await connection.execute(queries.updateApproveQuery, [status, employee_id]);
 
-        connection.commit();
-        if (result.rowsAffected === 1) {
-            responses.ResponseCode = 1;
-            responses.ResponseText = 'Employee Status Successfully Updated';
+            connection.commit();
+            if (result.rowsAffected === 1) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Employee Status Successfully Updated';
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'Employee Status Could Not Be Updated';
+            }
+
         } else {
-            responses.ResponseCode = 0;
-            responses.ResponseText = 'Employee Status Could Not Be Updated';
+            //Check if the employee is in persuit or not
+
+            occupied = await connection.execute(queries.employeeOccupiedCheckQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+            occupied = occupied.rows[0].OCCUPIED;
+
+            if (occupied) {
+                //Employee is occupied, can not disapprove
+
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'Employee is occupied, can not disapprove now.';
+
+            } else {
+                //Employee is not occupied, can approve
+
+                result = await connection.execute(queries.updateApproveQuery, [status, employee_id]);
+
+                connection.commit();
+                if (result.rowsAffected === 1) {
+                    responses.ResponseCode = 1;
+                    responses.ResponseText = 'Employee Status Successfully Updated';
+                } else {
+                    responses.ResponseCode = 0;
+                    responses.ResponseText = 'Employee Status Could Not Be Updated';
+                }
+            }
         }
 
 
@@ -251,7 +283,7 @@ const get_all_users = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllUsersQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.getAllUsersQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (result.rows.length) {
             responses.ResponseCode = 1;
@@ -260,7 +292,7 @@ const get_all_users = async (req, res) => {
             responses.ResponseCode = 0;
         }
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         res.send(err);
     } finally {
@@ -286,7 +318,7 @@ const get_all_employees = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllEmployeesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.getAllEmployeesQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (result.rows.length) {
             responses.ResponseCode = 1;
@@ -295,7 +327,7 @@ const get_all_employees = async (req, res) => {
             responses.ResponseCode = 0;
         }
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         res.send(err);
     } finally {
@@ -321,7 +353,7 @@ const get_all_customer_care = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllCCQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.getAllCCQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (result.rows.length) {
             responses.ResponseCode = 1;
@@ -330,7 +362,7 @@ const get_all_customer_care = async (req, res) => {
             responses.ResponseCode = 0;
         }
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         res.send(err);
     } finally {
@@ -356,7 +388,7 @@ const get_all_unapproved_employees = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllUnapployedEmployeesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.getAllUnapployedEmployeesQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (result.rows.length) {
             responses.ResponseCode = 1;
@@ -365,7 +397,7 @@ const get_all_unapproved_employees = async (req, res) => {
             responses.ResponseCode = 0;
         }
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         res.send(err);
     } finally {

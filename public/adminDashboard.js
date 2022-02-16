@@ -33,14 +33,14 @@ $(function () {
 });
 
 const home = async () => {
-    const MainContent = document.getElementById("mainContents");
-    const Admin_Name =
+  const MainContent = document.getElementById("mainContents");
+  const Admin_Name =
     JSON.parse(sessionStorage.getItem("user")).FIRST_NAME +
     " " +
     JSON.parse(sessionStorage.getItem("user")).LAST_NAME;
-    let design = `<h4> Welcome, ${Admin_Name} </h4>`;
+  let design = `<h4> Welcome, ${Admin_Name} </h4>`;
 
-    MainContent.innerHTML = design;
+  MainContent.innerHTML = design;
 }
 
 const usersList = async () => {
@@ -120,6 +120,7 @@ const employeeList = async () => {
                         <th scope="col">Department Name</th>
                         <th scope="col">Job Title</th>
                         <th scope="col">Total Request Accepted</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>`;
@@ -139,6 +140,7 @@ const employeeList = async () => {
                         <td>${element.DEPARTMENT_NAME}</td>
                         <td>${element.JOB_TITLE}</td>
                         <td>${element.REQ_COUNT}</td>
+                        <td><button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0)" class="btn btn-danger">Unapprove</button></td>
                     </tr>`;
 
     count++;
@@ -200,7 +202,7 @@ const unapprovedEmployeeList = async () => {
                           <td>${element.SERVICE_DESC}</td>
                           <td>${element.DEPARTMENT_NAME}</td>
                           <td>${element.JOB_TITLE}</td>
-                          <td><button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="approveEmployee(this.value)" class="btn btn-info">Approve</button></td>
+                          <td><button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 1)" class="btn btn-info">Approve</button></td>
                       </tr>`;
 
       count++;
@@ -285,33 +287,38 @@ const serviceDetails = async () => {
   MainContent.innerHTML = design;
 };
 
-const approveEmployee = async (value) => {
-    console.log(value);
+const actionEmployee = async (empId, status) => {
+  console.log(empId);
 
-    let emplpyeeObj = {
-        "employee_id" : value,
-        "approval_status" : 1
-    }
-    emplpyeeObj = JSON.stringify(emplpyeeObj);
-    console.log(emplpyeeObj)
-    
-    const response = await fetch('http://localhost:3000/api/updateEmployeeStatus',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: emplpyeeObj
-    });
-    RequestObj = await response.json();
-    console.log(RequestObj);
+  let emplpyeeObj = {
+    "employee_id": empId,
+    "approval_status": status
+  }
+  emplpyeeObj = JSON.stringify(emplpyeeObj);
+  console.log(emplpyeeObj)
 
-    if(RequestObj.ResponseCode == 1) {
-        window.alert(RequestObj.ResponseText);
-        unapprovedEmployeeList();
-    } else if(RequestObj.ResponseCode == -1){
-        window.alert(RequestObj.ResponseText);
-        window.alert(RequestObj.ErrorMessage);
+  const response = await fetch('http://localhost:3000/api/updateEmployeeStatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: emplpyeeObj
+  });
+  RequestObj = await response.json();
+  console.log(RequestObj);
+
+  if (RequestObj.ResponseCode == 1) {
+    window.alert(RequestObj.ResponseText);
+
+    if (status) {
+      unapprovedEmployeeList();
     } else {
-        window.alert(RequestObj.ResponseText);
+      employeeList();
     }
+  } else if (RequestObj.ResponseCode == -1) {
+    window.alert(RequestObj.ResponseText);
+    window.alert(RequestObj.ErrorMessage);
+  } else {
+    window.alert(RequestObj.ResponseText);
+  }
 }

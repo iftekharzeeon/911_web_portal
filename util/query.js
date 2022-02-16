@@ -200,6 +200,8 @@ let getShiftsQuery = 'SELECT * FROM shifts';
 
 let updateApproveQuery = 'UPDATE employees SET status = :status WHERE member_id = :employee_id';
 
+let employeeOccupiedCheckQuery = 'SELECT occupied FROM employees WHERE member_id = :employee_id';
+
 let adminCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 0';
 
 let getAllUsersQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, (SELECT COUNT(*) FROM REQUEST R WHERE R.CITIZEN_ID = M.MEMBER_ID) AS REQ_COUNT ` +
@@ -287,5 +289,6 @@ module.exports = {
     getAllUsersQuery,
     getAllEmployeesQuery,
     getAllCCQuery,
-    getAllUnapployedEmployeesQuery
+    getAllUnapployedEmployeesQuery,
+    employeeOccupiedCheckQuery
 }
