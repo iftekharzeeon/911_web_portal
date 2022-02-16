@@ -93,7 +93,7 @@
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                     id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong id="admin_name">mdo</strong>
+                    <strong id="admin_name"></strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                     <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -109,6 +109,97 @@
         <div class="p-5" id="mainContents">
         </div>
     </main>
+    <div class="modal lg fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Employee Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="hidden" id="employee_id" value="">
+                                <label for="first_name" class="col-form-label">First Name:</label>
+                                <input type="text" class="form-control" id="first_name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="col-form-label">Last Name:</label>
+                                <input type="text" class="form-control" id="last_name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="username" class="col-form-label">Username:</label>
+                                <input disabled type="text" class="form-control" id="username">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="col-form-label">Email:</label>
+                                <input disabled type="text" class="form-control" id="email">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="phone_number" class="col-form-label">Phone Number:</label>
+                                <input type="text" class="form-control" id="phone_number">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="hire_date" class="col-form-label">Hire Date:</label>
+                                <input disabled type="text" class="form-control" id="hire_date">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="hidden" id="location_id" value="">
+                                <label for="house_no" class="col-form-label">House No:</label>
+                                <input type="text" class="form-control" id="house_no">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="block" class="col-form-label">Block:</label>
+                                <input type="text" class="form-control" id="block">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="street" class="col-form-label">Street:</label>
+                                <input type="text" class="form-control" id="street">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="service_name" class="col-form-label">Service Name:</label>
+                                <input disabled type="text" class="form-control" id="service_name">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="dept_name" class="col-form-label">Department Name:</label>
+                                <select onchange="showJob(this.value)" id="dept_name" class="form-control" aria-label="Default select example">
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="job_title" class="col-form-label">Job Title:</label>
+                                <select id="job_title" class="form-control" aria-label="Default select example">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="salary" class="col-form-label">Salary:</label>
+                                <input type="text" class="form-control" id="salary">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="shift" class="col-form-label">Shift:</label>
+                                <select id="shift" class="form-control" aria-label="Default select example">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="updateInfo(2)" type="button" data-bs-dismiss="modal" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>

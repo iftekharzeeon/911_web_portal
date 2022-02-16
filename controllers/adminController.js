@@ -294,7 +294,9 @@ const get_all_users = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
@@ -329,7 +331,9 @@ const get_all_employees = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
@@ -364,7 +368,9 @@ const get_all_customer_care = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
@@ -399,7 +405,9 @@ const get_all_unapproved_employees = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
@@ -407,6 +415,117 @@ const get_all_unapproved_employees = async (req, res) => {
         }
         res.send(responses);
     }
+}
+
+const get_employee_info_for_edit = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let employee_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        employee_id = req.body.employee_id;
+
+        result = await connection.execute(queries.getEmployeeInfoForEditQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows[0];
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const update_employee_info = async (req, res) => {
+    let responses = {};
+
+    const employee = req.body;
+
+    console.log(employee);
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        //Location Info
+        let block = employee.block;
+        let street = employee.street;
+        let house_no = employee.house_no;
+        let location_id = employee.location_id;
+
+        //Employee Info
+        let employee_id = employee.employee_id;
+        let first_name = employee.first_name;
+        let last_name = employee.last_name;
+        let phone_number = employee.phone_number;
+        let member_type = employee.member_type; //0->Admin 1-> Citizen 2->Employee 3->Customer Care
+
+        //Job Info
+        let job_id = employee.job_id;
+
+        //Shift Info
+        let shift_id = employee.shift_id;
+
+        //Update Member Table
+
+        let result1 = await connection.execute(queries.updateMemberTableQuery, [first_name, last_name, phone_number, employee_id, member_type])
+
+        //Update Location Table
+        let result2 = await connection.execute(queries.updateLocationTableQuery, [block, street, house_no, location_id]);
+        
+        //Update Employees Table
+        let result3 = await connection.execute(queries.updateEmployeesTableQuery, [job_id, shift_id, employee_id]);
+
+        connection.commit();
+
+        if (result1.rowsAffected && result2.rowsAffected && result3.rowsAffected) {
+            responses.ResponseCode = 1;
+            responses.ResponseText = 'Employee Data Updated';
+        } else {
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'There was an error updating data';
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+
 }
 
 
@@ -417,5 +536,7 @@ module.exports = {
     get_all_users,
     get_all_employees,
     get_all_customer_care,
-    get_all_unapproved_employees
+    get_all_unapproved_employees,
+    get_employee_info_for_edit,
+    update_employee_info
 }

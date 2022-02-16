@@ -192,7 +192,7 @@ let getDepartmentJobQuery = 'SELECT * FROM jobs WHERE department_id = :departmen
 //Shift Controller
 //Get Shifts
 
-let getShiftsQuery = 'SELECT * FROM shifts';
+let getShiftsQuery = 'SELECT * FROM shift';
 
 
 //Admin Controller
@@ -209,33 +209,51 @@ let getAllUsersQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME A
                     'WHERE M.MEMBER_TYPE = 1 ' +
                     'AND L.LOCATION_ID = M.LOCATION_ID';
 
-let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
-                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
+let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
                             'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
                             'AND M.LOCATION_ID = L.LOCATION_ID ' +
                             'AND E.JOB_ID = J.JOB_ID ' +
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1';
 
-let getAllUnapployedEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE ` +
-                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
+let getAllUnapployedEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
                             'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
                             'AND M.LOCATION_ID = L.LOCATION_ID ' +
                             'AND E.JOB_ID = J.JOB_ID ' +
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND M.MEMBER_TYPE = 2 AND E.STATUS = 0';
 
 
-let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
-                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
-                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
-                            'AND M.LOCATION_ID = L.LOCATION_ID ' +
-                            'AND E.JOB_ID = J.JOB_ID ' +
-                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
-                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
-                            'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                        'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
+                        'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                        'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                        'AND E.JOB_ID = J.JOB_ID ' +
+                        'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                        'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                        'AND E.SHIFT_ID = SH.SHIFT_ID ' +
+                        'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+
+let getEmployeeInfoForEditQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESCRIPTION, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESCRIPTION, J.SALARY, E.STATUS, M.FIRST_NAME, M.LAST_NAME, M.EMAIL, M.PHONE_NUMBER, M.USER_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ' +
+                                'FROM EMPLOYEES E, JOBS J, DEPARTMENTS D, SERVICE S, SHIFT SH, MEMBER M, LOCATION L ' +
+                                'WHERE E.JOB_ID = J.JOB_ID AND E.SHIFT_ID = SH.SHIFT_ID ' +
+                                'AND M.MEMBER_ID = E.MEMBER_ID ' +
+                                'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                                'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                                'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                                'AND E.MEMBER_ID = :employee_id';
+
+let updateMemberTableQuery = 'UPDATE member SET first_name = :first_name, last_name = :last_name, phone_number = :phone_number WHERE member_id = :employee_id AND member_type = :member_type';
+
+let updateLocationTableQuery = 'UPDATE location SET block = :block, street = :street, house_no = :house_no WHERE location_id = :location_id';
+
+let updateEmployeesTableQuery = 'UPDATE employees SET job_id = :job_id, shift_id = :shift_id WHERE member_id = :employee_id';
 
 module.exports = {
     memberCheckUsernameQuery,
@@ -290,5 +308,9 @@ module.exports = {
     getAllEmployeesQuery,
     getAllCCQuery,
     getAllUnapployedEmployeesQuery,
-    employeeOccupiedCheckQuery
+    employeeOccupiedCheckQuery,
+    getEmployeeInfoForEditQuery,
+    updateMemberTableQuery,
+    updateLocationTableQuery,
+    updateEmployeesTableQuery
 }

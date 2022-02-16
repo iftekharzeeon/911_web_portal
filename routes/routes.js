@@ -53,7 +53,7 @@ router.post('/api/getServiceDepartments/', bodyParser, departmentController.get_
 router.post('/api/getDepartmentJobs/', bodyParser, jobController.get_jobs_department_wise);
 
 //Get Shifts
-router.post('/api/getShifts/', bodyParser, shiftController.get_shifts);
+router.get('/api/getShifts/', bodyParser, shiftController.get_shifts);
 
 //Update Employee Status
 router.post('/api/updateEmployeeStatus/', bodyParser, adminController.action_employee);
@@ -90,5 +90,11 @@ router.get('/api/getAllCustomerCares/', bodyParser, adminController.get_all_cust
 
 //Get All Unapproved Employee List
 router.get('/api/getAllUnapprovedEmployees/', bodyParser, adminController.get_all_unapproved_employees);
+
+//Get Employee Info For Edit
+router.post('/api/getEmployeeForEdit/', bodyParser, adminController.get_employee_info_for_edit);
+
+//Update Employee Info
+router.post('/api/updateEmployeeInfo/', bodyParser, adminController.update_employee_info);
 
 module.exports = router;

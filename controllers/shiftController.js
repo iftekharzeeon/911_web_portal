@@ -28,7 +28,9 @@ const get_shifts = async (req, res) => {
 
     } catch(err) {
         console.log(err);
-        res.send(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
     } finally {
         if (connection) {
             await connection.close();
