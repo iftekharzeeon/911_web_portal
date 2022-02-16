@@ -83,7 +83,7 @@ router.post('/api/customerCareSignUp', bodyParser, ccController.cc_register);
 router.get('/api/getAllUsers/', bodyParser, adminController.get_all_users);
 
 //Get All Employees
-router.get('/api/geAllEmployees/', bodyParser, adminController.get_all_employees);
+router.get('/api/getAllEmployees/', bodyParser, adminController.get_all_employees);
 
 //Get All Customer Care
 router.get('/api/getAllCustomerCares/', bodyParser, adminController.get_all_customer_care);
