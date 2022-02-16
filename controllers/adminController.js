@@ -139,7 +139,7 @@ const admin_create = async (req, res) => {
 
                 //Insert Into Member Table
 
-                result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
+                result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id, username]);
 
                 //Insert Password Info
                 let salt = '';
@@ -237,9 +237,153 @@ const action_employee = async (req, res) => {
 
 }
 
+const get_all_users = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getAllUsersQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch(err) {
+        console.log(err);
+        res.send(err);
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const get_all_employees = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getAllEmployeesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch(err) {
+        console.log(err);
+        res.send(err);
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const get_all_customer_care = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getAllCCQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch(err) {
+        console.log(err);
+        res.send(err);
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const get_all_unapproved_employees = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getAllUnapployedEmployeesQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch(err) {
+        console.log(err);
+        res.send(err);
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 
 module.exports = {
     admin_login,
     admin_create,
-    action_employee
+    action_employee,
+    get_all_users,
+    get_all_employees,
+    get_all_customer_care,
+    get_all_unapproved_employees
 }

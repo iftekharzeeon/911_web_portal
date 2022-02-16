@@ -79,4 +79,16 @@ router.post('/api/customerCareLogin/', bodyParser, ccController.login_cc);
 //Customer Care Sign Up
 router.post('/api/customerCareSignUp', bodyParser, ccController.cc_register);
 
+//Get All Users
+router.get('/api/getAllUsers/', bodyParser, adminController.get_all_users);
+
+//Get All Employees
+router.get('/api/geAllEmployees/', bodyParser, adminController.get_all_employees);
+
+//Get All Customer Care
+router.get('/api/getAllCustomerCares/', bodyParser, adminController.get_all_customer_care);
+
+//Get All Unapproved Employee List
+router.get('/api/getAllUnapprovedEmployees/', bodyParser, adminController.get_all_unapproved_employees);
+
 module.exports = router;

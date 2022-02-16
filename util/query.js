@@ -3,8 +3,8 @@
 
 let insertLocationQuery = 'INSERT INTO location(location_id, block, street, house_no) VALUES(:location_id, :block, :street, :house_no)';
 
-let insertMemberQuery = 'INSERT INTO member(member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id) ' +
-                        ' VALUES(:member_id, :first_name, :last_name, :email, :phone_number, :registration_date, :member_type, :location_id)';
+let insertMemberQuery = 'INSERT INTO member(member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id, user_name) ' +
+                        ' VALUES(:member_id, :first_name, :last_name, :email, :phone_number, :registration_date, :member_type, :location_id, :username)';
 
 let memberPasswordQuery = 'INSERT INTO member_password(member_password_id, member_id, password_key) VALUES(:member_id, :member_id, :password_key)';
 
@@ -202,6 +202,39 @@ let updateApproveQuery = 'UPDATE employees SET status = :status WHERE member_id 
 
 let adminCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = 0';
 
+let getAllUsersQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, (SELECT COUNT(*) FROM REQUEST R WHERE R.CITIZEN_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                    'FROM MEMBER M, LOCATION L ' +
+                    'WHERE M.MEMBER_TYPE = 1 ' +
+                    'AND L.LOCATION_ID = M.LOCATION_ID';
+
+let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                            'AND E.JOB_ID = J.JOB_ID ' +
+                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1';
+
+let getAllUnapployedEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                            'AND E.JOB_ID = J.JOB_ID ' +
+                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 0';
+
+
+let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                            'AND E.JOB_ID = J.JOB_ID ' +
+                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -250,5 +283,9 @@ module.exports = {
     employeeRequestHistoryListQuery,
     requestHistoryDetailsQuery,
     vehicleCounterQuery,
-    employeeCountQuery
+    employeeCountQuery,
+    getAllUsersQuery,
+    getAllEmployeesQuery,
+    getAllCCQuery,
+    getAllUnapployedEmployeesQuery
 }

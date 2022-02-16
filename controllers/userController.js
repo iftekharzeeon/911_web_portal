@@ -75,7 +75,7 @@ const user_create = async (req, res) => {
 
                 //Insert Into Member Table
 
-                result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id]);
+                result = await connection.execute(queries.insertMemberQuery, [member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id, username]);
 
                 //Insert Password Info
                 let salt = '';
