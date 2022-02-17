@@ -567,6 +567,124 @@ const update_employee_info = async (req, res) => {
 
 }
 
+const get_request_log = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let resolved_status = 1;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getRequestLogQuery, [resolved_status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const get_request_details = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let request_id = req.body.request_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.requestHistoryDetailsQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const get_ongoing_request_list = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let resolved_status = 1;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        result = await connection.execute(queries.getOngoingRequestLogQuery, [resolved_status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+
 
 module.exports = {
     admin_login,
@@ -578,5 +696,8 @@ module.exports = {
     get_all_vehicle,
     get_all_unapproved_employees,
     get_employee_info_for_edit,
-    update_employee_info
+    update_employee_info,
+    get_request_log,
+    get_request_details,
+    get_ongoing_request_list
 }

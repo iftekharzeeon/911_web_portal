@@ -88,6 +88,22 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#" onclick="requestLogList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid" />
+                        </svg>
+                        Request Log
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="ongoingRequestsList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid" />
+                        </svg>
+                        Ongoing Requests
+                    </a>
+                </li>
+                <li>
                     <a href="#" onclick="serviceDetails()" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#people-circle" />
@@ -204,6 +220,22 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button onclick="updateInfo(2)" type="button" data-bs-dismiss="modal" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal lg fade" id="requestDetailsModal" tabindex="-1" aria-labelledby="requestDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="requestDetailsModalBody" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

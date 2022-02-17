@@ -100,4 +100,13 @@ router.post('/api/getEmployeeForEdit/', bodyParser, adminController.get_employee
 //Update Employee Info
 router.post('/api/updateEmployeeInfo/', bodyParser, adminController.update_employee_info);
 
+//Get Request Log
+router.get('/api/getRequestLog/', bodyParser, adminController.get_request_log);
+
+//Get Request Details
+router.post('/api/getRequestDetails/', bodyParser, adminController.get_request_details);
+
+//Get Ongoing Request Log
+router.get('/api/getOngoingRequestLog', bodyParser, adminController.get_ongoing_request_list);
+
 module.exports = router;

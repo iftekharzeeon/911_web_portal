@@ -26,7 +26,7 @@ let ongoingEmployeeCounterQuery = 'SELECT COUNT(*) AS COUNTER FROM request_emplo
 
 let ongoingVehicleCounterQuery = 'SELECT DISTINCT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (vehicle_accepted = 0 OR vehicle_accepted = 1)';
 
-let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.VEHICLE_TYPE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, D.DEPARTMENT_TYPE, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER ` +
+let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ID, RE.SERVICE_ID, RE.VEHICLE_ID, E.HIRE_DATE, V.DRIVER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION, M.FIRST_NAME || ' ' || M.LAST_NAME AS EMPLOYEE_NAME, M.PHONE_NUMBER ` +
                         'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, VEHICLE V, JOBS J, DEPARTMENTS D, SERVICE S, MEMBER M, REQUEST R ' +
                         'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
                         'AND RE.REQUEST_ID = R.REQUEST_ID ' +
@@ -102,14 +102,15 @@ let employeeRequestHistoryListQuery = `SELECT R.REQUEST_TIME, RE.EMPLOYEE_ID, M.
 
 
 //Employee Request History Details
-let requestHistoryDetailsQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ACCEPTED, RE.EMPLOYEE_ID, RE.SERVICE_ID, ` +
+let requestHistoryDetailsQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOYEE_ACCEPTED, RE.EMPLOYEE_ID, RE.SERVICE_ID, S.DESCRIPTION, ` +
                                         `RE.VEHICLE_ID, EX.HIRE_DATE, MEX.FIRST_NAME || ' ' || MEX.LAST_NAME AS OTHER_EMPLOYEE_NAME, ` +
                                         'MEX.PHONE_NUMBER AS OTHER_EMPLOYEE_PHONE, MEX.EMAIL AS OTHER_EMPLOYEE_EMAIL, V.DRIVER_ID, RE.VEHICLE_ACCEPTED, '  +
                                         `DR.FIRST_NAME || ' ' || DR.LAST_NAME AS DRIVER_NAME, DR.PHONE_NUMBER AS DRIVER_PHONE, ` +
                                         'DR.EMAIL AS DRIVER_EMAIL, J.JOB_TITLE, D.DEPARTMENT_NAME, J.JOB_TITLE AS EMPLOYEE_JOB ' +
-                                        'FROM REQUEST R, REQUEST_EMPLOYEE RE, EMPLOYEES EX, VEHICLE V, MEMBER MEX, MEMBER DR, JOBS J, DEPARTMENTS D ' +
+                                        'FROM REQUEST R, REQUEST_EMPLOYEE RE, EMPLOYEES EX, VEHICLE V, MEMBER MEX, MEMBER DR, JOBS J, DEPARTMENTS D, SERVICE S ' +
                                         'WHERE R.REQUEST_ID = RE.REQUEST_ID ' +
                                         'AND RE.EMPLOYEE_ID = EX.MEMBER_ID ' +
+                                        'AND RE.SERVICE_ID = S.SERVICE_ID ' +
                                         'AND EX.MEMBER_ID = MEX.MEMBER_ID ' +
                                         'AND RE.VEHICLE_ID = V.VEHICLE_ID ' +
                                         'AND V.DRIVER_ID = DR.MEMBER_ID ' +
@@ -170,7 +171,7 @@ let vehicleCheckQuery = 'SELECT * FROM vehicle WHERE service_id = :service_id AN
 
 let updateRequestVehicleInfoQuery = 'UPDATE request_employee SET vehicle_id = :vehicle_id, vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
 
-let updateVehicleOccupiedStatusQuery = 'UPDATE vehicle SET occupied_status = :vehicle_occupied_status WHERE vehicle_id = :vehicle_id';
+let updateVehicleOccupiedStatusQuery = 'UPDATE vehicle SET occupied = :vehicle_occupied_status WHERE vehicle_id = :vehicle_id';
 
 let getServiceIdQuery = 'SELECT service_id FROM request_employee WHERE request_employee_id = :request_employee_id';
 
@@ -265,6 +266,19 @@ let updateLocationTableQuery = 'UPDATE location SET block = :block, street = :st
 
 let updateEmployeesTableQuery = 'UPDATE employees SET job_id = :job_id, shift_id = :shift_id WHERE member_id = :employee_id';
 
+let getRequestLogQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.CITIZEN_ID, R.LOCATION_ID, R.RESOLVED_STATUS, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, M.EMAIL, M.PHONE_NUMBER, M.USER_NAME, L.BLOCK, L.STREET, L.HOUSE_NO 
+                        FROM REQUEST R, MEMBER M, LOCATION L 
+                        WHERE R.CITIZEN_ID = M.MEMBER_ID 
+                        AND R.LOCATION_ID = L.LOCATION_ID 
+                        AND R.RESOLVED_STATUS = :resolved_status`;
+
+let getOngoingRequestLogQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.CITIZEN_ID, R.LOCATION_ID, R.RESOLVED_STATUS, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, M.EMAIL, M.PHONE_NUMBER, M.USER_NAME, L.BLOCK, L.STREET, L.HOUSE_NO 
+                        FROM REQUEST R, MEMBER M, LOCATION L 
+                        WHERE R.CITIZEN_ID = M.MEMBER_ID 
+                        AND R.LOCATION_ID = L.LOCATION_ID 
+                        AND R.RESOLVED_STATUS <> :resolved_status`;
+
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -323,5 +337,7 @@ module.exports = {
     updateMemberTableQuery,
     updateLocationTableQuery,
     updateEmployeesTableQuery,
-    getAllVehicleQuery
+    getAllVehicleQuery,
+    getRequestLogQuery,
+    getOngoingRequestLogQuery
 }

@@ -399,7 +399,7 @@ const serviceDetails = async () => {
 
   design += '<hr> <h5> Select a Service to see Departments</h5>';
   design += `<select onchange="showDeptTable(this.value)" id="service_name_2" class="form-control" aria-label="Default select example"></select> <hr> <div id="deptTable"></div>`;
-  
+
 
   MainContent.innerHTML = design;
   document.getElementById("service_name_2").innerHTML = selectDesign;
@@ -761,4 +761,182 @@ const showJobsTable = async (department_id) => {
                 </table>`;
 
   document.getElementById("jobsTable").innerHTML = design;
-} 
+}
+
+const requestLogList = async () => {
+  const MainContent = document.getElementById("mainContents");
+
+  const response = await fetch("http://localhost:3000/api/getRequestLog", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  ResponseObj = await response.json();
+  console.log(ResponseObj);
+  let design = '';
+
+  if (ResponseObj.ResponseCode) {
+    design = `<table class="table" style="font-size:larger">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Request ID</th>
+        <th scope="col">Request Time</th>
+        <th scope="col">Citizen ID</th>
+        <th scope="col">Citizen Name</th>
+        <th scope="col">Citizen Username</th>
+        <th scope="col">Citizen Phone Number</th>
+        <th scope="col">Citizen Email</th>
+        <th scope="col">Location</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>`;
+
+    let count = 1;
+    ResponseObj.ResponseData.forEach((element) => {
+      design += `<tr>
+        <th scope="row">${count}</th>
+        <td>${element.REQUEST_ID}</td>
+        <td>${element.REQUEST_TIME}</td>
+        <td>${element.CITIZEN_ID}</td>
+        <td>${element.CITIZEN_NAME}</td>
+        <td>${element.USER_NAME}</td>
+        <td>${element.PHONE_NUMBER}</td>
+        <td>${element.EMAIL}</td>
+        <td>${element.HOUSE_NO + ', ' + element.BLOCK + ', ' + element.STREET}</td>
+        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#requestDetailsModal">Details</button></td>
+    </tr>`;
+
+      count++;
+    });
+
+    design += `</tbody>
+</table>`;
+  } else {
+    design = 'No Data Found';
+  }
+  MainContent.innerHTML = design;
+}
+
+const requestDetails = async (request_id) => {
+  console.log(request_id);
+
+  let requestObj = {
+    request_id: request_id
+  };
+
+  requestObj = JSON.stringify(requestObj);
+
+  const response = await fetch("http://localhost:3000/api/getRequestDetails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestObj
+  });
+  ResponseObj = await response.json();
+  console.log(ResponseObj);
+
+  const MainContent = document.getElementById("requestDetailsModalBody");
+
+  let design = `Request ID: ${request_id} <br>`;
+
+  if (ResponseObj.ResponseCode) {
+    design = `<table class="table" style="font-size:medium">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Request Employee ID</th>
+        <th scope="col">Service Name</th>
+        <th scope="col">Employee Name</th>
+        <th scope="col">Employee Department</th>
+        <th scope="col">Employee Phone Number</th>
+        <th scope="col">Employee Job</th>
+        <th scope="col">Driver Name</th>
+    </tr>
+    </thead>
+    <tbody>`;
+
+    let count = 1;
+    ResponseObj.ResponseData.forEach((element) => {
+      design += `<tr>
+        <th scope="row">${count}</th>
+        <td>${element.REQUEST_EMPLOYEE_ID}</td>
+        <td>${element.DESCRIPTION}</td>
+        <td>${element.OTHER_EMPLOYEE_NAME}</td>
+        <td>${element.DEPARTMENT_NAME}</td>
+        <td>${element.OTHER_EMPLOYEE_PHONE}</td>
+        <td>${element.EMPLOYEE_JOB}</td>
+        <td>${element.DRIVER_NAME}</td>
+    </tr>`;
+
+      count++;
+    });
+
+    design += `</tbody>
+</table>`;
+  } else {
+    design = 'No Data Found';
+  }
+  MainContent.innerHTML = design;
+
+}
+
+const ongoingRequestsList = async () => {
+  const MainContent = document.getElementById("mainContents");
+
+  const response = await fetch("http://localhost:3000/api/getOngoingRequestLog", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  ResponseObj = await response.json();
+  console.log(ResponseObj);
+  let design = '';
+
+  if (ResponseObj.ResponseCode) {
+    design = `<table class="table" style="font-size:larger">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Request ID</th>
+        <th scope="col">Request Time</th>
+        <th scope="col">Citizen ID</th>
+        <th scope="col">Citizen Name</th>
+        <th scope="col">Citizen Username</th>
+        <th scope="col">Citizen Phone Number</th>
+        <th scope="col">Citizen Email</th>
+        <th scope="col">Location</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>`;
+
+    let count = 1;
+    ResponseObj.ResponseData.forEach((element) => {
+      design += `<tr>
+        <th scope="row">${count}</th>
+        <td>${element.REQUEST_ID}</td>
+        <td>${element.REQUEST_TIME}</td>
+        <td>${element.CITIZEN_ID}</td>
+        <td>${element.CITIZEN_NAME}</td>
+        <td>${element.USER_NAME}</td>
+        <td>${element.PHONE_NUMBER}</td>
+        <td>${element.EMAIL}</td>
+        <td>${element.HOUSE_NO + ', ' + element.BLOCK + ', ' + element.STREET}</td>
+        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#requestDetailsModal">Details</button></td>
+    </tr>`;
+
+      count++;
+    });
+
+    design += `</tbody>
+</table>`;
+  } else {
+    design = 'No Data Found';
+  }
+  MainContent.innerHTML = design;
+}
