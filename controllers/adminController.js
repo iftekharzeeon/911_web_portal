@@ -380,6 +380,45 @@ const get_all_customer_care = async (req, res) => {
     }
 }
 
+const get_all_vehicle = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        let employee_status = 1;
+
+        result = await connection.execute(queries.getAllVehicleQuery, [employee_status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 const get_all_unapproved_employees = async (req, res) => {
     let result;
 
@@ -536,6 +575,7 @@ module.exports = {
     get_all_users,
     get_all_employees,
     get_all_customer_care,
+    get_all_vehicle,
     get_all_unapproved_employees,
     get_employee_info_for_edit,
     update_employee_info

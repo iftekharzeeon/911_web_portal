@@ -88,6 +88,9 @@ router.get('/api/getAllEmployees/', bodyParser, adminController.get_all_employee
 //Get All Customer Care
 router.get('/api/getAllCustomerCares/', bodyParser, adminController.get_all_customer_care);
 
+//Get All Vehicle
+router.get('/api/getAllVehicle/', bodyParser, adminController.get_all_vehicle);
+
 //Get All Unapproved Employee List
 router.get('/api/getAllUnapprovedEmployees/', bodyParser, adminController.get_all_unapproved_employees);
 

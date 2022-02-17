@@ -180,7 +180,7 @@ let updateVehicleAcceptedStatusto1Query = 'UPDATE request_employee SET vehicle_a
 //Department Controller
 //Get Departments Service Wise
 
-let getServiceDepartmentQuery = 'SELECT * FROM departments WHERE service_id = :service_id';
+let getServiceDepartmentQuery = 'SELECT * FROM departments d, location l WHERE service_id = :service_id AND d.location_id = l.location_id';
 
 
 //Job Controller
@@ -239,6 +239,16 @@ let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS U
                         'AND D.SERVICE_ID = S.SERVICE_ID ' +
                         'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                         'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+
+
+let getAllVehicleQuery = `SELECT V.VEHICLE_ID, E.MEMBER_ID, E.HIRE_DATE, E.SHIFT_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS DRIVER_NAME, M.PHONE_NUMBER, M.EMAIL, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.VEHICLE_ID = V.VEHICLE_ID) AS REQ_COUNT 
+                            FROM VEHICLE V, EMPLOYEES E, MEMBER M, SERVICE S, DEPARTMENTS D, SHIFT SH 
+                            WHERE V.DRIVER_ID = E.MEMBER_ID 
+                            AND E.MEMBER_ID = M.MEMBER_ID 
+                            AND V.SERVICE_ID = S.SERVICE_ID 
+                            AND V.DEPARTMENT_ID = D.DEPARTMENT_ID 
+                            AND E.SHIFT_ID = SH.SHIFT_ID 
+                            AND E.STATUS = :employee_status`;                        
 
 let getEmployeeInfoForEditQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESCRIPTION, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESCRIPTION, J.SALARY, E.STATUS, M.FIRST_NAME, M.LAST_NAME, M.EMAIL, M.PHONE_NUMBER, M.USER_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ' +
                                 'FROM EMPLOYEES E, JOBS J, DEPARTMENTS D, SERVICE S, SHIFT SH, MEMBER M, LOCATION L ' +
@@ -312,5 +322,6 @@ module.exports = {
     getEmployeeInfoForEditQuery,
     updateMemberTableQuery,
     updateLocationTableQuery,
-    updateEmployeesTableQuery
+    updateEmployeesTableQuery,
+    getAllVehicleQuery
 }

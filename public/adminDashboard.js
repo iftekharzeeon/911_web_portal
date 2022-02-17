@@ -291,11 +291,118 @@ const customerCareList = async () => {
   MainContent.innerHTML = design;
 };
 
+const vehicleList = async () => {
+  const MainContent = document.getElementById("mainContents");
+
+  const response = await fetch(
+    "http://localhost:3000/api/getAllVehicle",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  RequestObj = await response.json();
+  console.log(RequestObj);
+
+  let design = "";
+
+  if (RequestObj.ResponseCode) {
+    design = `<table class="table" style="font-size:larger">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Vehicle ID</th>
+                        <th scope="col">Driver Member ID</th>
+                        <th scope="col">Driver Name</th>
+                        <th scope="col">Driver Phone Number</th>
+                        <th scope="col">Driver Email</th>
+                        <th scope="col">Driver Hire Date</th>
+                        <th scope="col">Service Desc</th>
+                        <th scope="col">Department Name</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Request Accepted</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+
+    let count = 1;
+    RequestObj.ResponseData.forEach((element) => {
+      design += `<tr>
+                        <th scope="row">${count}</th>
+                        <td>${element.VEHICLE_ID}</td>
+                        <td>${element.MEMBER_ID}</td>
+                        <td>${element.DRIVER_NAME}</td>
+                        <td>${element.PHONE_NUMBER}</td>
+                        <td>${element.EMAIL}</td>
+                        <td>${element.HIRE_DATE}</td>
+                        <td>${element.SERVICE_DESC}</td>
+                        <td>${element.DEPARTMENT_NAME}</td>
+                        <td>${element.SHIFT_DESC}</td>
+                        <td>${element.REQ_COUNT}</td>
+                    </tr>`;
+
+      count++;
+    });
+
+    design += `</tbody>
+                </table>`;
+  } else {
+    design = "No Data Found";
+  }
+  MainContent.innerHTML = design;
+};
+
 const serviceDetails = async () => {
   const MainContent = document.getElementById("mainContents");
 
-  let design = `Coming Soon`;
+  const response = await fetch(
+    "http://localhost:3000/api/getServices",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  RequestObj = await response.json();
+  console.log(RequestObj);
+
+  let design = `<h4> Services </h4>`;
+  let selectDesign = ``;
+  design += `<table class="table" style="font-size:larger">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Service ID</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+
+  let count = 1;
+
+  RequestObj.forEach((element) => {
+    design += `<tr>
+                      <th scope="row">${count}</th>
+                      <td>${element.SERVICE_ID}</td>
+                      <td>${element.DESCRIPTION}</td>
+                  </tr>`;
+    selectDesign += `<option value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+    count++;
+  });
+
+  design += `</tbody>
+                </table>`;
+
+  design += '<hr> <h5> Select a Service to see Departments</h5>';
+  design += `<select onchange="showDeptTable(this.value)" id="service_name_2" class="form-control" aria-label="Default select example"></select> <hr> <div id="deptTable"></div>`;
+  
+
   MainContent.innerHTML = design;
+  document.getElementById("service_name_2").innerHTML = selectDesign;
 };
 
 const actionEmployee = async (empId, status) => {
@@ -537,3 +644,121 @@ const updateInfo = async (mem_type) => {
     window.alert(responseObj.ResponseText);
   }
 };
+
+const showDeptTable = async (service_id) => {
+  console.log(service_id);
+
+  let serviceObj = {
+    service_id: service_id,
+  };
+
+  serviceObj = JSON.stringify(serviceObj);
+
+  const responseDepartments = await fetch(
+    "http://localhost:3000/api/getServiceDepartments",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: serviceObj,
+    }
+  );
+  DepartmentObj = await responseDepartments.json();
+
+  console.log(DepartmentObj);
+
+  let design = `<h4> Departments </h4>`;
+  let selectDesign = ``;
+
+  design += `<table class="table" style="font-size:larger">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Department ID</th>
+                        <th scope="col">Department Name</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+
+  let count = 1;
+
+  DepartmentObj.forEach((element) => {
+    design += `<tr>
+                      <th scope="row">${count}</th>
+                      <td>${element.DEPARTMENT_ID}</td>
+                      <td>${element.DEPARTMENT_NAME}</td>
+                      <td>${element.BLOCK + ', ' + element.STREET + ', ' + element.HOUSE_NO}</td>
+                  </tr>`;
+
+    selectDesign += `<option value="${element.DEPARTMENT_ID}">${element.DEPARTMENT_NAME}</option>`;
+    count++;
+  });
+
+  design += `</tbody>
+                </table>`;
+
+  design += '<hr> <h5> Select a Department to see Jobs</h5>';
+  design += `<select onchange="showJobsTable(this.value)" id="dept_name_2" class="form-control" aria-label="Default select example"></select> <hr> <div id="jobsTable"></div>`;
+
+  document.getElementById("deptTable").innerHTML = design;
+  document.getElementById("dept_name_2").innerHTML = selectDesign;
+}
+
+const showJobsTable = async (department_id) => {
+  console.log(department_id);
+
+  let departmentObj = {
+    department_id: department_id,
+  };
+
+  departmentObj = JSON.stringify(departmentObj);
+
+  const responseJobs = await fetch(
+    "http://localhost:3000/api/getDepartmentJobs",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: departmentObj,
+    }
+  );
+  JobsObj = await responseJobs.json();
+
+  console.log(JobsObj);
+
+  let design = `<h4> Jobs </h4>`;
+  let selectDesign = ``;
+
+  design += `<table class="table" style="font-size:larger">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Job ID</th>
+                        <th scope="col">Job Title</th>
+                        <th scope="col">Salary</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+
+  let count = 1;
+
+  JobsObj.forEach((element) => {
+    design += `<tr>
+                      <th scope="row">${count}</th>
+                      <td>${element.JOB_ID}</td>
+                      <td>${element.JOB_TITLE}</td>
+                      <td>${element.SALARY}</td>
+                  </tr>`;
+
+    selectDesign += `<option value="${element.JOB_ID}">${element.JOB_TITLE}</option>`;
+    count++;
+  });
+
+  design += `</tbody>
+                </table>`;
+
+  document.getElementById("jobsTable").innerHTML = design;
+} 
