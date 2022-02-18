@@ -109,4 +109,19 @@ router.post('/api/getRequestDetails/', bodyParser, adminController.get_request_d
 //Get Ongoing Request Log
 router.get('/api/getOngoingRequestLog', bodyParser, adminController.get_ongoing_request_list);
 
+//Get Department Drivers
+router.post('/api/getDepartmentDrivers/', bodyParser, adminController.get_department_drivers);
+
+//Add Vehicle
+router.post('/api/addVehicle/', bodyParser, adminController.add_vehicle);
+
+//Add Service
+router.post('/api/addService/', bodyParser, adminController.add_service);
+
+//Add Department
+router.post('/api/addDepartment/', bodyParser, adminController.add_department);
+
+//Add Job
+router.post('/api/addJob/', bodyParser, adminController.add_job);
+
 module.exports = router;

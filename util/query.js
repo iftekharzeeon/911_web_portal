@@ -220,7 +220,7 @@ let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NA
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1';
 
-let getAllUnapployedEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC ` +
+let getAllUnapprovedEmployeeQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC ` +
                             'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
                             'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
                             'AND M.LOCATION_ID = L.LOCATION_ID ' +
@@ -228,7 +228,7 @@ let getAllUnapployedEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' ||
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
-                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 0';
+                            'AND E.STATUS = 0';
 
 
 let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
@@ -278,6 +278,22 @@ let getOngoingRequestLogQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.CITIZEN_
                         AND R.LOCATION_ID = L.LOCATION_ID 
                         AND R.RESOLVED_STATUS <> :resolved_status`;
 
+let getDepartmentDriversQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS DRIVER_NAME 
+                                FROM EMPLOYEES E, JOBS J, MEMBER M, DEPARTMENTS D 
+                                WHERE E.MEMBER_ID = M.MEMBER_ID 
+                                AND E.JOB_ID = J.JOB_ID 
+                                AND D.DEPARTMENT_ID = J.DEPARTMENT_ID 
+                                AND J.JOB_TITLE = 'Driver' 
+                                AND D.DEPARTMENT_ID = :department_id  
+                                AND E.STATUS = 1`;
+
+let insertVehicleQuery = 'INSERT INTO vehicle VALUES(:vehicle_id, 0, :driver_id, :service_id, :department_id)';
+
+let insertServiceQuery = 'INSERT INTO service VALUES(:service_id, :service_name)';
+
+let insertDepartmentQuery = 'INSERT INTO departments VALUES(:department_id, :department_name, :location_id, :service_id)';
+
+let insertJobQuery = 'INSERT INTO jobs VALUES(:job_id, :job_title, :salary, :department_id)';
 
 module.exports = {
     memberCheckUsernameQuery,
@@ -331,7 +347,7 @@ module.exports = {
     getAllUsersQuery,
     getAllEmployeesQuery,
     getAllCCQuery,
-    getAllUnapployedEmployeesQuery,
+    getAllUnapprovedEmployeeQuery,
     employeeOccupiedCheckQuery,
     getEmployeeInfoForEditQuery,
     updateMemberTableQuery,
@@ -339,5 +355,10 @@ module.exports = {
     updateEmployeesTableQuery,
     getAllVehicleQuery,
     getRequestLogQuery,
-    getOngoingRequestLogQuery
+    getOngoingRequestLogQuery,
+    getDepartmentDriversQuery,
+    insertVehicleQuery,
+    insertServiceQuery,
+    insertDepartmentQuery,
+    insertJobQuery
 }

@@ -433,7 +433,7 @@ const get_all_unapproved_employees = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllUnapployedEmployeesQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        result = await connection.execute(queries.getAllUnapprovedEmployeeQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (result.rows.length) {
             responses.ResponseCode = 1;
@@ -684,6 +684,273 @@ const get_ongoing_request_list = async (req, res) => {
     }
 }
 
+const get_department_drivers = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let department_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        department_id = req.body.department_id;
+
+        result = await connection.execute(queries.getDepartmentDriversQuery, [department_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const add_vehicle = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let department_id;
+    let driver_id;
+    let service_id;
+    let vehicle_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        driver_id = req.body.driver_id;
+        service_id = req.body.service_id;
+        department_id = req.body.department_id;
+
+        //Get a new vehicle id
+        await syRegister.getNextId(connection, 5).then(function (data) {
+            vehicle_id = data;
+        });
+
+        //Insert into vehicle
+        result = await connection.execute(queries.insertVehicleQuery, [vehicle_id, driver_id, service_id, department_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        connection.commit();
+
+        if (result.rowsAffected) {
+            responses.ResponseCode = 1;
+            responses.ResponseText = 'New Vehicle Added';
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const add_service = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let service_name;
+    let service_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        service_name = req.body.service_name;
+
+        //Get a new Service id
+        await syRegister.getNextId(connection, 6).then(function (data) {
+            service_id = data;
+        });
+
+        //Insert into Service
+        result = await connection.execute(queries.insertServiceQuery, [service_id, service_name], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        connection.commit();
+
+        if (result.rowsAffected) {
+            responses.ResponseCode = 1;
+            responses.ResponseText = 'New Service Added';
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const add_department = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let department_name;
+    let service_id;
+    let block;
+    let street;
+    let house_no;
+    let department_id;
+    let location_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        department_name = req.body.department_name;
+        service_id = req.body.service_id;
+        block = req.body.block;
+        street = req.body.street;
+        house_no = req.body.house_no;
+
+        //Get a new Department id
+        await syRegister.getNextId(connection, 7).then(function (data) {
+            department_id = data;
+        });
+
+        //Get Next Location Id
+        await syRegister.getNextId(connection, 2).then(function (data) {
+            location_id = data;
+        });
+
+        //Insert Into Location Table
+
+        result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+
+        //Insert into Department
+        result = await connection.execute(queries.insertDepartmentQuery, [department_id, department_name, location_id, service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        connection.commit();
+
+        if (result.rowsAffected) {
+            responses.ResponseCode = 1;
+            responses.ResponseText = 'New Department Added';
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const add_job = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let job_title;
+    let job_id;
+    let salary;
+    let department_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        job_title = req.body.job_title;
+        department_id = req.body.department_id;
+        salary = req.body.salary;
+
+        //Get a new Job id
+        await syRegister.getNextId(connection, 8).then(function (data) {
+            job_id = data;
+        });
+
+
+        //Insert into Job
+        result = await connection.execute(queries.insertJobQuery, [job_id, job_title, salary, department_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        connection.commit();
+
+        if (result.rowsAffected) {
+            responses.ResponseCode = 1;
+            responses.ResponseText = 'New Job Added';
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
 
 
 module.exports = {
@@ -699,5 +966,10 @@ module.exports = {
     update_employee_info,
     get_request_log,
     get_request_details,
-    get_ongoing_request_list
+    get_ongoing_request_list,
+    get_department_drivers,
+    add_vehicle,
+    add_service,
+    add_department,
+    add_job
 }

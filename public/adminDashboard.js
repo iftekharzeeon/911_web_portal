@@ -145,8 +145,8 @@ const employeeList = async () => {
                         <td>${element.SHIFT_DESC}</td>
                         <td>${element.REQ_COUNT}</td>
                         <td>
-                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="editEmployee(this.value, 1)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit Info</button>
-                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0)" class="btn btn-danger">Unapprove</button>
+                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="editEmployee(this.value, 2)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Edit Info</button>
+                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0, 2)" class="btn btn-danger">Unapprove</button>
                         </td>
                     </tr>`;
 
@@ -259,6 +259,7 @@ const customerCareList = async () => {
                         <th scope="col">Department Name</th>
                         <th scope="col">Job Title</th>
                         <th scope="col">Shift</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>`;
@@ -278,6 +279,8 @@ const customerCareList = async () => {
                         <td>${element.DEPARTMENT_NAME}</td>
                         <td>${element.JOB_TITLE}</td>
                         <td>${element.SHIFT_DESC}</td>
+                        <td><button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="editEmployee(this.value, 3)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Edit Info</button></td>
+                        <td><button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0, 3)" class="btn btn-danger">Unapprove</button></td>
                     </tr>`;
 
       count++;
@@ -306,10 +309,10 @@ const vehicleList = async () => {
   RequestObj = await response.json();
   console.log(RequestObj);
 
-  let design = "";
+  let design = '<div class="row"> <div class="col-md-10"> <h4> Vehicles </h4> </div> <div class="col-md-2"> <p align="right"><button class="btn btn-info" onclick="addVehicle()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Vehicle</button></p></div> </div> <hr>';
 
   if (RequestObj.ResponseCode) {
-    design = `<table class="table" style="font-size:larger">
+    design += `<table class="table" style="font-size:larger">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -354,6 +357,62 @@ const vehicleList = async () => {
   MainContent.innerHTML = design;
 };
 
+const addVehicle = async () => {
+
+  const MainContent = document.getElementById("oneModalBody");
+
+  let design = `<form>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="service_name" class="col-form-label">Service Name:</label>
+                        <select onchange="showDept(this.value)" id="service_name" class="form-control" aria-label="Default select example">
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="dept_name" class="col-form-label">Department Name:</label>
+                        <select onchange="showDrivers(this.value)" id="dept_name" class="form-control" aria-label="Default select example">
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="driver_name" class="col-form-label">Driver Name</label>
+                        <select id="driver_name" class="form-control" aria-label="Default select example">
+                        </select>
+                    </div>
+                  </div>
+                </form>`;
+
+  let selectDesign = '';
+  const response = await fetch(
+    "http://localhost:3000/api/getServices",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  RequestObj = await response.json();
+  console.log(RequestObj);
+
+  selectDesign += `<option selected disabled value="">Select a Service</option>`;
+
+  RequestObj.forEach((element) => {
+    selectDesign += `<option value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+  });
+
+  console.log(selectDesign);
+
+  MainContent.innerHTML = design;
+
+  document.getElementById("exampleModalLabel2").innerHTML = 'Add a New Vehicle';
+
+  document.getElementById("oneModalFooter").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button onclick="addVehicleInfo()" id="updateButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add</button>`;
+
+  document.getElementById("service_name").innerHTML = selectDesign;
+}
+
 const serviceDetails = async () => {
   const MainContent = document.getElementById("mainContents");
 
@@ -370,8 +429,8 @@ const serviceDetails = async () => {
   RequestObj = await response.json();
   console.log(RequestObj);
 
-  let design = `<h4> Services </h4>`;
-  let selectDesign = ``;
+  let design = `<div class="row"> <div class="col-md-10"> <h4> Services </h4> </div> <div class="col-md-2"> <p align="right"><button class="btn btn-info" onclick="addService()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Service</button></p></div> </div> <hr>`;
+  let selectDesign = `<option value="" selected disabled>Select a Service </option>`;
   design += `<table class="table" style="font-size:larger">
                     <thead>
                     <tr>
@@ -405,7 +464,28 @@ const serviceDetails = async () => {
   document.getElementById("service_name_2").innerHTML = selectDesign;
 };
 
-const actionEmployee = async (empId, status) => {
+const addService = async () => {
+
+  const MainContent = document.getElementById("oneModalBody");
+
+  let design = `<form>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="driver_name" class="col-form-label">Driver Name</label>
+                        <input type="text" id="service_name" class="form-control" placeholder="Enter Service Name">
+                    </div>
+                  </div>
+                </form>`;
+
+  MainContent.innerHTML = design;
+
+  document.getElementById("exampleModalLabel2").innerHTML = 'Add a New Service';
+
+  document.getElementById("oneModalFooter").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button onclick="addServiceInfo()" id="updateButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add</button>`;
+}
+
+const actionEmployee = async (empId, status, memType) => {
   console.log(empId);
 
   let emplpyeeObj = {
@@ -434,7 +514,11 @@ const actionEmployee = async (empId, status) => {
     if (status) {
       unapprovedEmployeeList();
     } else {
-      employeeList();
+      if (memType == 2) {
+        employeeList();
+      } else if (memType == 3) {
+        customerCareList();
+      }
     }
   } else if (RequestObj.ResponseCode == -1) {
     window.alert(RequestObj.ResponseText);
@@ -480,6 +564,88 @@ const editEmployee = async (empId, memType) => {
   //Get Shifts from API
   showShift(RequestObj.ResponseData.SHIFT_ID);
 
+  document.getElementById("exampleModalLabel2").innerHTML = 'Employee Info';
+
+  document.getElementById("oneModalFooter").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button onclick="updateInfo()" value="" id="updateButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Update</button>`;
+
+  document.getElementById("oneModalBody").innerHTML = `<form>
+  <div class="row">
+      <div class="col-md-6">
+          <input type="hidden" id="employee_id" value="">
+          <input type="hidden" id="mem_type" value="">
+          <label for="first_name" class="col-form-label">First Name:</label>
+          <input type="text" class="form-control" id="first_name">
+      </div>
+      <div class="col-md-6">
+          <label for="last_name" class="col-form-label">Last Name:</label>
+          <input type="text" class="form-control" id="last_name">
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-6">
+          <label for="username" class="col-form-label">Username:</label>
+          <input disabled type="text" class="form-control" id="username">
+      </div>
+      <div class="col-md-6">
+          <label for="email" class="col-form-label">Email:</label>
+          <input disabled type="text" class="form-control" id="email">
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-6">
+          <label for="phone_number" class="col-form-label">Phone Number:</label>
+          <input type="text" class="form-control" id="phone_number">
+      </div>
+      <div class="col-md-6">
+          <label for="hire_date" class="col-form-label">Hire Date:</label>
+          <input disabled type="text" class="form-control" id="hire_date">
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-4">
+          <input type="hidden" id="location_id" value="">
+          <label for="house_no" class="col-form-label">House No:</label>
+          <input type="text" class="form-control" id="house_no">
+      </div>
+      <div class="col-md-4">
+          <label for="block" class="col-form-label">Block:</label>
+          <input type="text" class="form-control" id="block">
+      </div>
+      <div class="col-md-4">
+          <label for="street" class="col-form-label">Street:</label>
+          <input type="text" class="form-control" id="street">
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-4">
+          <label for="service_name" class="col-form-label">Service Name:</label>
+          <input disabled type="text" class="form-control" id="service_name">
+      </div>
+      <div class="col-md-4">
+          <label for="dept_name" class="col-form-label">Department Name:</label>
+          <select onchange="showJob(this.value)" id="dept_name" class="form-control" aria-label="Default select example">
+          </select>
+      </div>
+      <div class="col-md-4">
+          <label for="job_title" class="col-form-label">Job Title:</label>
+          <select id="job_title" class="form-control" aria-label="Default select example">
+          </select>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-6">
+          <label for="salary" class="col-form-label">Salary:</label>
+          <input type="text" class="form-control" id="salary">
+      </div>
+      <div class="col-md-6">
+          <label for="shift" class="col-form-label">Shift:</label>
+          <select id="shift" class="form-control" aria-label="Default select example">
+          </select>
+      </div>
+  </div>
+</form>`;
+
   $("#employee_id").val(RequestObj.ResponseData.MEMBER_ID);
   $("#location_id").val(RequestObj.ResponseData.LOCATION_ID);
   $("#first_name").val(RequestObj.ResponseData.FIRST_NAME);
@@ -493,9 +659,15 @@ const editEmployee = async (empId, memType) => {
   $("#street").val(RequestObj.ResponseData.STREET);
   $("#service_name").val(RequestObj.ResponseData.SERVICE_DESCRIPTION);
   $("#salary").val(RequestObj.ResponseData.SALARY);
+  $("#mem_type").val(memType);
 };
 
 const showDept = async (service_id, dept_id) => {
+
+  if (document.getElementById("driver_name")) {
+    document.getElementById("driver_name").innerHTML = '';
+  }
+
   console.log(service_id, " ", dept_id);
 
   let serviceObj = {
@@ -529,6 +701,10 @@ const showDept = async (service_id, dept_id) => {
   });
 
   document.getElementById("dept_name").innerHTML = deptDesign;
+
+  if (document.getElementById("driver_name")) {
+    showDrivers(document.getElementById("dept_name").value);
+  }
 };
 
 const showJob = async (dept_id, job_id) => {
@@ -567,6 +743,42 @@ const showJob = async (dept_id, job_id) => {
   document.getElementById("job_title").innerHTML = jobDesign;
 };
 
+const showDrivers = async (dept_id) => {
+  console.log(dept_id);
+
+  let departmentObj = {
+    department_id: dept_id
+  };
+
+  departmentObj = JSON.stringify(departmentObj);
+
+  const responseJobs = await fetch(
+    "http://localhost:3000/api/getDepartmentDrivers",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: departmentObj,
+    }
+  );
+  DriverObj = await responseJobs.json();
+
+  console.log(DriverObj);
+
+  let driverDesign = "";
+
+  if (DriverObj.ResponseCode) {
+    DriverObj.ResponseData.forEach((driver) => {
+      driverDesign += `<option value="${driver.MEMBER_ID}">${driver.DRIVER_NAME}</option>`;
+    });
+
+    document.getElementById("driver_name").innerHTML = driverDesign;
+  } else {
+    window.alert('No driver found. Select a different department');
+  }
+}
+
 const showShift = async (shift_id) => {
   console.log(shift_id);
 
@@ -592,7 +804,7 @@ const showShift = async (shift_id) => {
   document.getElementById("shift").innerHTML = shiftDesign;
 };
 
-const updateInfo = async (mem_type) => {
+const updateInfo = async () => {
 
   let employee_id = $("#employee_id").val();
   let location_id = $("#location_id").val();
@@ -604,6 +816,7 @@ const updateInfo = async (mem_type) => {
   let street = $("#street").val();
   let job_id = $("#job_title").val();
   let shift_id = $("#shift").val();
+  let mem_type = $("#mem_type").val();
 
   let employeeObj = {
     employee_id: employee_id,
@@ -639,7 +852,12 @@ const updateInfo = async (mem_type) => {
 
   if (responseObj.ResponseCode == 1) {
     window.alert(responseObj.ResponseText);
-    employeeList();
+
+    if (mem_type == 2) {
+      employeeList();
+    } else if (mem_type == 3) {
+      customerCareList();
+    }
   } else {
     window.alert(responseObj.ResponseText);
   }
@@ -668,8 +886,8 @@ const showDeptTable = async (service_id) => {
 
   console.log(DepartmentObj);
 
-  let design = `<h4> Departments </h4>`;
-  let selectDesign = ``;
+  let design = `<div class="row"> <div class="col-md-10"> <h4> Departments </h4> </div> <div class="col-md-2"> <p align="right"><button class="btn btn-info" onclick="addDepartment()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Department</button></p></div> </div> <hr>`;
+  let selectDesign = `<option value="" selected disabled>Select a Department </option>`;
 
   design += `<table class="table" style="font-size:larger">
                     <thead>
@@ -706,6 +924,41 @@ const showDeptTable = async (service_id) => {
   document.getElementById("dept_name_2").innerHTML = selectDesign;
 }
 
+const addDepartment = async () => {
+
+  const MainContent = document.getElementById("oneModalBody");
+
+  let design = `<form>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="department_name" class="col-form-label">Department Name</label>
+                        <input type="text" id="department_name" class="form-control" placeholder="Enter Department Name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="house_no" class="col-form-label">House No:</label>
+                        <input type="text" class="form-control" id="house_no">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="block" class="col-form-label">Block:</label>
+                        <input type="text" class="form-control" id="block">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="street" class="col-form-label">Street:</label>
+                        <input type="text" class="form-control" id="street">
+                    </div>
+                </div>
+                </form>`;
+
+  MainContent.innerHTML = design;
+
+  document.getElementById("exampleModalLabel2").innerHTML = 'Add a New Department';
+
+  document.getElementById("oneModalFooter").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button onclick="addDepartmentInfo()" id="updateButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add</button>`;
+}
+
 const showJobsTable = async (department_id) => {
   console.log(department_id);
 
@@ -729,8 +982,7 @@ const showJobsTable = async (department_id) => {
 
   console.log(JobsObj);
 
-  let design = `<h4> Jobs </h4>`;
-  let selectDesign = ``;
+  let design = `<div class="row"> <div class="col-md-10"> <h4> Jobs </h4> </div> <div class="col-md-2"> <p align="right"><button class="btn btn-info" onclick="addJob()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Job</button></p></div> </div> <hr>`;
 
   design += `<table class="table" style="font-size:larger">
                     <thead>
@@ -752,8 +1004,6 @@ const showJobsTable = async (department_id) => {
                       <td>${element.JOB_TITLE}</td>
                       <td>${element.SALARY}</td>
                   </tr>`;
-
-    selectDesign += `<option value="${element.JOB_ID}">${element.JOB_TITLE}</option>`;
     count++;
   });
 
@@ -761,6 +1011,31 @@ const showJobsTable = async (department_id) => {
                 </table>`;
 
   document.getElementById("jobsTable").innerHTML = design;
+}
+
+const addJob = async () => {
+
+  const MainContent = document.getElementById("oneModalBody");
+
+  let design = `<form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="job_title" class="col-form-label">Job Title</label>
+                        <input type="text" id="job_title" class="form-control" placeholder="Enter Job Title">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="salary" class="col-form-label">Salary</label>
+                        <input type="text" id="salary" class="form-control" placeholder="Enter Salary">
+                    </div>
+                </div>
+                </form>`;
+
+  MainContent.innerHTML = design;
+
+  document.getElementById("exampleModalLabel2").innerHTML = 'Add a New Job';
+
+  document.getElementById("oneModalFooter").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button onclick="addJobInfo()" id="updateButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Add</button>`;
 }
 
 const requestLogList = async () => {
@@ -806,7 +1081,7 @@ const requestLogList = async () => {
         <td>${element.PHONE_NUMBER}</td>
         <td>${element.EMAIL}</td>
         <td>${element.HOUSE_NO + ', ' + element.BLOCK + ', ' + element.STREET}</td>
-        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#requestDetailsModal">Details</button></td>
+        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Details</button></td>
     </tr>`;
 
       count++;
@@ -839,7 +1114,7 @@ const requestDetails = async (request_id) => {
   ResponseObj = await response.json();
   console.log(ResponseObj);
 
-  const MainContent = document.getElementById("requestDetailsModalBody");
+  const MainContent = document.getElementById("oneModalBody");
 
   let design = `Request ID: ${request_id} <br>`;
 
@@ -927,7 +1202,7 @@ const ongoingRequestsList = async () => {
         <td>${element.PHONE_NUMBER}</td>
         <td>${element.EMAIL}</td>
         <td>${element.HOUSE_NO + ', ' + element.BLOCK + ', ' + element.STREET}</td>
-        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#requestDetailsModal">Details</button></td>
+        <td><button id="details_${element.REQUEST_ID}" value="${element.REQUEST_ID}" onclick="requestDetails(this.value)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Details</button></td>
     </tr>`;
 
       count++;
@@ -939,4 +1214,190 @@ const ongoingRequestsList = async () => {
     design = 'No Data Found';
   }
   MainContent.innerHTML = design;
+}
+
+const addVehicleInfo = async () => {
+  let service_id = document.getElementById("service_name").value;
+  let department_id = document.getElementById("dept_name").value;
+  let driver_id = document.getElementById("driver_name").value;
+
+  if (!service_id) {
+    window.alert('Service can not be empty');
+  } else if (!department_id) {
+    window.alert('Department can not be empty');
+  } else if (!driver_id) {
+    window.alert('Driver can not be empty');
+  } else {
+
+
+    let vehicleObj = {
+      driver_id: driver_id,
+      service_id: service_id,
+      department_id: department_id
+    };
+
+    console.log(vehicleObj);
+
+    vehicleObj = JSON.stringify(vehicleObj);
+
+    const response = await fetch(
+      "http://localhost:3000/api/addVehicle",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: vehicleObj
+      }
+    );
+
+    responseObj = await response.json();
+    console.log(responseObj);
+
+    if (responseObj.ResponseCode) {
+      window.alert('New Vehicle Added');
+      vehicleList();
+    } else {
+      window.alert('Vehicle Could Not Be Added');
+    }
+  }
+}
+
+const addServiceInfo = async () => {
+  let service_name = document.getElementById("service_name").value;
+
+  if (!service_name) {
+    window.alert('Service can not be empty');
+  } else {
+
+
+    let serviceObj = {
+      service_name: service_name
+    };
+
+    console.log(serviceObj);
+
+    serviceObj = JSON.stringify(serviceObj);
+
+    const response = await fetch(
+      "http://localhost:3000/api/addService",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: serviceObj
+      }
+    );
+
+    responseObj = await response.json();
+    console.log(responseObj);
+
+    if (responseObj.ResponseCode == 1) {
+      window.alert('New Service Added');
+      serviceDetails();
+    } else {
+      window.alert(responseObj.ResponseText);
+    }
+  }
+}
+
+const addDepartmentInfo = async () => {
+  let department_name = document.getElementById("department_name").value;
+  let block = document.getElementById("block").value;
+  let street = document.getElementById("street").value;
+  let house_no = document.getElementById("house_no").value;
+  let service_id = document.getElementById("service_name_2").value;
+
+  if (!department_name) {
+    window.alert('Department can not be empty');
+  } else if (!block) {
+    window.alert('Location can not be empty');
+  } else if (!street) {
+    window.alert('Location can not be empty');
+  } else if (!house_no) {
+    window.alert('Location can not be empty');
+  } else if(!service_id) {
+    window.alert('Service ID Not found.');
+  } else {
+
+    let departmentObj = {
+      department_name: department_name,
+      block: block,
+      street: street,
+      house_no: house_no,
+      service_id: service_id
+    };
+
+    console.log(departmentObj);
+
+    departmentObj = JSON.stringify(departmentObj);
+
+    const response = await fetch(
+      "http://localhost:3000/api/addDepartment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: departmentObj
+      }
+    );
+
+    responseObj = await response.json();
+    console.log(responseObj);
+
+    if (responseObj.ResponseCode == 1) {
+      window.alert('New Department Added');
+      serviceDetails();
+    } else {
+      window.alert(responseObj.ResponseText);
+    }
+  }
+}
+
+const addJobInfo = async () => {
+  let job_title = document.getElementById("job_title").value;
+  let salary = document.getElementById("salary").value;
+  let department_id = document.getElementById("dept_name_2").value;
+
+  if (!job_title) {
+    window.alert('Job Title can not be empty');
+  } else if (!salary) {
+    window.alert('Salary can not be empty');
+  } else if(!department_id) {
+    window.alert('Department ID Not found.');
+  } else {
+
+    let jobObj = {
+      job_title: job_title,
+      salary: salary,
+      department_id: department_id
+    };
+
+    console.log(jobObj);
+
+    jobObj = JSON.stringify(jobObj);
+
+    const response = await fetch(
+      "http://localhost:3000/api/addJob",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jobObj
+      }
+    );
+
+    responseObj = await response.json();
+    console.log(responseObj);
+
+    if (responseObj.ResponseCode == 1) {
+      window.alert('New Job Added');
+      serviceDetails();
+    } else {
+      window.alert(responseObj.ResponseText);
+    }
+  }
 }

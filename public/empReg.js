@@ -90,8 +90,15 @@ const empReg = async() => {
             },
             body: regJSON
         });
-        console.log(response)
-        window.location.replace("/empLogin");
+        
+        responseObj = await response.json();
+        console.log(responseObj);
+        if (responseObj.ResponseCode) {
+            window.alert(responseObj.ResponseText);
+            window.location.replace("/empLogin");
+        } else {
+            window.alert(responseObj.ResponseText);
+        }
     }
 }
 
