@@ -75,6 +75,8 @@ let requestInfoQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, M.FIRST_NAME || ' '
                         'AND R.LOCATION_ID = L.LOCATION_ID ' +
                         'AND R.REQUEST_ID = :request_id ';
 
+let shiftInfoQuery = 'SELECT * FROM shift WHERE shift_id = :shift_id';
+
 //Employee Login
 let employeeCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username AND member_type = :member_type';
 
@@ -360,5 +362,6 @@ module.exports = {
     insertVehicleQuery,
     insertServiceQuery,
     insertDepartmentQuery,
-    insertJobQuery
+    insertJobQuery,
+    shiftInfoQuery
 }
