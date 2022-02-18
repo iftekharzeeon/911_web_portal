@@ -8,7 +8,7 @@ const RegisterEmp = async() => {
 
 const loginEmp = async() => {
     const loginObj = {
-        "username" : document.getElementById("femail").value,
+        "username" : document.getElementById("fusername").value,
         "password" : document.getElementById("fpassword").value,
         "member_type" : 3
     }

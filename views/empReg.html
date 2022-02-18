@@ -39,7 +39,7 @@
             <input type="text" id="fphoneNumber" name="phoneNumber">
           </form>
         <select name="Service" id="Service" style="font-family: 'Rajdhani'" onchange="changeMessage()">
-            <option selected disabled>Service</option>
+            <option value="" selected disabled>Service</option>
             <option value="100">Medical</option>
             <option value="101">Fire</option>
             <option value="102">Police</option>
@@ -47,10 +47,10 @@
             <option value="104">Customer-Care</option>
         </select>
         <select name="Department" id="Department" style="font-family: 'Rajdhani'" onchange="changeMessageDept()">
-            <option selected disabled>Department</option>
+            <option value="" selected disabled>Department</option>
         </select>
         <select name="Job" id="Job" style="font-family: 'Rajdhani'">
-            <option selected disabled>Job</option>
+            <option value="" selected disabled>Job</option>
         </select>
         <button id="register" onclick="empReg()" style="font-family: 'Rajdhani'">
             Register

@@ -4,7 +4,7 @@ const backE = async() => {
 
 const loginEmp = async() => {
     const loginObj = {
-        "username" : document.getElementById("femail").value,
+        "username" : document.getElementById("fusername").value,
         "password" : document.getElementById("fpassword").value,
         "member_type" : 2,
         "service_id" : document.getElementById("Service").value
@@ -14,10 +14,13 @@ const loginEmp = async() => {
     if(loginObj.email == ""){
         window.alert("Email field empty");
         return;
-    }else if(loginObj.password == ""){
+    }else if(loginObj.password == "") {
         window.alert("Password field empty");
         return;
-    }else{
+    }else if (loginObj.service_id == "") {
+        window.alert("Service field empty");
+        return;
+    } else {
         const response = await fetch('http://localhost:3000/api/loginEmployee',{
             method: 'POST',
             headers: {
