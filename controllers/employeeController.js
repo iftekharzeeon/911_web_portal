@@ -25,6 +25,8 @@ const get_employee_request_info = async (req, res) => {
     let request_info;
     let employee_occupied;
     let request_info_arr = [];
+    let shift_id;
+    let shift_info;
 
     try {
         connection = await oracledb.getConnection({
@@ -68,38 +70,77 @@ const get_employee_request_info = async (req, res) => {
                 console.log(requestCounter);
 
                 if (requestCounter > 0) {
-                    //Check if same service
 
-                    employee_info = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                    //Shift check
+                    shift_id = memberExist.rows[0].SHIFT_ID;
 
-                    employee_dept_id = employee_info.rows[0].DEPARTMENT_ID;
-                    employee_job_id = employee_info.rows[0].JOB_ID;
-                    employee_service_id = employee_info.rows[0].SERVICE_ID;
+                    shift_info = await connection.execute(queries.shiftInfoQuery, [shift_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-                    request_employee_info = await connection.execute(queries.getRequestIdQuery, [employee_service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-                    console.log(request_employee_info);
-                    if (request_employee_info.rows.length > 0) {
+                    shift_info = shift_info.rows[0].DESCRIPTION;
 
-                        let i = 0;
-                        do {
-                            request_id = request_employee_info.rows[i].REQUEST_ID;
+                    let timeInfo = shift_info.split(":")[0].trim();
+                    let dayInfo = shift_info.split(":")[1].trim();
 
-                            request_info = await connection.execute(queries.requestInfoQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-                            i++;
-                            console.log(request_info.rows);
-                            request_info_arr.push(request_info.rows[0]);
-                        } while (i < request_employee_info.rows.length);
+                    let firstDay = dayInfo.split("to")[0].trim();
+                    let lastDay = dayInfo.split("to")[1].trim();
 
-                        responses.ResponseCode = 1;
-                        responses.ResponseText = 'There are pending requests at the moment. Please respond.';
-                        responses.EmployeeServiceId = employee_service_id;
-                        responses.RequestInfo = request_info_arr;
+                    let startTime = timeInfo.split("to")[0].trim();
+                    let endTime = timeInfo.split("to")[1].trim();
 
+                    let current_time = new Date();
+                    hour = current_time.getHours();
+                    minute = current_time.getMinutes();
+
+                    let nowTime = String(hour) + String(minute);
+
+                    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    let firstDayNo;
+                    let lastDayNo;
+
+                    for (let i = 0; i < days.length; i++) {
+                        if (days[i] == firstDay) firstDayNo = i;
+                        if (days[i] == lastDay) lastDayNo = i;
+                    }
+
+                    if ((nowTime >= startTime && nowTime <= endTime) && (current_time.getDay() >= firstDayNo && current_time.getDay() <= lastDayNo)) {
+                        //Running shift
+                        //Check if same service
+
+                        employee_info = await connection.execute(queries.getEmployeeInfoQuery, [employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+                        employee_dept_id = employee_info.rows[0].DEPARTMENT_ID;
+                        employee_job_id = employee_info.rows[0].JOB_ID;
+                        employee_service_id = employee_info.rows[0].SERVICE_ID;
+
+                        request_employee_info = await connection.execute(queries.getRequestIdQuery, [employee_service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                        console.log(request_employee_info);
+                        if (request_employee_info.rows.length > 0) {
+
+                            let i = 0;
+                            do {
+                                request_id = request_employee_info.rows[i].REQUEST_ID;
+
+                                request_info = await connection.execute(queries.requestInfoQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                                i++;
+                                console.log(request_info.rows);
+                                request_info_arr.push(request_info.rows[0]);
+                            } while (i < request_employee_info.rows.length);
+
+                            responses.ResponseCode = 1;
+                            responses.ResponseText = 'There are pending requests at the moment. Please respond.';
+                            responses.EmployeeServiceId = employee_service_id;
+                            responses.RequestInfo = request_info_arr;
+
+                        } else {
+                            //No same service request available
+                            responses.ResponseCode = 0;
+                            responses.ResponseText = 'No available request at this moment.';
+
+                        }
                     } else {
-                        //No same service request available
+                        //Not running shift
                         responses.ResponseCode = 0;
-                        responses.ResponseText = 'No available request at this moment.';
-
+                        responses.ResponseText = 'Current time is not your shift.';
                     }
 
                 } else {

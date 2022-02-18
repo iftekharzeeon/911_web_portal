@@ -19,7 +19,7 @@ const changeMessage = async() => {
         stringHTML = stringHTML + `<option value="${responseObj[i].DEPARTMENT_ID}">${responseObj[i].DEPARTMENT_NAME}</option>`
     }
     Department.innerHTML = `
-    <option selected disabled>Department</option>
+    <option value="" selected disabled>Department</option>
     ` + stringHTML
 }
 
@@ -44,7 +44,7 @@ const changeMessageDept = async() => {
         stringHTML = stringHTML + `<option value="${responseObj[i].JOB_ID}">${responseObj[i].JOB_TITLE}</option>`
     }
     Job.innerHTML = `
-    <option selected disabled>Jobs</option>
+    <option value="" selected disabled>Jobs</option>
     ` + stringHTML
 }
 
@@ -90,8 +90,15 @@ const empReg = async() => {
             },
             body: regJSON
         });
-        console.log(response)
-        window.location.replace("/empLogin");
+        
+        responseObj = await response.json();
+        console.log(responseObj);
+        if (responseObj.ResponseCode) {
+            window.alert(responseObj.ResponseText);
+            window.location.replace("/empLogin");
+        } else {
+            window.alert(responseObj.ResponseText);
+        }
     }
 }
 

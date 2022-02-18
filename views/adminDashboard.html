@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../adminDashboard.css" rel="stylesheet" type="text/css" />
-    <link rel="icon" href="./favcon.png">
+    <link rel="icon" href="../favcon.png">
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -30,17 +30,17 @@
 
 <body>
     <main>
-        <div class="d-flex flex-column min-vh-100 flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <div class="d-flex flex-column min-vh-100 flex-shrink-0 p-2 text-white bg-dark" style="width: 280px;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <svg class="bi me-2" width="40" height="32">
                     <use xlink:href="#bootstrap" />
                 </svg>
-                <span class="fs-4">911 Web Portal Admin Panel</span>
+                <span class="fs-4">911 Service</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active" aria-current="page">
+                    <a href="#" onclick="home()" class="nav-link active" aria-current="page">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#home" />
                         </svg>
@@ -64,11 +64,43 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#" onclick="unapprovedEmployeeList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#table" />
+                        </svg>
+                        Unapproved Employee List
+                    </a>
+                </li>
+                <li>
                     <a href="#" onclick="customerCareList()" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#grid" />
                         </svg>
                         Customer Care List
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="vehicleList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid" />
+                        </svg>
+                        Vehicle List
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="requestLogList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid" />
+                        </svg>
+                        Request Log
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="ongoingRequestsList()" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid" />
+                        </svg>
+                        Ongoing Requests
                     </a>
                 </li>
                 <li>
@@ -85,7 +117,7 @@
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                     id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong id="admin_name">mdo</strong>
+                    <strong id="admin_name"></strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                     <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -98,10 +130,25 @@
                 </ul>
             </div>
         </div>
-        <div class="p-5" id="mainContents">
-
+        <div class="p-5" id="mainContents" style="width: 100%;">
         </div>
     </main>
+    <div class="modal lg fade" id="oneModal" tabindex="-1" aria-labelledby="requestDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="oneModalBody" class="modal-body">
+
+                </div>
+                <div class="modal-footer" id="oneModalFooter">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>

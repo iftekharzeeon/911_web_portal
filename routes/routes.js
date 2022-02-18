@@ -53,7 +53,7 @@ router.post('/api/getServiceDepartments/', bodyParser, departmentController.get_
 router.post('/api/getDepartmentJobs/', bodyParser, jobController.get_jobs_department_wise);
 
 //Get Shifts
-router.post('/api/getShifts/', bodyParser, shiftController.get_shifts);
+router.get('/api/getShifts/', bodyParser, shiftController.get_shifts);
 
 //Update Employee Status
 router.post('/api/updateEmployeeStatus/', bodyParser, adminController.action_employee);
@@ -83,12 +83,45 @@ router.post('/api/customerCareSignUp', bodyParser, ccController.cc_register);
 router.get('/api/getAllUsers/', bodyParser, adminController.get_all_users);
 
 //Get All Employees
-router.get('/api/geAllEmployees/', bodyParser, adminController.get_all_employees);
+router.get('/api/getAllEmployees/', bodyParser, adminController.get_all_employees);
 
 //Get All Customer Care
 router.get('/api/getAllCustomerCares/', bodyParser, adminController.get_all_customer_care);
 
+//Get All Vehicle
+router.get('/api/getAllVehicle/', bodyParser, adminController.get_all_vehicle);
+
 //Get All Unapproved Employee List
 router.get('/api/getAllUnapprovedEmployees/', bodyParser, adminController.get_all_unapproved_employees);
+
+//Get Employee Info For Edit
+router.post('/api/getEmployeeForEdit/', bodyParser, adminController.get_employee_info_for_edit);
+
+//Update Employee Info
+router.post('/api/updateEmployeeInfo/', bodyParser, adminController.update_employee_info);
+
+//Get Request Log
+router.get('/api/getRequestLog/', bodyParser, adminController.get_request_log);
+
+//Get Request Details
+router.post('/api/getRequestDetails/', bodyParser, adminController.get_request_details);
+
+//Get Ongoing Request Log
+router.get('/api/getOngoingRequestLog', bodyParser, adminController.get_ongoing_request_list);
+
+//Get Department Drivers
+router.post('/api/getDepartmentDrivers/', bodyParser, adminController.get_department_drivers);
+
+//Add Vehicle
+router.post('/api/addVehicle/', bodyParser, adminController.add_vehicle);
+
+//Add Service
+router.post('/api/addService/', bodyParser, adminController.add_service);
+
+//Add Department
+router.post('/api/addDepartment/', bodyParser, adminController.add_department);
+
+//Add Job
+router.post('/api/addJob/', bodyParser, adminController.add_job);
 
 module.exports = router;
