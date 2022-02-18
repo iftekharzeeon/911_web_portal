@@ -1,0 +1,34 @@
+<head>
+    <link href="../citProfile.css" rel="stylesheet" type="text/css"/>
+    <script src="../citProfile.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
+    <title>Citizen Profile</title>
+    <link rel="icon" href="../favcon.png">
+    <meta http-equiv="refresh" content="30">
+</head>
+
+<body>
+    <img src="../BackLogo.png" id="back" onclick="backCP()">
+    <div id="base">
+        <div id="topBar" >
+            <div class="readyToHelp">User Profile</div>
+        </div>
+        <div id="gridContent">
+            <div class="grid">
+                <div class="grid-item-left">Name:</div>
+                <div class="grid-item-right" id="Name"></div>
+                <div class="grid-item-left">Location:</div>
+                <div class="grid-item-right" id="Location"></div>
+                <div class="grid-item-left">Email:</div>
+                <div class="grid-item-right" id="Email"></div>
+                <div class="grid-item-left">PhoneNumber:</div>
+                <div class="grid-item-right" id="PhoneNumber"></div>
+            </div>
+        </div>
+        <div id="history">
+            <div class="readyToHelp">History</div>
+        </div>
+        <button id = "findHelp" onclick="gotoSelectService()" style="font-family: 'Rajdhani'">Find Help <img src="../LoginLogo.png" id="LoginLogo"></button>
+        <button id = "Logout" onclick="Logout()" style="font-family: 'Rajdhani'">Logout</button>
+    </div>
+</body>

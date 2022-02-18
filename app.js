@@ -51,6 +51,10 @@ app.get('/citLogin/selectService', (req, res) => {
     res.sendFile('./views/selectService.html', {root: __dirname});
     });
 
+app.get('/citLogin/citProfile', (req, res) => {
+    res.sendFile('./views/citProfile.html', {root: __dirname});
+    });
+
 app.get('/citLogin/selectLocation', (req, res) => {
     res.sendFile('./views/selectLocation.html', {root: __dirname});
     });
