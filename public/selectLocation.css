@@ -67,7 +67,7 @@ label{
     color: #FFFFFF;
 }
 
-.input{
+ .input{
     position: absolute;
     width: 451px;
     height: 95px;
@@ -75,39 +75,39 @@ label{
 
     background: #C4C4C4;
     border-radius: 20px;
-}
+} 
 
 #tblock{  
     width: 250px; 
-    left: 840px;
-    top: 270px;
+    left: 500px;
+    top: 290px;
 }
 
 #tstreet{
     width: 250px; 
-    left: 840px; 
-    top: 395px;
+    left: 500px; 
+    top: 415px;
 }
 
 #thouse{
     width: 250px; 
-    left: 840px; 
-    top: 520px;
+    left: 500px; 
+    top: 540px;
 }
 
 #fblock{
-    left: 944px;
-    top: 250px;
+    left: 600px;
+    top: 270px;
 }
 
 #fstreet{
-    left: 944px;
-    top: 375px;
+    left: 600px;
+    top: 395px;
 }
 
 #fhouse{
-    left: 944px;
-    top: 500px;
+    left: 600px;
+    top: 520px;
 }
 
 #findHelp{
@@ -140,8 +140,8 @@ label{
 
 #locationData{
     position: absolute;
-    left: 624px;
-    top: 258px;
+    left: 651px;
+    top: 362px;
     font-style: normal;
     font-weight: normal;
     text-align: center;
@@ -172,4 +172,41 @@ label{
     top: 314px;
     width: 30px;
     height: 30px;
+}
+
+#CurrentL{
+    left: 200px;
+    top: 200px;
+}
+#DefaultL{
+    left: 600px;
+    top: 200px;
+}
+#ManualL{
+    left: 1000px;
+    top: 200px;
+}
+
+#CurrentI{
+    position: absolute;
+    left: 180px;
+    top: 217px;
+}
+#DefaultI{
+    position: absolute;
+    left: 580px;
+    top: 217px;
+}
+#ManualI{
+    position: absolute;
+    left: 980px;
+    top: 217px;
+}
+
+#map{
+    position: absolute;
+    left: 531px;
+    top: 302px;
+    width: 500;
+    height: 300;
 }

@@ -72,7 +72,7 @@ body{
     margin-top: 20px;
     width: 10em;
     height: 5em;
-    left: 850px;
+    left: 45%;
     top: 50px;
 
     background: rgba(255, 255, 255, 0.1);
@@ -90,12 +90,12 @@ body{
 }
 
 #HistoryButton{
-    position: relative;
+    position: absolute;
     margin-top: 20px;
-    width: 10em;
-    height: 5em;
-    left: 550px;
-    top: 50px;
+    width: 8em;
+    height: 3em;
+    left: 150px;
+    top: 840px;
 
     background: rgba(255, 255, 255, 0.1);
     border-radius: 36px;
@@ -114,12 +114,12 @@ body{
 }
 
 #Logout{
-    position: relative;
+    position: absolute;
     margin-top: 20px;
-    width: 10em;
-    height: 5em;
-    left: 48%;
-    top: 50px;
+    width: 8em;
+    height: 3em;
+    left: 270px;
+    top: 840px;
 
     background: rgba(255, 255, 255, 0.1);
     border-radius: 36px;

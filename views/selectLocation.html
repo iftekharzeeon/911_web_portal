@@ -18,7 +18,14 @@
             <div id="name" class="intro"></div>
             <div class="intro"> Send service to this location?</div>
         </div>
+            <label for="Current" id="CurrentL">Current Location</label>
+            <input type="radio" id="CurrentI" name="location_choice" value="1" checked="checked" onchange="myFunction(1)"></input>
+            <label for="Default" id="DefaultL">Default Location</label>
+            <input type="radio" id="DefaultI" name="location_choice" value="2" onchange="myFunction(2)">
+            <label for="Manual" id="ManualL">Manual Location</label>
+            <input type="radio" id="ManualI" name="location_choice" value="3" onchange="myFunction(3)">
         <div id="fixedLocation">
+            <!--
             <div id="locationData">
                 <div id="block">Block: </div>
                 <div id="street">Street: </div>
@@ -26,64 +33,70 @@
             </div>
             <div id="NoText">No</div>
             <input type="checkbox" id="No" onclick="manualLocationToggle()">
+            -->
         </div>
         <div id="manualLocation">
         </div>
-        <div id="map"></div>
+        <div id="currentLocation">
+            <!--<div id="map"></div>-->
+        </div>
+        <div id="LocationContent">
+            <div id="map"></div>
+        </div>
         <button id="findHelp" onclick="sendRequest()" style="font-family: 'Rajdhani'">Find Help <img
                 src="../LoginLogo.png" id="LoginLogo"></button>
     </div>
 </body>
 
 <!-- leaflet js  -->
+
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
 <script>
-    // Map initialization 
-    var map = L.map('map').setView([14.0860746, 100.608406], 18);
+// Map initialization 
+var map = L.map('map').setView([14.0860746, 100.608406], 18);
 
-    //osm layer
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-    osm.addTo(map);
+//osm layer
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+osm.addTo(map);
 
-    if (!navigator.geolocation) {
-        console.log("Your browser doesn't support geolocation feature!")
-    } else {
-        navigator.geolocation.getCurrentPosition(getPosition)
-        // setInterval(() => {
-        //     navigator.geolocation.getCurrentPosition(getPosition)
-        // }, 5000);
-    }
+if (!navigator.geolocation) {
+console.log("Your browser doesn't support geolocation feature!")
+} else {
+navigator.geolocation.getCurrentPosition(getPosition)
+// setInterval(() => {
+//     navigator.geolocation.getCurrentPosition(getPosition)
+// }, 5000);
+}
 
-    var marker, circle;
+var marker, circle;
 
-    function getPosition(position) {
-        // console.log(position)
-        var lat = position.coords.latitude
-        var long = position.coords.longitude
-        var accuracy = position.coords.accuracy
+function getPosition(position) {
+// console.log(position)
+var lat = position.coords.latitude
+var long = position.coords.longitude
+var accuracy = position.coords.accuracy
 
-        if (marker) {
-            map.removeLayer(marker)
-        }
+if (marker) {
+    map.removeLayer(marker)
+}
 
-        if (circle) {
-            map.removeLayer(circle)
-        }
+if (circle) {
+    map.removeLayer(circle)
+}
 
-        marker = L.marker([lat, long])
-        circle = L.circle([lat, long], { radius: accuracy })
+marker = L.marker([lat, long])
+circle = L.circle([lat, long], { radius: accuracy })
 
-        var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+var featureGroup = L.featureGroup([marker, circle]).addTo(map)
 
-        map.fitBounds(featureGroup.getBounds())
+map.fitBounds(featureGroup.getBounds())
 
 
-        console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
-    }
+console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
+}
 
-    L.Control.geocoder().addTo(map);
+L.Control.geocoder().addTo(map);
 </script>

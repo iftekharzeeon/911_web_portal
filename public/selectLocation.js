@@ -6,7 +6,14 @@ const manualLocationHTML =`
 <label for="house" id="thouse">House</label><br>
 <input type="text" id="fhouse" name="house" class="input"> 
 `
-var is_my_location;
+
+
+
+var locationChoice = 1;
+//1 for current
+//2 for default
+//3 for manual
+
 const backSL = async() => {
     window.location.replace("/citLogin/selectService");
 }
@@ -18,31 +25,12 @@ window.onload = async() => {
 
     const name = document.getElementById("name");
     name.textContent += ' ' + JSON.parse(sessionStorage.getItem("user")).FIRST_NAME + ', ';
-
-    const block = document.getElementById("block");
-    const street = document.getElementById("street");
-    const house = document.getElementById("house");
-
-    block.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.BLOCK;
-    street.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.STREET;
-    house.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.HOUSE_NO;
-    console.log(sessionStorage.getItem("user"));
-    is_my_location = true;
-}
-
-const manualLocationToggle = async() => {
-    const fixedLocation = document.getElementById("fixedLocation");
-    fixedLocation.remove();
-
-    const manualLocation = document.getElementById("manualLocation");
-    manualLocation.insertAdjacentHTML("beforeend", manualLocationHTML);
-    is_my_location = false;
 }
 
 const sendRequest = async() => {
     var requestObj;
     var is_ok = true;
-    if(!is_my_location){
+    if(locationChoice == 3){ //manual location
         const block = document.getElementById("fblock").value;
         const street = document.getElementById("fstreet").value;
         const house = document.getElementById("fhouse").value;
@@ -62,13 +50,15 @@ const sendRequest = async() => {
                 "services": JSON.parse(sessionStorage.getItem("services"))
             }
         }
-    }else{
+    }else if(locationChoice == 2){ //default location
         requestObj = {
             "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
             "is_my_location": 1,
             "location_id": JSON.parse(sessionStorage.getItem("user")).LOCATION_ID,
             "services": JSON.parse(sessionStorage.getItem("services"))
         }
+    }else{ //current location
+        //help me out here zeeon
     }
     console.log(requestObj);
     if(is_ok){
@@ -82,5 +72,31 @@ const sendRequest = async() => {
         const responseObj = await response.json();
         console.log(responseObj.body);
         window.alert("Request sent");
+    }
+}
+
+const myFunction = async(x) =>{
+    locationChoice = x;
+
+    const locationContent = document.getElementById("LocationContent");
+    if(locationChoice == 1){
+        location.reload();
+    }else if(locationChoice == 2){
+        locationContent.innerHTML = `
+        <div id="locationData">
+            <div id="block">Block: </div>
+            <div id="street">Street: </div>
+            <div id="house">House: </div>
+        </div>
+        `
+        const block = document.getElementById("block");
+        const street = document.getElementById("street");
+        const house = document.getElementById("house");
+
+        block.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.BLOCK;
+        street.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.STREET;
+        house.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.HOUSE_NO;
+    }else{
+        locationContent.innerHTML = manualLocationHTML;
     }
 }
