@@ -59,6 +59,10 @@ app.get('/citLogin/selectLocation', (req, res) => {
     res.sendFile('./views/selectLocation.html', {root: __dirname});
     });
 
+app.get('/citLogin/citChat', (req, res) => {
+    res.sendFile('./views/citChat.html', {root: __dirname});
+    });
+    
 app.get('/adminPanel', (req, res) => {
     res.sendFile('./views/adminLogin.html', {root: __dirname});
 });
