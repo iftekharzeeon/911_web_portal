@@ -1,4 +1,4 @@
-const manualLocationHTML =`
+const manualLocationHTML = `
 <label for="block" id="tblock">Block</label><br>
 <input type="text" id="fblock" name="block" class="input"><br>
 <label for="street" id="tstreet">Street</label><br>
@@ -14,12 +14,12 @@ var locationChoice = 1;
 //2 for default
 //3 for manual
 
-const backSL = async() => {
+const backSL = async () => {
     window.location.replace("/citLogin/selectService");
 }
 
-window.onload = async() => {
-    if(sessionStorage.getItem("user") == null){
+window.onload = async () => {
+    if (sessionStorage.getItem("user") == null) {
         window.location.replace("/citLogin")
     }
 
@@ -27,17 +27,18 @@ window.onload = async() => {
     name.textContent += ' ' + JSON.parse(sessionStorage.getItem("user")).FIRST_NAME + ', ';
 }
 
-const sendRequest = async() => {
+const sendRequest = async () => {
     var requestObj;
     var is_ok = true;
-    if(locationChoice == 3){ //manual location
+    if (locationChoice == 3) {
+        //manual location
         const block = document.getElementById("fblock").value;
         const street = document.getElementById("fstreet").value;
         const house = document.getElementById("fhouse").value;
-        if(block == "" || street == "" || house == ""){
+        if (block == "" || street == "" || house == "") {
             window.alert("No field can be empty");
             is_ok = false;
-        }else{
+        } else {
             const location_obj = {
                 "block": block,
                 "street": street,
@@ -50,47 +51,86 @@ const sendRequest = async() => {
                 "services": JSON.parse(sessionStorage.getItem("services"))
             }
         }
-    }else if(locationChoice == 2){ //default location
+    } else if (locationChoice == 2) {
+        //default location
         requestObj = {
             "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
             "is_my_location": 1,
             "location_id": JSON.parse(sessionStorage.getItem("user")).LOCATION_ID,
             "services": JSON.parse(sessionStorage.getItem("services"))
         }
-    }else{ //current location
-        //help me out here zeeon
+    } else {
+        //current location
+
+        const location_obj = {
+            "latitude": document.getElementById("latitudeData").value,
+            "longitude": document.getElementById("longitudeData").value
+        }
 
         requestObj = {
             "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
-            "is_my_location": 3,
-            "latitude": document.getElementById("latitudeData").value,
-            "longitude": document.getElementById("longtitudeData").value,
+            "is_my_location": 2,
+            "location_obj": location_obj,
             "services": JSON.parse(sessionStorage.getItem("services"))
         }
 
     }
     console.log(requestObj);
-    // if(is_ok){
-    //     response = await fetch('http://localhost:3000/api/addRequest',{
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(requestObj)
-    //         });
-    //     const responseObj = await response.json();
-    //     console.log(responseObj.body);
-    //     window.alert("Request sent");
-    // }
+    if (is_ok) {
+        response = await fetch('http://localhost:3000/api/addRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestObj)
+        });
+        const responseObj = await response.json();
+        console.log(responseObj);
+
+        if (responseObj.ResponseCode == 1) {
+            const request_id = responseObj.RequestId;
+
+            requestObj = {
+                "request_id": request_id,
+                "services": JSON.parse(sessionStorage.getItem("services"))
+            }
+
+            response_vehicle = await fetch('http://localhost:3000/api/addVehicleRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestObj)
+            });
+            const responseObjVehicle = await response_vehicle.json();
+
+            console.log(responseObjVehicle);
+
+            if (responseObjVehicle.ResponseCode == 1) {
+                window.alert('Request sent. ' + responseObjVehicle.ResponseText);
+                //Redirect here
+            } else if(responseObjVehicle.ResponseCode == 0) {
+                //No vehicle available
+                window.alert(responseObjVehicle.ResponseText);
+                //Redirect
+            } else {
+                //Error
+                window.alert(responseObjVehicle.ResponseText);
+            }
+        } else {
+            window.alert(responseObj.ResponseText);
+        }
+
+    }
 }
 
-const myFunction = async(x) =>{
+const myFunction = async (x) => {
     locationChoice = x;
 
     const locationContent = document.getElementById("LocationContent");
-    if(locationChoice == 1){
+    if (locationChoice == 1) {
         location.reload();
-    }else if(locationChoice == 2){
+    } else if (locationChoice == 2) {
         locationContent.innerHTML = `
         <div id="locationData">
             <div id="block">Block: </div>
@@ -105,7 +145,7 @@ const myFunction = async(x) =>{
         block.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.BLOCK;
         street.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.STREET;
         house.innerHTML += JSON.parse(sessionStorage.getItem("user")).LOCATION_INFO.HOUSE_NO;
-    }else{
+    } else {
         locationContent.innerHTML = manualLocationHTML;
     }
 }

@@ -26,6 +26,9 @@ const add_request = async (req, res) => {
 
     let request_employee_id;
 
+    let latitude;
+    let longitude;
+
     const requestObj = req.body;
     try {
         connection = await oracledb.getConnection({
@@ -40,7 +43,7 @@ const add_request = async (req, res) => {
         member_id = requestObj.citizen_id;
 
         //Check Member Existence
-        
+
         memberExist = await connection.execute(queries.memberIdCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberExist.rows.length === 0) {
@@ -52,7 +55,7 @@ const add_request = async (req, res) => {
 
             servicesObjectArr = requestObj.services;
 
-            if (isMyLocation) {
+            if (isMyLocation == 1) {
                 location_id = requestObj.location_id;
 
             } else {
@@ -61,18 +64,29 @@ const add_request = async (req, res) => {
                 //Get Location Info
                 locationObj = requestObj.location_obj;
 
-                block = locationObj.block;
-                street = locationObj.street;
-                house_no = locationObj.house_no;
+                //Check if current or manual
+                if (isMyLocation == 2) {
+                    block = '';
+                    street = '';
+                    house_no = '';
+                    latitude = locationObj.latitude;
+                    longitude = locationObj.longitude;
+                } else {
+                    block = locationObj.block;
+                    street = locationObj.street;
+                    house_no = locationObj.house_no;
+                    latitude = '';
+                    longitude = '';
+                }
 
                 //Get Next Location Id
                 await syRegister.getNextId(connection, 2).then(function (data) {
                     location_id = data;
                 });
-                
+
                 //Insert into Location Table
 
-                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
             }
 
@@ -84,7 +98,7 @@ const add_request = async (req, res) => {
             //Insert Into Request Table
 
             result = await connection.execute(queries.insertRequestQuery, [request_id, request_time, member_id, location_id, resolved_status]);
-            
+
             //Get All The Services
             let serviceIndex = 0;
             do {
@@ -135,7 +149,7 @@ const add_request = async (req, res) => {
             console.log('Connection Closed');
         }
         res.send(responses);
-        
+
     }
 }
 
@@ -195,7 +209,7 @@ const accept_request = async (req, res) => {
                 //Employee is free
 
                 //Check if request is available
-                
+
                 request_info = await connection.execute(queries.requestAvailableInfoQuery, [service_id, request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 console.log(request_info.rows);
@@ -204,15 +218,15 @@ const accept_request = async (req, res) => {
                     request_employee_id = request_info.rows[0].REQUEST_EMPLOYEE_ID;
 
                     //Update Employee Accepted Status
-                    
+
                     let result1 = await connection.execute(queries.updateEmployeeAcceptStatusQuery, [employee_accepted_status, employee_id, request_employee_id]);
 
                     //Update Request Resolved Status
-                    
+
                     let result2 = await connection.execute(queries.updateRequestStatusQuery, [resolved_status, request_id]);
 
                     //Update Employee Occupied Status
-                    
+
                     let result3 = await connection.execute(queries.updateEmployeeOccupiedStatusQuery, [occupied_status, employee_id]);
 
                     connection.commit();
@@ -295,13 +309,13 @@ const finish_request = async (req, res) => {
                 //Employee is occupied
 
                 //Update Request Employee Accept Status
-                
+
                 result = await connection.execute(queries.updateEmployeeAcceptedStatusto1Query, [employee_accepted_status, request_employee_id]);
 
                 //Update Request Vehicle Accept Status
                 //Get Service Id for update
-                
-                let service_id = await connection.execute(queries.getServiceIdQuery, [request_employee_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+                let service_id = await connection.execute(queries.getServiceIdQuery, [request_employee_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
                 service_id = service_id.rows[0].SERVICE_ID;
 
                 result = await connection.execute(queries.updateVehicleAcceptedStatusto1Query, [vehicle_accepted_status, request_id, service_id]);
@@ -313,9 +327,9 @@ const finish_request = async (req, res) => {
                 connection.commit();
 
                 //Check if all requests been finished
-                
-                counter = await connection.execute(queries.employeeAcceptCheckQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-                
+
+                counter = await connection.execute(queries.employeeAcceptCheckQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
                 counter = counter.rows[0].COUNTER;
 
                 if (counter > 0) {
@@ -323,7 +337,7 @@ const finish_request = async (req, res) => {
 
                 } else {
                     //Update Request Table
-                    
+
                     result = await connection.execute(queries.updateRequestStatusQuery, [resolved_status, request_id]);
 
                     connection.commit();
@@ -379,18 +393,18 @@ const request_history_details = async (req, res) => {
         request_id = employee.request_id;
 
         //Get total number of employees requested
-        request_count = await connection.execute(queries.requestCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        request_count = await connection.execute(queries.requestCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
         request_count = request_count.rows[0].COUNTER;
 
         //Get number of employees accepted
-        employee_count = await connection.execute(queries.employeeCountQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        employee_count = await connection.execute(queries.employeeCountQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
         employee_count = employee_count.rows[0].COUNTER;
 
         //Get number of vehicle accepted
-        vehicle_count = await connection.execute(queries.vehicleCounterQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        vehicle_count = await connection.execute(queries.vehicleCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
         vehicle_count = vehicle_count.rows[0].COUNTER;
 
-        result = await connection.execute(queries.requestHistoryDetailsQuery, [request_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+        result = await connection.execute(queries.requestHistoryDetailsQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         responses.ResponseCode = 1;
         responses.ResponseData = result.rows;

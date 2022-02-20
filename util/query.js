@@ -1,7 +1,7 @@
 //User Controller
 //User Create
 
-let insertLocationQuery = 'INSERT INTO location(location_id, block, street, house_no) VALUES(:location_id, :block, :street, :house_no)';
+let insertLocationQuery = 'INSERT INTO location(location_id, block, street, house_no, latitude, longitude) VALUES(:location_id, :block, :street, :house_no, :latitude, :longitude)';
 
 let insertMemberQuery = 'INSERT INTO member(member_id, first_name, last_name, email, phone_number, registration_date, member_type, location_id, user_name) ' +
                         ' VALUES(:member_id, :first_name, :last_name, :email, :phone_number, :registration_date, :member_type, :location_id, :username)';
@@ -127,7 +127,7 @@ let vehicleCounterQuery = 'SELECT COUNT(DISTINCT vehicle_id) AS COUNTER FROM req
 
 //Service Controller
 //Get Services
-let getServicesQuery = 'SELECT * FROM service';
+let getServicesQuery = 'SELECT * FROM service ORDER BY service_id ASC';
 
 
 //Request Controller

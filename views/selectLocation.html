@@ -19,7 +19,7 @@
             <div class="intro"> Send service to this location?</div>
         </div>
             <input type="hidden" name="latitudeData" id="latitudeData" value="">
-            <input type="hidden" name="longitude" id="longtitudeData" value="">
+            <input type="hidden" name="longitude" id="longitudeData" value="">
             <label for="Current" id="CurrentL">Current Location</label>
             <input type="radio" id="CurrentI" name="location_choice" value="1" checked="checked" onchange="myFunction(1)"></input>
             <label for="Default" id="DefaultL">Default Location</label>
@@ -82,7 +82,7 @@ var long = position.coords.longitude
 var accuracy = position.coords.accuracy
 
 document.getElementById("latitudeData").value = lat;
-document.getElementById("longtitudeData").value = long;
+document.getElementById("longitudeData").value = long;
 
 if (marker) {
     map.removeLayer(marker)

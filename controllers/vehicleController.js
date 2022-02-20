@@ -60,11 +60,13 @@ const add_vehicle_to_the_request = async (req, res) => {
                 vehicleCount++;
                 vehicle_info_obj_arr.push(vehicle_info.rows[0]);
 
-                responses.ResponseCode = 1;               
+                responses.ResponseCode = 1;   
+                responses.ResponseText = 'Vehicle Added to the Request';            
 
             } else {
                 //No available vehicle
-
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'No Vehicle Available at this moment'; 
             }
             i++;
         } while (i < service_id_arr.length);
