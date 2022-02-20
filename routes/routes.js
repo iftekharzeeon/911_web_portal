@@ -19,6 +19,9 @@ router.post('/api/addUser/', bodyParser, userController.user_create);
 //User Sign In
 router.post('/api/loginUser/', bodyParser, userController.login_user);
 
+//User Update Info
+router.post('/api/updateUserInfo', bodyParser, userController.update_user_info);
+
 //Get Service List
 router.get('/api/getServices/', bodyParser, serviceController.get_services);
 

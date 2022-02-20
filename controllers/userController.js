@@ -359,10 +359,82 @@ const user_request_history = async (req, res) => {
 
 }
 
+const update_user_info = async (req, res) => {
+    let responses = {};
+
+    const user = req.body;
+
+    console.log(user);
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        //Location Info
+        let block = user.block;
+        let street = user.street;
+        let house_no = user.house_no;
+        let location_id = user.location_id;
+
+        //User Info
+        let member_id = user.member_id;
+        let first_name = user.first_name;
+        let last_name = user.last_name;
+        let phone_number = user.phone_number;
+        let member_type = 1; //0->Admin 1-> Citizen 2->Employee 3->Customer Care
+
+        //Check Member Existence
+        let member_exist = await connection.execute(queries.memberIdCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (member_exist.rows.length > 0) {
+
+            //Update Member Table
+            let result1 = await connection.execute(queries.updateMemberTableQuery, [first_name, last_name, phone_number, member_id, member_type])
+
+            //Update Location Table
+            let result2 = await connection.execute(queries.updateLocationTableQuery, [block, street, house_no, location_id]);
+
+
+            connection.commit();
+
+            if (result1.rowsAffected && result2.rowsAffected) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Member Data Updated';
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'There was an error updating data';
+            }
+        } else {
+            //Member Not Found
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'Member Not Found';
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+
+}
+
 
 module.exports = {
     user_create,
     login_user,
     get_user_request_info,
-    user_request_history
+    user_request_history,
+    update_user_info
 }
