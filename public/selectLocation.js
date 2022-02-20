@@ -59,20 +59,29 @@ const sendRequest = async() => {
         }
     }else{ //current location
         //help me out here zeeon
+
+        requestObj = {
+            "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
+            "is_my_location": 3,
+            "latitude": document.getElementById("latitudeData").value,
+            "longitude": document.getElementById("longtitudeData").value,
+            "services": JSON.parse(sessionStorage.getItem("services"))
+        }
+
     }
     console.log(requestObj);
-    if(is_ok){
-        response = await fetch('http://localhost:3000/api/addRequest',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestObj)
-            });
-        const responseObj = await response.json();
-        console.log(responseObj.body);
-        window.alert("Request sent");
-    }
+    // if(is_ok){
+    //     response = await fetch('http://localhost:3000/api/addRequest',{
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(requestObj)
+    //         });
+    //     const responseObj = await response.json();
+    //     console.log(responseObj.body);
+    //     window.alert("Request sent");
+    // }
 }
 
 const myFunction = async(x) =>{
