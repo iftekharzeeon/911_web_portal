@@ -10,6 +10,7 @@ const jobController = require('../controllers/jobController');
 const shiftController = require('../controllers/shiftController');
 const adminController = require('../controllers/adminController');
 const ccController = require('../controllers/customerCareController');
+const chatController = require('../controllers/chatController');
 
 const router = express.Router();
 
@@ -126,5 +127,14 @@ router.post('/api/addDepartment/', bodyParser, adminController.add_department);
 
 //Add Job
 router.post('/api/addJob/', bodyParser, adminController.add_job);
+
+//Get Messages
+router.post('/api/getMessages/', bodyParser, chatController.get_messages);
+
+//Send Messages
+router.post('/api/sendMessage/', bodyParser, chatController.save_messages);
+
+//Get Citizen Chat List
+router.post('/api/getCitizenChatList', bodyParser, chatController.get_chat_citizen_list);
 
 module.exports = router;

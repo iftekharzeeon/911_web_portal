@@ -178,3 +178,7 @@ const Logout = async() => {
     sessionStorage.removeItem("user")
     window.location.replace("/citLogin");
 }
+
+const redirectChatPage = async () => {
+    window.location.replace("/citLogin/citChat");
+}

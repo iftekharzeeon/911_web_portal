@@ -13,9 +13,11 @@
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
+    "http": "*",
     "nodemon": "^2.0.15",
     "ol": "^6.12.0",
-    "oracledb": "^5.3.0"
+    "oracledb": "^5.3.0",
+    "socket.io": "^4.4.1"
   },
   "repository": {
     "type": "git",

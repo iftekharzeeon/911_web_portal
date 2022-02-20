@@ -10,7 +10,8 @@ const loginEmp = async() => {
     const loginObj = {
         "username" : document.getElementById("fusername").value,
         "password" : document.getElementById("fpassword").value,
-        "member_type" : 3
+        "member_type" : 3,
+        "service_id" : 104
     }
     var loginJSON = JSON.stringify(loginObj);
     console.log(loginJSON);
@@ -37,6 +38,7 @@ const loginEmp = async() => {
             window.alert("Login Successful");
             sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
             console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
+            window.location.replace("/careLogin/careChat");
         }
     }  
 }

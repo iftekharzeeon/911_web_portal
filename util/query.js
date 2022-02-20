@@ -297,6 +297,28 @@ let insertDepartmentQuery = 'INSERT INTO departments VALUES(:department_id, :dep
 
 let insertJobQuery = 'INSERT INTO jobs VALUES(:job_id, :job_title, :salary, :department_id)';
 
+
+//Chat Controller
+//Get Messages
+
+let getMsgsQuery = `SELECT cl.chat_log_id, cl.sent_time, cl.message_text, c.first_name AS citizen_name,
+                        e.first_name AS employee_name, cl.sender 
+                        FROM chat_log cl, member c, member e 
+                        WHERE cl.citizen_id = :citizen_id 
+                        AND cl.employee_id = :employee_id 
+                        AND c.member_id = cl.citizen_id 
+                        AND e.member_id = cl.employee_id 
+                        ORDER BY cl.chat_log_id DESC`;
+
+//Add Message
+let insertChatLogQuery = 'INSERT INTO chat_log VALUES(:chat_log_id, :citizen_id, :employee_id, :sent_time, :message_text, :sender_id)';
+
+//Get Chat Citizen List
+let getChatCitizenListQuery = `SELECT DISTINCT CL.CITIZEN_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME
+                                FROM CHAT_LOG CL, MEMBER M
+                                WHERE CL.CITIZEN_ID = M.MEMBER_ID
+                                AND CL.EMPLOYEE_ID = :employee_id`;
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -363,5 +385,8 @@ module.exports = {
     insertServiceQuery,
     insertDepartmentQuery,
     insertJobQuery,
-    shiftInfoQuery
+    shiftInfoQuery,
+    getMsgsQuery,
+    insertChatLogQuery,
+    getChatCitizenListQuery
 }

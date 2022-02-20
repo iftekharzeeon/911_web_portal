@@ -1,14 +1,23 @@
 const express = require('express');
 
-const routes = require('./routes/routes');
-
 const app = express();
 const port = 3000;
 
-app.listen(port);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+global.io = io;
+
+
+const routes = require('./routes/routes');
+
+server.listen(port);
 app.use(express.urlencoded({
     extended: true
 }));
+
+io.on('connection', () => {
+    console.log('a user is connected');
+});
 
 //User Routes
 app.use('/', routes);
@@ -61,6 +70,10 @@ app.get('/citLogin/selectLocation', (req, res) => {
 
 app.get('/citLogin/citChat', (req, res) => {
     res.sendFile('./views/citChat.html', {root: __dirname});
+    });
+
+app.get('/careLogin/careChat', (req, res) => {
+    res.sendFile('./views/careChat.html', {root: __dirname});
     });
     
 app.get('/adminPanel', (req, res) => {

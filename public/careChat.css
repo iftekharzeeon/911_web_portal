@@ -1,0 +1,189 @@
+body{
+    background: linear-gradient(rgb(0, 3, 70) 0%, rgba(255, 160, 0, 1) 100%), linear-gradient(60deg, rgb(0, 5, 34) 0%, rgb(0, 255, 229) 100%), radial-gradient(100% 165% at 100% 100%, rgb(255, 0, 168) 0%, rgb(0, 255, 120) 100%), radial-gradient(100% 150% at 0% 0%, rgb(255, 245, 0) 0%, rgb(81, 213, 0) 100%);
+    background-blend-mode: overlay, soft-light, difference, normal;
+    position: relative;
+    font-family: 'Rajdhani','Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#base{
+    position: absolute;
+    width: 1200px;
+    height: 850px;
+    left: 637px;
+    top: 40px;
+
+    background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%);
+    opacity: 0.8;
+    border-radius: 64px;
+}
+
+#topBar{
+    position: relative;
+    width: 1100px;
+    height: 100px;
+    margin-top: 50px;
+    margin-left: 50px;
+
+    font-size: 40px;
+    padding-left: 50px;
+
+    /* background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%); */
+}
+#chatContent{
+    position: relative;
+    width: 1100px;
+    height: 450px;
+    margin-top: 10px;
+    margin-left: 50px;
+
+    overflow: auto;
+
+    /* background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%); */
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+#botBar{
+    position: relative;
+    width: 1100px;
+    height: 100px;
+    margin-top: 50px;
+    margin-left: 50px;
+
+    padding-left: 50px;
+
+    /* background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%); */
+}
+
+.text{
+    position: relative;
+    width: 1000px;
+    height: auto;
+    margin-top: 10px;
+    margin-left: 50px;
+    font-size: 25px;
+
+    
+    opacity: 0.8;
+    border-radius: 10px;
+}
+
+.user{
+    background: rgba(0, 0, 0, 0.73);
+    opacity: 0.8;
+    text-align: left;
+    color: #dfdfdf;
+}
+
+.customerCare{
+    background: rgba(255, 255, 255, 0.73);
+    opacity: 0.8;
+    text-align: right;
+}
+
+#chatContent::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+#chatContent::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+#chatContent::-webkit-scrollbar-thumb {
+    background-color: #dfdfdf;
+    border-radius: 10px;
+}
+
+#activeBar{
+    position: absolute;
+    width: 600px;
+    height: 900px;
+    background: linear-gradient(255.2deg, rgba(252, 249, 249, 0.329) 2.7%, rgba(255, 255, 255, 0) 97.72%);
+    border-radius: 64px;
+}
+
+#topBarLeft{
+    position: relative;
+    width: 500px;
+    height: auto;
+    margin-top: 50px;
+    margin-left: 50px;
+
+    font-size: 30px;
+    /* background: linear-gradient(255.2deg, rgba(255, 0, 0, 0.73) 2.7%, rgba(255, 255, 255, 0) 97.72%); */
+}
+
+#peopleList{
+    position: relative;
+    width: 500px;
+    max-height: 800px;
+    overflow: auto;
+    margin-top: 10px;
+    margin-left: 50px;
+
+    font-size: 30px;
+}
+
+#back{
+    position: relative;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+.people{
+    position: relative;
+    width: auto;
+    height: auto;
+    margin-top: 50px;
+    margin-left: 10px;
+    margin-bottom: 50px;
+    font-size: 25px;
+    padding-left: 20px;
+
+    background: linear-gradient(255.2deg, rgba(255, 255, 255, 0.014) 2.7%, rgba(255, 255, 255, 0.281) 97.72%);
+    opacity: 0.8;
+    border-radius: 10px;
+}
+
+#peopleList::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+#peopleList::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+#peopleList::-webkit-scrollbar-thumb {
+    background-color: #dfdfdf;
+    border-radius: 10px;
+}
+
+input{
+    position: relative;
+    width: 800px;
+    height: 95px;
+    font-size: 30px;
+
+    background: #C4C4C4;
+    border-radius: 20px;
+}
+
+#send{
+    cursor: pointer;
+    position: relative;
+    width: 200px;
+    height: 80px;
+    margin-left: 20px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    color: #FFFFFF;
+    line-height: 54px;
+
+    background: rgba(0, 0, 0, 0.26);
+    border-radius: 20px;
+}
