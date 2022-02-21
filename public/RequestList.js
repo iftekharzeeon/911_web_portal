@@ -21,6 +21,7 @@ window.onload = async() => {
     }
 
     const Member_Id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
+    console.log(Member_Id)
     const fetchObj = {
         "employee_id": Member_Id
     }
@@ -43,16 +44,29 @@ window.onload = async() => {
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
         Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-        MainContent.innerHTML = `
-        <div class="option">
-            <div class="content">
-                Citizen Name : ${RequestObj.RequestInfo.CITIZEN_NAME} &nbsp&nbsp&nbsp
-                Location : Block#${RequestObj.RequestInfo.BLOCK}, Street#${RequestObj.RequestInfo.STREET}, House#${RequestObj.RequestInfo.HOUSE_NO}&nbsp&nbsp
-                Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <button onclick ="finish(${RequestObj.RequestInfo.REQUEST_ID}, ${RequestObj.RequestInfo.REQUEST_EMPLOYEE_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Finish</button>
+        if(RequestObj.RequestInfo.LATITUDE != null){
+            MainContent.innerHTML = `
+            <div class="option">
+                <div class="content">
+                    Citizen Name : ${RequestObj.RequestInfo.CITIZEN_NAME} &nbsp&nbsp&nbsp
+                    Location : Latitude#${RequestObj.RequestInfo.LATITUDE}, Longitude#${RequestObj.RequestInfo.LONGITUDE}&nbsp&nbsp
+                    Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <button onclick ="finish(${RequestObj.RequestInfo.REQUEST_ID}, ${RequestObj.RequestInfo.REQUEST_EMPLOYEE_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Finish</button>
+                </div>
             </div>
-        </div>
-        `
+            `
+        }else{
+            MainContent.innerHTML = `
+            <div class="option">
+                <div class="content">
+                    Citizen Name : ${RequestObj.RequestInfo.CITIZEN_NAME} &nbsp&nbsp&nbsp
+                    Location : Block#${RequestObj.RequestInfo.BLOCK}, Street#${RequestObj.RequestInfo.STREET}, House#${RequestObj.RequestInfo.HOUSE_NO}&nbsp&nbsp
+                    Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <button onclick ="finish(${RequestObj.RequestInfo.REQUEST_ID}, ${RequestObj.RequestInfo.REQUEST_EMPLOYEE_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Finish</button>
+                </div>
+            </div>
+            `
+        }
     }else if(RequestObj.ResponseCode == 0){
         const MainText = document.getElementById("readyToHelp");
         MainText.innerHTML = RequestObj.ResponseText
@@ -64,16 +78,29 @@ window.onload = async() => {
             var dateArr = Time.split(' ');
             var timeArr = dateArr[1].split('.');
             Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-            arrContent.push(`
-            <div class="option">
-                    <div class="content">
-                        Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
-                        Location : Block#${RequestObj.RequestInfo[i].BLOCK}, Street#${RequestObj.RequestInfo[i].STREET}, House#${RequestObj.RequestInfo[i].HOUSE_NO}&nbsp&nbsp
-                        Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                        <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
-                    </div>
-            </div>
-            `)
+            if(block == ''){
+                arrContent.push(`
+                <div class="option">
+                        <div class="content">
+                            Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                            Location : Latitude: ${lat}, Longitude: ${long}&nbsp&nbsp
+                            Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                        </div>
+                </div>
+                `)
+            }else{
+                arrContent.push(`
+                <div class="option">
+                        <div class="content">
+                            Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                            Location : Block#${block}, Street#${street}, House#${house_no}&nbsp&nbsp
+                            Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                        </div>
+                </div>
+                `)
+            }
         }
         MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
     }

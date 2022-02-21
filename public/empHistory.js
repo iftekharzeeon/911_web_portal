@@ -41,16 +41,29 @@ window.onload = async() => {
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
         Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-        arrContent.push(`
-        <div class="option">
-                <div class="content">
-                    Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
-                    Location : Block#${block}, Street#${street}, House#${house_no}, Latitude: ${lat}, Longitude: ${long}&nbsp&nbsp
-                    Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
-                </div>
-        </div>
-        `)
+        if(block == ''){
+            arrContent.push(`
+            <div class="option">
+                    <div class="content">
+                        Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                        Location : Latitude: ${lat}, Longitude: ${long}&nbsp&nbsp
+                        Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                    </div>
+            </div>
+            `)
+        }else{
+            arrContent.push(`
+            <div class="option">
+                    <div class="content">
+                        Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                        Location : Block#${block}, Street#${street}, House#${house_no}&nbsp&nbsp
+                        Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                    </div>
+            </div>
+            `)
+        }
     }
     MainContent.insertAdjacentHTML("beforeend", arrContent.join(' '))
 }
