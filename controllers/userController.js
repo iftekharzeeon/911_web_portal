@@ -406,6 +406,10 @@ const update_user_info = async (req, res) => {
             if (result1.rowsAffected && result2.rowsAffected) {
                 responses.ResponseCode = 1;
                 responses.ResponseText = 'Member Data Updated';
+                responses.MemberInfo = member_exist.rows[0];
+
+                locationInfo = await connection.execute(queries.locationQuery, [location_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                responses.MemberInfo.LOCATION_INFO = locationInfo.rows[0];
             } else {
                 responses.ResponseCode = 0;
                 responses.ResponseText = 'There was an error updating data';
