@@ -96,6 +96,8 @@ const admin_create = async (req, res) => {
         block = user.block;
         street = user.street;
         house_no = user.house_no;
+        let longitude = '';
+        let latitude = '';
 
         //User Info
         first_name = user.first_name;
@@ -135,7 +137,7 @@ const admin_create = async (req, res) => {
 
                 //Insert Into Location Table
 
-                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
                 //Insert Into Member Table
 
@@ -856,6 +858,8 @@ const add_department = async (req, res) => {
         block = req.body.block;
         street = req.body.street;
         house_no = req.body.house_no;
+        let latitude = '';
+        let longitude = '';
 
         //Get a new Department id
         await syRegister.getNextId(connection, 7).then(function (data) {
@@ -869,7 +873,7 @@ const add_department = async (req, res) => {
 
         //Insert Into Location Table
 
-        result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+        result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
         //Insert into Department
         result = await connection.execute(queries.insertDepartmentQuery, [department_id, department_name, location_id, service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });

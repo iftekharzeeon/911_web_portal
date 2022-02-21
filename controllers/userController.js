@@ -32,6 +32,8 @@ const user_create = async (req, res) => {
         block = user.block;
         street = user.street;
         house_no = user.house_no;
+        let latitude = '';
+        let longitude = '';
 
         //User Info
         first_name = user.first_name;
@@ -71,7 +73,7 @@ const user_create = async (req, res) => {
 
                 //Insert Into Location Table
 
-                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
                 //Insert Into Member Table
 

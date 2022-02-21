@@ -166,6 +166,8 @@ let updateEmployeeAcceptedStatusto1Query = 'UPDATE request_employee SET employee
 
 let employeeAcceptCheckQuery = 'SELECT COUNT(*) AS COUNTER FROM request_employee WHERE request_id = :request_id AND (employee_accepted = -1 OR employee_accepted = 0)';
 
+let updateAllEmployeesAcceptedStatusto1Query = `UPDATE request_employee SET employee_accepted = :employee_accepted_status WHERE request_id = :request_id AND service_id = :service_id`;
+
 
 //Vehicle Controller
 //Add Vehicle Request
@@ -388,5 +390,6 @@ module.exports = {
     shiftInfoQuery,
     getMsgsQuery,
     insertChatLogQuery,
-    getChatCitizenListQuery
+    getChatCitizenListQuery,
+    updateAllEmployeesAcceptedStatusto1Query
 }

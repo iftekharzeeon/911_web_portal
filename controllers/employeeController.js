@@ -283,6 +283,8 @@ const employee_register = async (req, res) => {
         let block = employee.block;
         let street = employee.street;
         let house_no = employee.house_no;
+        let latitude = '';
+        let longitude = '';
 
         //Employee Info
         let first_name = employee.first_name;
@@ -326,7 +328,7 @@ const employee_register = async (req, res) => {
 
                 //Insert Into Location Table
 
-                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no]);
+                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
                 //Insert Into Member Table
 
