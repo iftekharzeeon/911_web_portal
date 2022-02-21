@@ -226,7 +226,7 @@ const get_user_request_info = async (req, res) => {
 
         //Check Member Existence
         let memberCheckQuery = 'SELECT * FROM member WHERE member_id = :member_id AND member_type = 1';
-        memberExist = await connection.execute(memberCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        memberExist = await connection.execute(queries.memberIdCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (memberExist.rows.length === 0) {
             //Member Not Found
@@ -245,7 +245,7 @@ const get_user_request_info = async (req, res) => {
 
                 //Number of request made
 
-                number_of_request = await connection.execute(requestCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+                number_of_request = await connection.execute(queries.requestCounterQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
                 number_of_request = number_of_request.rows[0].COUNTER;
 

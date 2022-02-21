@@ -23,7 +23,7 @@ window.onload = async() => {
     console.log(RequestObj);
     const MainContent = document.getElementById("MainContent");
     const arrContent = []
-    for(var i = 0; i < RequestObj.RequestInfo.length; i++){
+    for(var i = 0; i < RequestObj.RequestInfos.length; i++){
         let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
