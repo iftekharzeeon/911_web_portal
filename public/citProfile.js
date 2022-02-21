@@ -56,7 +56,7 @@ window.onload = async () => {
     PhoneNumber.innerHTML = `${Member.PHONE_NUMBER}`
 
     defaultMember_Id = Member.MEMBER_ID;
-    defaultLocation_Id = Member.lOCATION_ID;
+    defaultLocation_Id = Member.LOCATION_ID;
     defaultPhoneNumber = Member.PHONE_NUMBER;
     defaultHouse = Member.LOCATION_INFO.HOUSE_NO;
     defaultBlock = Member.LOCATION_INFO.BLOCK;
@@ -108,6 +108,7 @@ const SendData = async() => {
     if(onlySpaces(updateObj.house_no) || updateObj.house_no == '') updateObj.house_no = defaultHouse;
 
     const updateJSON = JSON.stringify(updateObj);
+    console.log(updateJSON)
     const response = await fetch('http://localhost:3000/api/updateUserInfo', {
         method: 'POST',
         headers: {
@@ -117,4 +118,6 @@ const SendData = async() => {
     });
     const responseObj = await response.json();
     console.log(responseObj);
+
+    window.location.reload()
 }
