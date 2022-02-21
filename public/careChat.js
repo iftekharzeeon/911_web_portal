@@ -140,3 +140,8 @@ const backCC = async () => {
 // const textContent = `
 // <div class="text ${User / CustomerCare}"><i>${UserName}: </i>${text}</div>
 // `
+
+const Logout = async() =>{
+    sessionStorage.removeItem("user")
+    window.location.replace("/empLogin")
+}

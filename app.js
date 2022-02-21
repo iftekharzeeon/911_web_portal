@@ -72,6 +72,10 @@ app.get('/citLogin/citChat', (req, res) => {
     res.sendFile('./views/citChat.html', {root: __dirname});
     });
 
+app.get('/citLogin/pendingRequest', (req, res) => {
+    res.sendFile('./views/pendingRequest.html', {root: __dirname});
+    });
+
 app.get('/careLogin/careChat', (req, res) => {
     res.sendFile('./views/careChat.html', {root: __dirname});
     });

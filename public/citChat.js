@@ -1,7 +1,7 @@
 var socket = io();
 
 window.onload = async () => {
-    const response = await fetch('http://localhost:3000/api/getAllCustomerCares', {
+    const response = await fetch('http://localhost:3000/api/getAvailableCCList', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -53,10 +53,10 @@ const getMessages = async (ccID, ccName) => {
         responseObj.AllMessages.forEach(message => {
             if (message.SENDER == ccID) {
                 //Customer Care Message
-                msgContentDesign += `<div class="text CustomerCare"><i>${message.EMPLOYEE_NAME}: </i>${message.MESSAGE_TEXT}</div>`;
+                msgContentDesign += `<div class="text CustomerCare"><i><b>${message.EMPLOYEE_NAME}: </b></i>${message.MESSAGE_TEXT}</div>`;
             } else {
                 //Citizen Message
-                msgContentDesign += `<div class="text User"><i>You: </i></i>${message.MESSAGE_TEXT}</div>`;
+                msgContentDesign += `<div class="text User"><i><b>You: </b></i>${message.MESSAGE_TEXT}</div>`;
             }
         });
 

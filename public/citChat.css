@@ -135,6 +135,7 @@ body{
 
 .people{
     position: relative;
+    cursor: pointer;
     width: auto;
     height: auto;
     margin-top: 50px;
@@ -186,4 +187,16 @@ input{
 
     background: rgba(0, 0, 0, 0.26);
     border-radius: 20px;
+}
+
+#Logout{
+    position: absolute;
+    margin-top: 20px;
+    width: 8em;
+    height: 3em;
+    left: 270px;
+    top: 840px;
+
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 36px;
 }
