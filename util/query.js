@@ -98,7 +98,7 @@ let employeeCheckEmailQuery = 'SELECT * FROM member WHERE email = :email';
 let insertEmployeeQuery = 'INSERT INTO employees(member_id, hire_date, occupied, job_id, shift_id, status) VALUES(:member_id, :hire_date, :occupied, :job_id, :shift_id, :status)';
 
 //Employee Request History
-let employeeRequestHistoryListQuery = `SELECT R.REQUEST_TIME, RE.EMPLOYEE_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, R.RESOLVED_STATUS, S.DESCRIPTION AS SERVICE_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ` +
+let employeeRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, RE.EMPLOYEE_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS CITIZEN_NAME, R.RESOLVED_STATUS, S.DESCRIPTION AS SERVICE_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO, L.LATITUDE, L.LONGITUDE ` +
                                     'FROM REQUEST_EMPLOYEE RE, EMPLOYEES E, SERVICE S, MEMBER M, REQUEST R, LOCATION L ' +
                                     'WHERE RE.EMPLOYEE_ID = E.MEMBER_ID ' +
                                     'AND RE.REQUEST_ID = R.REQUEST_ID ' +

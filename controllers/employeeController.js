@@ -420,7 +420,7 @@ const employee_request_history = async (req, res) => {
                 responses.RequestInfos = result.rows;
             } else {
                 responses.ResponseCode = 0;
-                responses.ResponseText = 'Np Data found';
+                responses.ResponseText = 'No Data found';
             }
 
         } else {
