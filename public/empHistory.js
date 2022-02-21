@@ -57,4 +57,53 @@ window.onload = async() => {
 
 const requestDetails = async (requestId) => {
     console.log(requestId);
+
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    modal.style.display = "block";
+
+    const requestObj = {
+        "request_id" : requestId
+    }
+
+
+    const response = await fetch('http://localhost:3000/api/getRequestHistoryDetails',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestObj)
+    });
+    const ResponseObj = await response.json();
+    console.log(ResponseObj)
+
+    const employeeList = ResponseObj.ResponseData
+    var HTMLstring = ''
+
+    if(ResponseObj.ResponseCode == 1) HTMLstring += `<i>Request still being processed</i><br><br>`
+    else HTMLstring += 'Request finished'
+    HTMLstring += `
+    Request id: ${requestId}<br>
+    Employee Requested: ${ResponseObj.TotalEmployeesRequested}<br>
+    Employee accepted: ${ResponseObj.NumberofEmployeesAccepted}<br>
+    Vehicle allocated: ${ResponseObj.NumberofVehicleAccepted}<br><br>
+    `
+    HTMLstring += 'Co-worker joined:<br><br>'
+
+    for(var i = 0; i < employeeList.length; i++){
+        HTMLstring += `
+        ${i + 1}.${employeeList[i].OTHER_EMPLOYEE_NAME}, Department: ${employeeList[i].DEPARTMENT_NAME}<br>
+        `
+    }
+
+    const modal_text = document.getElementById("modal_text");
+    modal_text.innerHTML = HTMLstring 
 }
+
