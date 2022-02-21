@@ -44,6 +44,11 @@ let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLV
                                 'WHERE R.CITIZEN_ID = :member_id ' +
                                 'AND L.LOCATION_ID = R.LOCATION_ID';
 
+
+//Check Request Status
+let checkRequestStatusQuery = `SELECT COUNT(*) AS counter FROM request WHERE citizen_id = :member_id AND (resolved_status = -1 OR resolved_status = 0)`;
+
+
 //Employee Controller
 //Employee Get Request Info
 let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id AND status = 1';
@@ -391,5 +396,6 @@ module.exports = {
     getMsgsQuery,
     insertChatLogQuery,
     getChatCitizenListQuery,
-    updateAllEmployeesAcceptedStatusto1Query
+    updateAllEmployeesAcceptedStatusto1Query,
+    checkRequestStatusQuery
 }

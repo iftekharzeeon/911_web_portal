@@ -7,10 +7,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 let connection;
-let result;
 
 const user_create = async (req, res) => {
-
+    let result;
     let responses = {};
 
     const user = req.body;
@@ -127,6 +126,7 @@ const user_create = async (req, res) => {
 };
 
 const login_user = async (req, res) => {
+    let result;
     let responses = {};
     const user = req.body;
     let memberId;
@@ -192,7 +192,7 @@ const login_user = async (req, res) => {
 }
 
 const get_user_request_info = async (req, res) => {
-
+    let result;
     let responses = {};
 
     const requestObj = req.body;
@@ -307,7 +307,6 @@ const get_user_request_info = async (req, res) => {
 
 const user_request_history = async (req, res) => {
     let responses = {};
-
     const user = req.body;
 
     let result;
@@ -363,7 +362,7 @@ const user_request_history = async (req, res) => {
 
 const update_user_info = async (req, res) => {
     let responses = {};
-
+    let result;
     const user = req.body;
 
     console.log(user);
@@ -432,11 +431,65 @@ const update_user_info = async (req, res) => {
 
 }
 
+const check_request_status = async (req, res) => {
+    let result;
+
+    let responses = {};
+    let member_id;
+    let counter;
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        member_id = req.body.citizen_id;
+
+        //Check Member Existence
+        let member_exist = await connection.execute(queries.memberIdCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (member_exist.rows.length > 0) {
+            result = await connection.execute(queries.checkRequestStatusQuery, [member_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+            counter = result.rows[0].COUNTER;
+
+            if (counter > 0) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'You have a request ongoing.';
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'No ongoing requests at this moment';
+            }
+
+        } else {
+            //Member not found
+            responses.ResponseCode = -2;
+            responses.ResponseText = 'Member Not Found';
+        }
+
+    } catch(err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 
 module.exports = {
     user_create,
     login_user,
     get_user_request_info,
     user_request_history,
-    update_user_info
+    update_user_info,
+    check_request_status
 }
