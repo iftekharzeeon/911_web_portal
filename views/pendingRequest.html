@@ -1,6 +1,6 @@
 <head>
-    <link href="../PendingRequest.css" rel="stylesheet" type="text/css"/>
-    <script src="../PendingRequest.js"></script>
+    <link href="../pendingRequest.css" rel="stylesheet" type="text/css"/>
+    <script src="../pendingRequest.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
     <title>Pending Request</title>
     <link rel="icon" href="../favcon.png">
@@ -10,13 +10,16 @@
 <body>
     <div id="base">
         <div id="topBar" >
-            <div id="topText">Help is on the way</div>
+            <div id="topText">Your request is still being processed</div>
         </div>
-        <div id="Main Content">
-            
+        <div id="MainContent">
+            <div id="list">
+                <div id="listText">Here are the list of employee</div>
+                <div id="listContent">
+                </div>
+            </div>
         </div>
         <button id="RefreshButton" onclick="Refresh()" style="font-family: 'Rajdhani'">Refresh</button>
     </div>
     <button id="Logout" onclick="Logout()" style="font-family: 'Rajdhani'">Logout</button>
-    <button id="Chat" onclick="Chat()" style="font-family: 'Rajdhani'">Customer Care</button>
 </body>
