@@ -63,6 +63,41 @@ window.onload = async () => {
     defaultStreet = Member.LOCATION_INFO.STREET;
     defaultFirstName = Member.FIRST_NAME;
     defaultLastName = Member.LAST_NAME;
+
+    console.log(defaultMember_Id);
+
+    //update history of user
+    const requestObjB = {
+        "member_id" : JSON.parse(sessionStorage.getItem("user")).MEMBER_ID
+    }
+
+    const responseB = await fetch('http://localhost:3000/api/getUserRequestHistoryList', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestObjB)
+    });
+    var responseObjB = await responseB.json();
+    
+    const historyList = responseObjB.RequestInfos;
+    console.log(historyList)
+
+    const history = document.getElementById("history");
+    for(var i = 0; i < historyList.length; i++){
+        let Time = historyList[i].REQUEST_TIME;
+        var dateArr = Time.split(' ');
+        var timeArr = dateArr[1].split('.');
+        Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
+        history.insertAdjacentHTML("beforeend", `
+        <div class="HistoryContent">
+        Request Id : ${historyList[i].REQUEST_ID}<br>
+        Location Id : ${historyList[i].LOCATION_ID}<br>
+        Time : ${Time}
+        </div>
+        `)
+    }
+
 }
 
 const Logout = async() => {
@@ -118,6 +153,7 @@ const SendData = async() => {
     });
     const responseObj = await response.json();
     console.log(responseObj);
+    sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
 
     window.location.reload()
 }

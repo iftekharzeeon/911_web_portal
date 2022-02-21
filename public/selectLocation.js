@@ -131,6 +131,7 @@ const sendRequest = async () => {
             if (responseObjVehicle.ResponseCode == 1) {
                 window.alert('Request sent. ' + responseObjVehicle.ResponseText);
                 //Redirect here
+                window.location.replace('/citLogin/pendingRequest');
             } else if(responseObjVehicle.ResponseCode == 0) {
                 //No vehicle available
                 window.alert(responseObjVehicle.ResponseText);
