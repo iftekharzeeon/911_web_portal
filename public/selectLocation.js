@@ -25,6 +25,28 @@ window.onload = async () => {
 
     const name = document.getElementById("name");
     name.textContent += ' ' + JSON.parse(sessionStorage.getItem("user")).FIRST_NAME + ', ';
+
+    /// if request is ongoing
+    const requestObja = {
+        "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID
+    }
+
+    const responsea = await fetch('http://localhost:3000/api/checkRequestStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestObja)
+    });
+    var responseObja = await responsea.json();
+    console.log(responseObja);
+
+    const ResponseCodea = responseObja.ResponseCode;
+    if(ResponseCodea == 1){
+        window.location.replace("/citLogin/pendingRequest")
+    }
+
+    //done
 }
 
 const sendRequest = async () => {

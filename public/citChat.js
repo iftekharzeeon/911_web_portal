@@ -1,6 +1,31 @@
 var socket = io();
 
 window.onload = async () => {
+    if (sessionStorage.getItem("user") == null) {
+        window.location.replace("/citLogin")
+    }
+
+    ///if request is ongoing
+    var requestObja = {
+        "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID
+    }
+
+    const responsea = await fetch('http://localhost:3000/api/checkRequestStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestObja)
+    });
+    var responseObja = await responsea.json();
+    console.log(responseObja);
+
+    const ResponseCodea = responseObja.ResponseCode;
+    if(ResponseCodea == 1){
+        window.location.replace("/citLogin/pendingRequest")
+    }
+    ///done
+
     const response = await fetch('http://localhost:3000/api/getAvailableCCList', {
         method: 'GET',
         headers: {
