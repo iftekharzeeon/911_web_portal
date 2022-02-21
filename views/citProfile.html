@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rajdhani">
     <title>Citizen Profile</title>
     <link rel="icon" href="../favcon.png">
-    <meta http-equiv="refresh" content="30">
 </head>
 
 <body>
@@ -30,5 +29,32 @@
         </div>
         <button id = "findHelp" onclick="gotoSelectService()" style="font-family: 'Rajdhani'">Find Help</button>
         <button id = "Logout" onclick="Logout()" style="font-family: 'Rajdhani'">Logout</button>
+        <button id = "Update" onclick="Update()" style="font-family: 'Rajdhani'">Update</button>
+    </div>
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal_text">Update your info</div>
+        <label for="firstname" id="tfirstname">First Name</label>
+        <input type="text" id="ffirstname" name="firstname"><br>
+        <label for="lastname" id="tlastname">Last Name</label>
+        <input type="text" id="flastname" name="lastname"><br>
+        <label for="password" id="tpassword">Password</label>
+        <input type="password" id="fpassword" name="password"><br>
+        <label for="block" id="tblock">Block</label>
+        <input type="text" id="fblock" name="block"><br>
+        <label for="street" id="tstreet">Street</label>
+        <input type="text" id="fstreet" name="street"><br>
+        <label for="house" id="thouse">House</label>
+        <input type="text" id="fhouse" name="house"><br>
+        <label for="phoneNumber" id="tphoneNumber">Phone</label>
+        <input type="text" id="fphoneNumber" name="phoneNumber"><br>
+        <button id="SendData" onclick="SendData()" style="font-family: 'Rajdhani'">
+            Update
+        </button>
+        </div>
+      
     </div>
 </body>
