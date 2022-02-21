@@ -326,6 +326,16 @@ let getChatCitizenListQuery = `SELECT DISTINCT CL.CITIZEN_ID, M.FIRST_NAME || ' 
                                 WHERE CL.CITIZEN_ID = M.MEMBER_ID
                                 AND CL.EMPLOYEE_ID = :employee_id`;
 
+
+//Customer Care Controller
+//Get Available Customer Care List
+
+let getAvailableCCListQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME, M.LAST_NAME, M.FIRST_NAME || ' ' || M.LAST_NAME AS user_fullname, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER ` +
+                            'FROM MEMBER M, EMPLOYEES E ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND E.SHIFT_ID = :shift_id ' +
+                            'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -397,5 +407,6 @@ module.exports = {
     insertChatLogQuery,
     getChatCitizenListQuery,
     updateAllEmployeesAcceptedStatusto1Query,
-    checkRequestStatusQuery
+    checkRequestStatusQuery,
+    getAvailableCCListQuery
 }
