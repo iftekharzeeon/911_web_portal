@@ -265,11 +265,11 @@ const get_user_request_info = async (req, res) => {
                     //Get Employees and Vehicle Information
 
                     information = await connection.execute(queries.informationQuery, [request_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-                    responses.RequestInformation = information.rows[0];
+                    responses.RequestInformation = information.rows;
                     responses.ResponseCode = 1;
                     responses.ResponseText = 'Data found';
                 } else {
-                    responses.RequestInformation = {};
+                    responses.RequestInformation = [];
                     responses.ResponseText = 'No Data Found';
                     responses.ResponseCode = 0;
                 }
