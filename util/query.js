@@ -44,6 +44,11 @@ let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLV
                                 'WHERE R.CITIZEN_ID = :member_id ' +
                                 'AND L.LOCATION_ID = R.LOCATION_ID';
 
+
+//Check Request Status
+let checkRequestStatusQuery = `SELECT COUNT(*) AS counter FROM request WHERE citizen_id = :member_id AND (resolved_status = -1 OR resolved_status = 0)`;
+
+
 //Employee Controller
 //Employee Get Request Info
 let employeeCheckQuery = 'SELECT * FROM employees WHERE member_id = :employee_id AND status = 1';
@@ -321,6 +326,16 @@ let getChatCitizenListQuery = `SELECT DISTINCT CL.CITIZEN_ID, M.FIRST_NAME || ' 
                                 WHERE CL.CITIZEN_ID = M.MEMBER_ID
                                 AND CL.EMPLOYEE_ID = :employee_id`;
 
+
+//Customer Care Controller
+//Get Available Customer Care List
+
+let getAvailableCCListQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME, M.LAST_NAME, M.FIRST_NAME || ' ' || M.LAST_NAME AS user_fullname, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER ` +
+                            'FROM MEMBER M, EMPLOYEES E ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND E.SHIFT_ID = :shift_id ' +
+                            'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+
 module.exports = {
     memberCheckUsernameQuery,
     memberCheckEmailQuery,
@@ -391,5 +406,7 @@ module.exports = {
     getMsgsQuery,
     insertChatLogQuery,
     getChatCitizenListQuery,
-    updateAllEmployeesAcceptedStatusto1Query
+    updateAllEmployeesAcceptedStatusto1Query,
+    checkRequestStatusQuery,
+    getAvailableCCListQuery
 }

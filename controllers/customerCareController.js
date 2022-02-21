@@ -161,8 +161,8 @@ const cc_register = async (req, res) => {
 
                 //Insert Into Employee Table
 
-                result = await connection.execute(queries.insertEmployeeQuery, [member_id, registration_date, occupied, job_id, shift_id, status], {outFormat: oracledb.OUT_FORMAT_OBJECT});
-                
+                result = await connection.execute(queries.insertEmployeeQuery, [member_id, registration_date, occupied, job_id, shift_id, status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
                 //Insert Password Info
                 let salt = '';
                 let password_key = '';
@@ -212,7 +212,82 @@ const cc_register = async (req, res) => {
 
 }
 
+const get_available_cc_list = async (req, res) => {
+    let result;
+
+    let responses = {};
+
+    let shifts_info;
+    let shift_id;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        shifts_info = await connection.execute(queries.getShiftsQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        let current_time = new Date();
+        hour = current_time.getHours();
+        minute = current_time.getMinutes();
+
+        let nowTime = String(hour) + String(minute);
+
+        let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        shifts_info.rows.forEach(shift => {
+            let desc = shift.DESCRIPTION;
+
+            let timeInfo = desc.split(":")[0].trim();
+            let dayInfo = desc.split(":")[1].trim();
+
+            let firstDay = dayInfo.split("to")[0].trim();
+            let lastDay = dayInfo.split("to")[1].trim();
+
+            let startTime = timeInfo.split("to")[0].trim();
+            let endTime = timeInfo.split("to")[1].trim();
+
+            for (let i = 0; i < days.length; i++) {
+                if (days[i] == firstDay) firstDayNo = i;
+                if (days[i] == lastDay) lastDayNo = i;
+            }
+
+            if ((nowTime >= startTime && nowTime <= endTime) && (current_time.getDay() >= firstDayNo && current_time.getDay() <= lastDayNo)) {
+                shift_id = shift.SHIFT_ID;
+            }
+        });
+
+
+
+        result = await connection.execute(queries.getAvailableCCListQuery, [shift_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length) {
+            responses.ResponseCode = 1;
+            responses.ResponseData = result.rows;
+        } else {
+            responses.ResponseCode = 0;
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 module.exports = {
     login_cc,
-    cc_register
+    cc_register,
+    get_available_cc_list
 }

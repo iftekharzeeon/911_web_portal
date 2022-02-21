@@ -137,4 +137,10 @@ router.post('/api/sendMessage/', bodyParser, chatController.save_messages);
 //Get Citizen Chat List
 router.post('/api/getCitizenChatList', bodyParser, chatController.get_chat_citizen_list);
 
+//Get Citizen Request Status
+router.post('/api/checkRequestStatus', bodyParser, userController.check_request_status);
+
+//Get Available Customer Care List
+router.get('/api/getAvailableCCList', bodyParser, ccController.get_available_cc_list);
+
 module.exports = router;
