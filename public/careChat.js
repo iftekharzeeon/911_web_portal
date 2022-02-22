@@ -1,5 +1,6 @@
 var socket = io();
 var serviceList;
+var currentCitizen;
 
 window.onload = async () => {
 
@@ -87,6 +88,7 @@ const getMessages = async (citizenId, citizenName) => {
         });
     serviceList = await ServiceResponse.json();
     console.log(serviceList);
+    currentCitizen = citizenId;
 }
 
 const sendMsg = async () => {
@@ -155,19 +157,19 @@ const Logout = async() =>{
 
 const help = async() => {
     var modal = document.getElementById("myModal");
+    modal.style.display = "block";
+    const modalContent = document.getElementsByClassName("modal-content")[0];
+    
+    modalContent.innerHTML = `
+    <span class="close">&times;</span>
+    <div id="modal_text">Select Service Amount To Send Help</div>
+    `
 
-    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
     span.onclick = function() {
         modal.style.display = "none";
     }
-
-    modal.style.display = "block";
-
-    
-
-    const modalContent = document.getElementsByClassName("modal-content")[0];
 
     for(var i = 0; i < serviceList.length; i++){
         if (serviceList[i].SERVICE_ID == 104) continue;
@@ -178,6 +180,12 @@ const help = async() => {
     }
 
     modalContent.insertAdjacentHTML("beforeend", `
+    <label for="block" id="tblock">Block</label>
+    <input type="text" id="fblock" name="block" class="input" style="width : 100px"><br>
+    <label for="street" id="tstreet">Street</label>
+    <input type="text" id="fstreet" name="street" class="input" style="width : 100px"><br>
+    <label for="house" id="thouse">House</label>
+    <input type="text" id="fhouse" name="house" class="input" style="width : 100px"><br>
     <button id="SendData" onclick="SendData()" style="font-family: 'Rajdhani'">
         Send Help
     </button>
@@ -191,9 +199,41 @@ const SendData = async() => {
         var serviceRequested = document.getElementById(serviceList[i].SERVICE_ID).value;
         if(serviceRequested == '') continue;
         ServiceArr.push({
-            SERVICE_ID : serviceList[i].SERVICE_ID,
-            AMOUNT : serviceRequested
+            service_id : serviceList[i].SERVICE_ID,
+            request_people : serviceRequested
         })
     }
-    console.log(ServiceArr)
+    console.log(currentCitizen + ' wants ' + JSON.stringify(ServiceArr))
+
+    const requestObja = {
+        "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID
+    }
+
+    const responsea = await fetch('http://localhost:3000/api/checkRequestStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestObja)
+    });
+    var responseObja = await responsea.json();
+    console.log(responseObja);
+
+    const ResponseCodea = responseObja.ResponseCode;
+    if(ResponseCodea == 1){
+        window.alert("Citizen already has a request ongoing")
+    }else{
+        const location_obj = {
+            block: document.getElementById("fblock").value,
+            street: document.getElementById("fstreet").value,
+            house_no: document.getElementById("fhouse").value
+        }
+        const demiRequest = {
+            citizen_id: "101",
+            is_my_location: 0,
+            location_obj: location_obj,
+            services: ServiceArr
+        }
+        //send demiRequest to server
+    }
 }
