@@ -44,6 +44,7 @@ The ```nodemon app``` command will start the server at 3000 port. So make sure y
 Go to your web browser and locate [localhost:3000](localhost:3000) to visit the client side of the app. To test the admin panel you can visit [localhost:3000/adminPanel](localhost:3000/adminPanel)
 
 **Client Site** : [localhost:3000](localhost:3000)
+
 **Admin Site** : [localhost:3000/adminPanel](localhost:3000/adminPanel)
 
 ## Features
