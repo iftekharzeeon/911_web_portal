@@ -1,6 +1,5 @@
 body{
-    background: linear-gradient(180deg, #FFB7B7 0%, #727272 100%), radial-gradient(60.91% 100% at 50% 0%, #FFD1D1 0%, #260000 100%), linear-gradient(238.72deg, #FFDDDD 0%, #720066 100%), linear-gradient(127.43deg, #00FFFF 0%, #FF4444 100%), radial-gradient(100.22% 100% at 70.57% 0%, #FF0000 0%, #00FFE0 100%), linear-gradient(127.43deg, #B7D500 0%, #3300FF 100%);
-    background-blend-mode: screen, overlay, hard-light, color-burn, color-dodge, normal;
+    background: #ffb7b7cb; background-blend-mode: screen, overlay, hard-light, color-burn, color-dodge, normal;
     position: relative;
     font-family: 'Rajdhani','Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
@@ -99,7 +98,7 @@ body{
     position: absolute;
     width: 600px;
     height: 900px;
-    background: linear-gradient(255.2deg, rgba(252, 249, 249, 0.329) 2.7%, rgba(255, 255, 255, 0) 97.72%);
+    background: linear-gradient(255.2deg, rgba(255, 0, 0, 0.53) 2.7%, rgba(0, 10, 255, 0.3) 97.71%);
     border-radius: 64px;
 }
 

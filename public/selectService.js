@@ -204,3 +204,7 @@ const Logout = async() => {
 const redirectChatPage = async () => {
     window.location.replace("/citLogin/citChat");
 }
+
+const Profile = async() => {
+    window.location.replace("/citLogin/citProfile");
+}

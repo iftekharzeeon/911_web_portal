@@ -1,5 +1,5 @@
 body{
-    background: linear-gradient(rgb(0, 3, 70) 0%, rgba(255, 160, 0, 1) 100%), linear-gradient(60deg, rgb(0, 5, 34) 0%, rgb(0, 255, 229) 100%), radial-gradient(100% 165% at 100% 100%, rgb(255, 0, 168) 0%, rgb(0, 255, 120) 100%), radial-gradient(100% 150% at 0% 0%, rgb(255, 245, 0) 0%, rgb(81, 213, 0) 100%);
+    background-color: #000000bd;
     background-blend-mode: overlay, soft-light, difference, normal;
     position: relative;
     font-family: 'Rajdhani','Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
