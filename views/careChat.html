@@ -14,6 +14,7 @@
     </div>
     <div id="base">
         <div id="topBar">Citizen Name</div>
+        <button id = "help" onclick="help()" style="font-family: 'Rajdhani'">Help</button>
         <div id="chatContent">
         </div>
         <div id="botBar">
@@ -24,6 +25,19 @@
             </button>
         </div>
     </div>
+
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal_text">Select Service Amount To Send Help</div>
+        </div>
+      
+    </div>
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="../socket.io/socket.io.js"></script>
     <script src="../careChat.js"></script>

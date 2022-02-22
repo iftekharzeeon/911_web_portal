@@ -1,4 +1,5 @@
 var socket = io();
+var serviceList;
 
 window.onload = async () => {
 
@@ -80,6 +81,12 @@ const getMessages = async (citizenId, citizenName) => {
     } else {
         window.alert(responseObj.ResponseText);
     }
+
+    const ServiceResponse = await fetch('http://localhost:3000/api/getServices',{
+            method: 'GET'
+        });
+    serviceList = await ServiceResponse.json();
+    console.log(serviceList);
 }
 
 const sendMsg = async () => {
@@ -134,7 +141,7 @@ const addMessage = async (messageObj) => {
 socket.on('message', addMessage);
 
 const backCC = async () => {
-    window.location.replace("/citLogin/selectService");
+    window.location.replace("/careLogin");
 }
 
 // const textContent = `
@@ -143,5 +150,50 @@ const backCC = async () => {
 
 const Logout = async() =>{
     sessionStorage.removeItem("user")
-    window.location.replace("/empLogin")
+    window.location.replace("/careLogin");
+}
+
+const help = async() => {
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    modal.style.display = "block";
+
+    
+
+    const modalContent = document.getElementsByClassName("modal-content")[0];
+
+    for(var i = 0; i < serviceList.length; i++){
+        if (serviceList[i].SERVICE_ID == 104) continue;
+        modalContent.insertAdjacentHTML("beforeend", `
+        <label>${serviceList[i].DESCRIPTION}</label>
+        <input type="text" id="${serviceList[i].SERVICE_ID}"><br>
+        `)
+    }
+
+    modalContent.insertAdjacentHTML("beforeend", `
+    <button id="SendData" onclick="SendData()" style="font-family: 'Rajdhani'">
+        Send Help
+    </button>
+    `)
+}
+
+const SendData = async() => {
+    var ServiceArr =[]
+    for(var i = 0; i < serviceList.length; i++){
+        if (serviceList[i].SERVICE_ID == 104) continue;
+        var serviceRequested = document.getElementById(serviceList[i].SERVICE_ID).value;
+        if(serviceRequested == '') continue;
+        ServiceArr.push({
+            SERVICE_ID : serviceList[i].SERVICE_ID,
+            AMOUNT : serviceRequested
+        })
+    }
+    console.log(ServiceArr)
 }
