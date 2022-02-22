@@ -79,3 +79,45 @@ const GoToProfile = async() => {
 const backL = async() => {
     window.location.replace("/");
 }
+
+const Update = async() => {
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    modal.style.display = "block";
+}
+
+function onlySpaces(str) {
+    return str.trim().length === 0;
+}
+
+const SendData = async() => {
+    var updateObj = {
+        username : document.getElementById("Fnewusername").value,
+        new_password : document.getElementById("Fnewpassword").value
+    }
+
+    if(onlySpaces(updateObj.username) || updateObj.username == '') window.alert("Can't have empty fields");
+    if(onlySpaces(updateObj.new_password) || updateObj.new_password == '') window.alert("Can't have empty fields");
+
+    const updateJSON = JSON.stringify(updateObj);
+    console.log(updateJSON)
+    const response = await fetch('http://localhost:3000/api/userUpdatePassword', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: updateJSON
+    });
+    const responseObj = await response.json();
+    console.log(responseObj);
+
+    window.alert(responseObj.ResponseText)
+    window.location.reload()
+}

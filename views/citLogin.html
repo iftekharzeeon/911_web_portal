@@ -16,12 +16,32 @@
         </div>
         <img src="./ServiceMadeEasy.png" id="motto">
         <form>
-            <label for="username" id="tusername">Username</label><br>
-            <input type="text" id="fusername" name="username">
-            <label for="password" id="tpassword">Password</label><br>
-            <input type="password" id="fpassword" name="password">
+            <label for="username" id="tusername" class="innerLabel">Username</label><br>
+            <input type="text" id="fusername" name="username" class="innerInput">
+            <label for="password" id="tpassword" class="innerLabel">Password</label><br>
+            <input type="password" id="fpassword" name="password" class="innerInput">
           </form>
           <button id = "findHelp" onclick="loginUser()" style="font-family: 'Rajdhani'">Find Help <img src="./LoginLogo.png" id="LoginLogo"></button>
           <button id = "Profile" onclick="GoToProfile()" style="font-family: 'Rajdhani'">Profile</button>
     </div>
+    <button id = "Update" onclick="Update()" style="font-family: 'Rajdhani'">Forget Password</button>
+
+    
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal_text">Update your Password</div>
+            <label id="newusername" class="outerLabel">Username</label>
+            <input type="text" id="Fnewusername" class="outerInput"><br>
+            <label  id="newpassword" class="outerLabel">Password</label>
+            <input type="password" id="Fnewpassword" class="outerInput"><br>
+            <button id="SendData" onclick="SendData()" style="font-family: 'Rajdhani'">
+                Update
+            </button>
+        </div>
+      
+    </div>
+
 </body>
