@@ -69,23 +69,30 @@ body{
 #RefreshButton{
     position: relative;
     margin-top: 20px;
-    width: 10em;
-    height: 5em;
     left: 45%;
     top: 50px;
 
+    padding-left: 15px;
+    padding-right: 15px;
+
+    font-size: 40px;
+
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 36px;
+    border-radius: 10px;
 }
 
 .AcceptButton{
     position: relative;
     margin-top: 20px;
-    width: 10em;
-    height: 3em;
+    width: auto;
+    height: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    font-size: 30px;
 
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 36px;
+    border-radius: 5px;
 }
 
 #HistoryButton{
@@ -103,13 +110,16 @@ body{
 #RequestList{
     position: relative;
     margin-top: 20px;
-    width: 10em;
-    height: 5em;
     left: 45%;
     top: 50px;
 
+    padding-left: 15px;
+    padding-right: 15px;
+
+    font-size: 40px;
+
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 36px;
+    border-radius: 10px;
 }
 
 #Logout{

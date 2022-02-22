@@ -1,3 +1,12 @@
+const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
+
+
 const changeMessage = async() => {
     console.log(document.getElementById("Service").value)
     const Department = document.getElementById("Department")
@@ -71,6 +80,16 @@ const empReg = async() => {
             "shift_id" : document.getElementById("Shift").value,
             "member_type" : member_type
     }
+
+    if(!validateEmail(regObj.email)){
+        window.alert('Not a valid email address');
+        return;
+    }
+    if(isNaN(regObj.phone_number)){
+        window.alert('Not a valid phone number');
+        return;
+    }
+
     const regJSON = JSON.stringify(regObj)
     var isEmpty = false;
     for(const mem in regObj){

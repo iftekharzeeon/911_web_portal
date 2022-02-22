@@ -100,8 +100,8 @@ const requestDetails = async (requestId) => {
     const employeeList = ResponseObj.ResponseData
     var HTMLstring = ''
 
-    if(ResponseObj.ResponseCode == 1) HTMLstring += `<i>Request still being processed</i><br><br>`
-    else HTMLstring += 'Request finished'
+    if(ResponseObj.TotalEmployeesRequested != ResponseObj.NumberofEmployeesAccepted) HTMLstring += `<i>Request still being processed</i><br><br>`;
+    else HTMLstring += '<i>Request finished</i><br><br>';
     HTMLstring += `
     Request id: ${requestId}<br>
     Employee Requested: ${ResponseObj.TotalEmployeesRequested}<br>
