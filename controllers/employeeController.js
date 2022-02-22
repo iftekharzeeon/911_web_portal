@@ -443,10 +443,78 @@ const employee_request_history = async (req, res) => {
 
 }
 
+const password_change_employee = async (req, res) => {
+    let responses = {};
+    const user = req.body;
+    let memberId;
+    let memberInfo;
+    let passwordKey;
+    let locationInfo;
+    let employeeInfo;
+    let employee_id;
+    let employee_service_id;
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        let username = user.username;
+        let userPassword = user.new_password;
+        let member_type = user.member_type;
+
+        //Check Employee Existence
+        memberInfo = await connection.execute(queries.employeeCheckUsernameQuery, [username, member_type], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (memberInfo.rows.length) {
+            memberId = memberInfo.rows[0].MEMBER_ID;
+            employee_id = memberId;
+            let member_password_key = memberId;
+
+            let salt = '';
+            let password_key = '';
+            salt = bcrypt.genSaltSync(saltRounds);
+            password_key = bcrypt.hashSync(userPassword, salt);
+
+            result = await connection.execute(queries.passwordUpdateQuery, [password_key, member_password_key]);
+            connection.commit();
+
+            if (result.rowsAffected) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Password Updated Successfully';
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'There was an error updating the password';
+            }
+
+        } else {
+            //Employee Not Found
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'Employee Not Found';
+        }
+
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
 
 module.exports = {
     get_employee_request_info,
     login_employee,
     employee_register,
-    employee_request_history
+    employee_request_history,
+    password_change_employee
 }

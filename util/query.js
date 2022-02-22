@@ -48,6 +48,9 @@ let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLV
 //Check Request Status
 let checkRequestStatusQuery = `SELECT COUNT(*) AS counter FROM request WHERE citizen_id = :member_id AND (resolved_status = -1 OR resolved_status = 0)`;
 
+//Password Change
+let passwordUpdateQuery = 'UPDATE member_password SET password_key = :password_key WHERE member_password_id = :member_password_id';
+
 
 //Employee Controller
 //Employee Get Request Info
@@ -409,5 +412,6 @@ module.exports = {
     getChatCitizenListQuery,
     updateAllEmployeesAcceptedStatusto1Query,
     checkRequestStatusQuery,
-    getAvailableCCListQuery
+    getAvailableCCListQuery,
+    passwordUpdateQuery
 }

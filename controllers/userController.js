@@ -456,7 +456,7 @@ const check_request_status = async (req, res) => {
         let member_exist = await connection.execute(queries.memberIdCheckQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (member_exist.rows.length > 0) {
-            result = await connection.execute(queries.checkRequestStatusQuery, [member_id], {outFormat: oracledb.OUT_FORMAT_OBJECT});
+            result = await connection.execute(queries.checkRequestStatusQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
             counter = result.rows[0].COUNTER;
 
@@ -474,7 +474,69 @@ const check_request_status = async (req, res) => {
             responses.ResponseText = 'Member Not Found';
         }
 
-    } catch(err) {
+    } catch (err) {
+        console.log(err);
+        responses.ResponseCode = -1;
+        responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
+        responses.ErrorMessage = err.message;
+    } finally {
+        if (connection) {
+            await connection.close();
+            console.log('Connection Closed');
+        }
+        res.send(responses);
+    }
+}
+
+const password_change_user = async (req, res) => {
+    let result;
+    let responses = {};
+    const user = req.body;
+    let memberId;
+    let memberInfo;
+    let passwordKey;
+    let locationInfo;
+    try {
+        connection = await oracledb.getConnection({
+            user: serverInfo.dbUser,
+            password: serverInfo.dbPassword,
+            connectionString: serverInfo.connectionString
+        });
+
+        console.log('Database Connected');
+
+        let username = user.username;
+        let userPassword = user.new_password;
+
+        //User existence check
+        memberInfo = await connection.execute(queries.memberCheckUsernameQuery, [username], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (memberInfo.rows.length) {
+            memberId = memberInfo.rows[0].MEMBER_ID;
+            let member_password_key = memberId;
+
+            let salt = '';
+            let password_key = '';
+            salt = bcrypt.genSaltSync(saltRounds);
+            password_key = bcrypt.hashSync(userPassword, salt);
+
+            result = await connection.execute(queries.passwordUpdateQuery, [password_key, member_password_key]);
+            connection.commit();
+
+            if (result.rowsAffected) {
+                responses.ResponseCode = 1;
+                responses.ResponseText = 'Password Updated Successfully';
+            } else {
+                responses.ResponseCode = 0;
+                responses.ResponseText = 'There was an error updating the password';
+            }
+        } else {
+            //Member Not Found
+            responses.ResponseCode = 0;
+            responses.ResponseText = 'Member Not Found';
+        }
+
+    } catch (err) {
         console.log(err);
         responses.ResponseCode = -1;
         responses.ResponseText = 'Internal Database Error. Oracle Error Number ' + err.errorNum + ', offset ' + err.offset;
@@ -495,5 +557,6 @@ module.exports = {
     get_user_request_info,
     user_request_history,
     update_user_info,
-    check_request_status
+    check_request_status,
+    password_change_user
 }

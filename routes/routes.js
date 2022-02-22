@@ -143,4 +143,10 @@ router.post('/api/checkRequestStatus', bodyParser, userController.check_request_
 //Get Available Customer Care List
 router.get('/api/getAvailableCCList', bodyParser, ccController.get_available_cc_list);
 
+//User Password Update
+router.post('/api/userUpdatePassword/', bodyParser, userController.password_change_user);
+
+//Employee Password Update
+router.post('/api/employeePasswordUpdate/', bodyParser, employeeController.password_change_employee);
+
 module.exports = router;
