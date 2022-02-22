@@ -3,7 +3,7 @@
 >911 Web Portal is a web app built for providing emergency services in a town. The app was developed as a part of the Database Project under the course of CSE216 (Database Course).
 
 ## Authors
-- [@iftekharzeeon] (https://github.com/iftekharzeeon)
+- [@iftekharzeeon](https://github.com/iftekharzeeon)
 - [@Shamit187](https://github.com/Shamit187)
 
 ## Technologies Used
