@@ -3,6 +3,8 @@ var serviceList;
 var currentCitizen;
 
 window.onload = async () => {
+    document.getElementById("topBar").innerHTML = '';
+    document.getElementById("helpButton").innerHTML = '';
 
     const employee_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
 
@@ -38,14 +40,18 @@ window.onload = async () => {
 
 const getMessages = async (citizenId, citizenName) => {
 
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+
     console.log(citizenId, ' ', citizenName);
 
     console.log(document.getElementById("citizen_id").value, '', document.getElementById("topBar").innerHTML)
-    
+
 
     document.getElementById("citizen_id").value = citizenId;
     const employee_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     document.getElementById("topBar").innerHTML = citizenName;
+    document.getElementById("helpButton").innerHTML = `<button id = "help" onclick="help()" style="font-family: 'Rajdhani'">Help</button>`;
 
     let requestObj = {
         "citizen_id": citizenId,
@@ -83,9 +89,9 @@ const getMessages = async (citizenId, citizenName) => {
         window.alert(responseObj.ResponseText);
     }
 
-    const ServiceResponse = await fetch('http://localhost:3000/api/getServices',{
-            method: 'GET'
-        });
+    const ServiceResponse = await fetch('http://localhost:3000/api/getServices', {
+        method: 'GET'
+    });
     serviceList = await ServiceResponse.json();
     console.log(serviceList);
     currentCitizen = citizenId;
@@ -104,8 +110,8 @@ const sendMsg = async () => {
         "employee_id": employee_id,
         "message_text": message_text,
         "sender_id": employee_id,
-        "citizen_name" : citizen_name,
-        "employee_name" : employee_name
+        "citizen_name": citizen_name,
+        "employee_name": employee_name
     }
 
     requestObj = JSON.stringify(requestObj);
@@ -150,16 +156,16 @@ const backCC = async () => {
 // <div class="text ${User / CustomerCare}"><i>${UserName}: </i>${text}</div>
 // `
 
-const Logout = async() =>{
+const Logout = async () => {
     sessionStorage.removeItem("user")
     window.location.replace("/careLogin");
 }
 
-const help = async() => {
+const help = async () => {
     var modal = document.getElementById("myModal");
     modal.style.display = "block";
     const modalContent = document.getElementsByClassName("modal-content")[0];
-    
+
     modalContent.innerHTML = `
     <span class="close">&times;</span>
     <div id="modal_text">Select Service Amount To Send Help</div>
@@ -167,15 +173,15 @@ const help = async() => {
 
     var span = document.getElementsByClassName("close")[0];
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
 
-    for(var i = 0; i < serviceList.length; i++){
-        if (serviceList[i].SERVICE_ID == 104) continue;
+    for (var i = 0; i < serviceList.length; i++) {
+        if (serviceList[i].SERVICE_ID === 104) continue;
         modalContent.insertAdjacentHTML("beforeend", `
         <label>${serviceList[i].DESCRIPTION}</label>
-        <input type="text" id="${serviceList[i].SERVICE_ID}"><br>
+        <input value="" type="text" id="service_${serviceList[i].SERVICE_ID}"><br>
         `)
     }
 
@@ -192,21 +198,23 @@ const help = async() => {
     `)
 }
 
-const SendData = async() => {
-    var ServiceArr =[]
-    for(var i = 0; i < serviceList.length; i++){
+const SendData = async () => {
+    console.log(serviceList);
+    var ServiceArr = []
+    for (var i = 0; i < serviceList.length; i++) {
         if (serviceList[i].SERVICE_ID == 104) continue;
-        var serviceRequested = document.getElementById(serviceList[i].SERVICE_ID).value;
-        if(serviceRequested == '') continue;
+        var serviceRequested = document.getElementById("service_" + serviceList[i].SERVICE_ID).value;
+        console.log(i, '+  ', serviceRequested);
+        if (serviceRequested == '') continue;
         ServiceArr.push({
-            service_id : serviceList[i].SERVICE_ID,
-            request_people : serviceRequested
+            service_id: serviceList[i].SERVICE_ID,
+            request_people: serviceRequested
         })
     }
     console.log(currentCitizen + ' wants ' + JSON.stringify(ServiceArr))
 
-    const requestObja = {
-        "citizen_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID
+    let requestObj = {
+        "citizen_id": currentCitizen
     }
 
     const responsea = await fetch('http://localhost:3000/api/checkRequestStatus', {
@@ -214,26 +222,78 @@ const SendData = async() => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestObja)
+        body: JSON.stringify(requestObj)
     });
     var responseObja = await responsea.json();
     console.log(responseObja);
 
     const ResponseCodea = responseObja.ResponseCode;
-    if(ResponseCodea == 1){
+    if (ResponseCodea == 1) {
         window.alert("Citizen already has a request ongoing")
-    }else{
+    } else {
         const location_obj = {
             block: document.getElementById("fblock").value,
             street: document.getElementById("fstreet").value,
             house_no: document.getElementById("fhouse").value
         }
+
+        if (location_obj.block == '' || location_obj.street == '' || location_obj.house_no == '' || ServiceArr.length == 0) {
+            window.alert('No field can be empty');
+            return;
+        }
         const demiRequest = {
-            citizen_id: "101",
+            citizen_id: currentCitizen,
             is_my_location: 0,
             location_obj: location_obj,
             services: ServiceArr
         }
-        //send demiRequest to server
+
+        console.log(demiRequest);
+
+        const responseRequest = await fetch('http://localhost:3000/api/addRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(demiRequest)
+        });
+        var responseObjReq = await responseRequest.json();
+        console.log(responseObjReq);
+
+        if (responseObjReq.ResponseCode == 1) {
+            const request_id = responseObjReq.RequestId;
+
+            requestObj = {
+                "request_id": request_id,
+                "services": ServiceArr
+            }
+
+            response_vehicle = await fetch('http://localhost:3000/api/addVehicleRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestObj)
+            });
+            const responseObjVehicle = await response_vehicle.json();
+
+            console.log(responseObjVehicle);
+
+            if (responseObjVehicle.ResponseCode == 1) {
+                window.alert('Request sent. ' + responseObjVehicle.ResponseText);
+                //Reload Here here
+                getMessages();
+            } else if (responseObjVehicle.ResponseCode == 0) {
+                //No vehicle available
+                window.alert(responseObjVehicle.ResponseText);
+                //Redirect
+                getMessages();
+            } else {
+                //Error
+                window.alert(responseObjVehicle.ResponseText);
+            }
+        } else {
+            window.alert(responseObj.ResponseText);
+        }
     }
 }

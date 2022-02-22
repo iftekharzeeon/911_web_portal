@@ -39,7 +39,7 @@ let informationQuery = `SELECT R.REQUEST_TIME, RE.REQUEST_EMPLOYEE_ID, RE.EMPLOY
 
 
 //User RequestHistory List
-let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ` +
+let userRequestHistoryListQuery = `SELECT R.REQUEST_ID, R.REQUEST_TIME, R.RESOLVED_STATUS, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO, L.LONGITUDE, L.LATITUDE ` +
                                 'FROM REQUEST R, LOCATION L ' +
                                 'WHERE R.CITIZEN_ID = :member_id ' +
                                 'AND L.LOCATION_ID = R.LOCATION_ID';
@@ -144,6 +144,7 @@ let insertRequestQuery = 'INSERT INTO request(request_id, request_time, citizen_
 
 let insertRequestEmployeeQuery = 'INSERT INTO request_employee(request_employee_id, request_id, service_id, employee_accepted, vehicle_accepted) ' +
                         'VALUES(:request_employee_id, :request_id, :service_id, :employee_accepted, :vehicle_accepted)';
+
 
 
 //Accept Request

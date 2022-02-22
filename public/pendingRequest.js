@@ -55,7 +55,7 @@ window.onload = async () => {
     const listContent = document.getElementById('listContent');
     for(var i = 0; i < employeeArray.length; i++){
         listContent.insertAdjacentHTML('beforeend', `
-        <div class="employeeStat">Name: ${employeeArray[i].EMPLOYEE_NAME} Job: ${employeeArray[i].JOB_TITLE}<br>Department: ${employeeArray[i].DEPARTMENT_NAME}</div>
+        <div class="employeeStat">Name: ${employeeArray[i].EMPLOYEE_NAME} Job: ${employeeArray[i].JOB_TITLE}<br>Department: ${employeeArray[i].DEPARTMENT_NAME} Phone Number: ${employeeArray[i].PHONE_NUMBER}</div>
         `);
     }
 }

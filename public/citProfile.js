@@ -85,6 +85,25 @@ window.onload = async () => {
 
     const history = document.getElementById("history");
     for(var i = 0; i < historyList.length; i++){
+
+        let street = '';
+        let block = '';
+        let house_no = '';
+        let lat = '';
+        let long = '';
+        
+        if (historyList[i].BLOCK) block = historyList[i].BLOCK;
+        if (historyList[i].STREET) street = historyList[i].STREET;
+        if (historyList[i].HOUSE_NO) house_no = historyList[i].HOUSE_NO;
+        if (historyList[i].LATITUDE) lat = historyList[i].LATITUDE;
+        if (historyList[i].LONGITUDE) long = historyList[i].LONGITUDE;
+        let locationString = '';
+        if (block == '') {
+            locationString = `Latitude: ${lat}, Longitude: ${long}`;
+        } else {
+            locationString = `Block#${block}, Street#${street}, House#${house_no}`;
+        }
+
         let Time = historyList[i].REQUEST_TIME;
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
@@ -92,7 +111,7 @@ window.onload = async () => {
         history.insertAdjacentHTML("beforeend", `
         <div class="HistoryContent">
         Request Id : ${historyList[i].REQUEST_ID}<br>
-        Location Id : ${historyList[i].LOCATION_ID}<br>
+        Location : ${locationString}<br>
         Time : ${Time}
         </div>
         `)

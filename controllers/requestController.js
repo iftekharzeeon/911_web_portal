@@ -29,7 +29,10 @@ const add_request = async (req, res) => {
     let latitude;
     let longitude;
 
+    let ongoingRequestInfo;
+
     const requestObj = req.body;
+    console.log(requestObj);
     try {
         connection = await oracledb.getConnection({
             user: serverInfo.dbUser,
@@ -51,91 +54,104 @@ const add_request = async (req, res) => {
             responses.ResponseText = 'Member Not Found';
         } else {
 
-            isMyLocation = requestObj.is_my_location;
+            //Check if already ongoing requests
 
-            servicesObjectArr = requestObj.services;
-
-            if (isMyLocation == 1) {
-                location_id = requestObj.location_id;
-
+            ongoingRequestInfo = await connection.execute(queries.checkRequestStatusQuery, [member_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            ongoingRequestInfo = ongoingRequestInfo.rows[0].COUNTER;
+            if (ongoingRequestInfo > 0) {
+                //Already request ongoing
+                responses.ResponseCode = -2;
+                responses.ResponseText = 'You have an existing request pending.';
             } else {
-                //Add the New Location
+                //No existing request
 
-                //Get Location Info
-                locationObj = requestObj.location_obj;
+                isMyLocation = requestObj.is_my_location;
 
-                //Check if current or manual
-                if (isMyLocation == 2) {
-                    block = '';
-                    street = '';
-                    house_no = '';
-                    latitude = locationObj.latitude;
-                    longitude = locationObj.longitude;
+                servicesObjectArr = requestObj.services;
+
+                if (isMyLocation == 1) {
+                    location_id = requestObj.location_id;
+
                 } else {
-                    block = locationObj.block;
-                    street = locationObj.street;
-                    house_no = locationObj.house_no;
-                    latitude = '';
-                    longitude = '';
-                }
+                    //Add the New Location
 
-                //Get Next Location Id
-                await syRegister.getNextId(connection, 2).then(function (data) {
-                    location_id = data;
-                });
+                    //Get Location Info
+                    locationObj = requestObj.location_obj;
 
-                //Insert into Location Table
+                    //Check if current or manual
+                    if (isMyLocation == 2) {
+                        block = '';
+                        street = '';
+                        house_no = '';
+                        latitude = locationObj.latitude;
+                        longitude = locationObj.longitude;
+                    } else {
+                        block = locationObj.block;
+                        street = locationObj.street;
+                        house_no = locationObj.house_no;
+                        latitude = '';
+                        longitude = '';
+                    }
 
-                result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
-
-            }
-
-            //Get Next Request ID
-            await syRegister.getNextId(connection, 3).then(function (data) {
-                request_id = data;
-            });
-
-            //Insert Into Request Table
-
-            result = await connection.execute(queries.insertRequestQuery, [request_id, request_time, member_id, location_id, resolved_status]);
-
-            //Get All The Services
-            let serviceIndex = 0;
-            do {
-                service_id = servicesObjectArr[serviceIndex].service_id;
-                request_people = servicesObjectArr[serviceIndex].request_people;
-                let m = 0;
-                do {
-                    await syRegister.getNextId(connection, 4).then(function (data) {
-                        request_employee_id = data;
+                    //Get Next Location Id
+                    await syRegister.getNextId(connection, 2).then(function (data) {
+                        location_id = data;
                     });
 
-                    console.log(request_employee_id);
-                    m++;
+                    //Insert into Location Table
 
-                    // Insert Into Request Employee Table
+                    result = await connection.execute(queries.insertLocationQuery, [location_id, block, street, house_no, latitude, longitude]);
 
-                    result = await connection.execute(queries.insertRequestEmployeeQuery, [request_employee_id, request_id, service_id, employee_accepted, vehicle_accepted]);
-                } while (m < request_people);
-                serviceIndex++;
-            } while (serviceIndex < servicesObjectArr.length);
+                }
 
-            connection.commit();
+                //Get Next Request ID
+                await syRegister.getNextId(connection, 3).then(function (data) {
+                    request_id = data;
+                });
 
-            if (result) {
-                if (result.rowsAffected == 1) {
-                    responses.ResponseCode = 1;
-                    responses.ResponseText = 'New Request Added';
-                    responses.RequestId = request_id;
-                    responses.CitizenId = member_id;
+                //Insert Into Request Table
+
+                result = await connection.execute(queries.insertRequestQuery, [request_id, request_time, member_id, location_id, resolved_status]);
+
+                //Get All The Services
+                let serviceIndex = 0;
+                do {
+                    service_id = servicesObjectArr[serviceIndex].service_id;
+                    request_people = servicesObjectArr[serviceIndex].request_people;
+                    let m = 0;
+                    do {
+                        await syRegister.getNextId(connection, 4).then(function (data) {
+                            request_employee_id = data;
+                        });
+
+                        console.log(request_employee_id);
+                        m++;
+
+                        // Insert Into Request Employee Table
+
+                        result = await connection.execute(queries.insertRequestEmployeeQuery, [request_employee_id, request_id, service_id, employee_accepted, vehicle_accepted]);
+                    } while (m < request_people);
+                    serviceIndex++;
+                } while (serviceIndex < servicesObjectArr.length);
+
+                connection.commit();
+
+                if (result) {
+                    if (result.rowsAffected == 1) {
+                        responses.ResponseCode = 1;
+                        responses.ResponseText = 'New Request Added';
+                        responses.RequestId = request_id;
+                        responses.CitizenId = member_id;
+                    } else {
+                        responses.ResponseCode = -1;
+                        responses.ResponseText = 'Something Went Wrong.';
+                    }
                 } else {
                     responses.ResponseCode = -1;
-                    responses.ResponseText = 'Something Went Wrong.';
+                    responses.ResponseText = 'Something Went Wrong. Data Could Not Be Inserted';
                 }
-            } else {
-                responses.ResponseCode = -1;
-                responses.ResponseText = 'Something Went Wrong. Data Could Not Be Inserted';
             }
+
         }
 
     } catch (err) {
