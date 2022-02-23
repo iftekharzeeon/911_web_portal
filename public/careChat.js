@@ -79,12 +79,13 @@ const getMessages = async (citizenId, citizenName) => {
         let msgContentDesign = '';
 
         responseObj.AllMessages.forEach(message => {
+            console.log(`msg sender: ${message.SENDER}, msg text: ${message.MESSAGE_TEXT}`)
             if (message.SENDER == citizenId) {
                 //Citizen Message
-                msgContentDesign += `<div class="text User"><i>${message.CITIZEN_NAME}: </i>${message.MESSAGE_TEXT}</div>`;
+                msgContentDesign += `<div class="text User"><i><b>${message.CITIZEN_NAME}: </b></i>${message.MESSAGE_TEXT}</div>`;
             } else {
                 //Customer Care Message
-                msgContentDesign += `<div class="text CustomerCare"><i>You: </i></i>${message.MESSAGE_TEXT}</div>`;
+                msgContentDesign += `<div class="text CustomerCare"><i><b>You: </b></i></i>${message.MESSAGE_TEXT}</div>`;
             }
         });
 
@@ -122,6 +123,7 @@ const sendMsg = async () => {
     }
 
     requestObj = JSON.stringify(requestObj);
+    console.log(requestObj)
 
     const response = await fetch('http://localhost:3000/api/sendMessage', {
         method: 'POST',
@@ -144,10 +146,11 @@ const sendMsg = async () => {
 const addMessage = async (messageObj) => {
     console.log(messageObj);
     let design = '';
+    console.log(messageObj.citizen_name)
     if (messageObj.sender_id == messageObj.citizen_id) {
-        design = `<div class="text CustomerCare"><i>${messageObj.citizen_name}: </i>${messageObj.message_text}</div>`;
+        design = `<div class="text User"><i><b>${messageObj.citizen_name}:</b> </i>${messageObj.message_text}</div>`;
     } else {
-        design = `<div class="text User"><i>You: </i></i>${messageObj.message_text}</div>`;
+        design = `<div class="text CustomerCare"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
     }
 
     document.getElementById("chatContent").innerHTML = design + document.getElementById("chatContent").innerHTML;

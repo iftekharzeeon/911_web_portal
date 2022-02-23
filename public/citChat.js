@@ -141,9 +141,9 @@ const addMessage = async (messageObj) => {
     console.log(messageObj);
     let design = '';
     if (messageObj.sender_id == messageObj.citizen_id) {
-        design = `<div class="text User"><i>You: </i></i>${messageObj.message_text}</div>`;
+        design = `<div class="text User"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
     } else {
-        design = `<div class="text CustomerCare"><i>${messageObj.employee_name}: </i>${messageObj.message_text}</div>`;
+        design = `<div class="text CustomerCare"><i><b>${messageObj.employee_name}: </b></i>${messageObj.message_text}</div>`;
     }
 
     document.getElementById("chatContent").innerHTML = design + document.getElementById("chatContent").innerHTML;
