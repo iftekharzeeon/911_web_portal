@@ -135,6 +135,27 @@ const sendRequest = async () => {
             } else if(responseObjVehicle.ResponseCode == 0) {
                 //No vehicle available
                 window.alert(responseObjVehicle.ResponseText);
+
+                const requestVehicle = async() =>
+                {
+                    response_vehicle = await fetch('http://localhost:3000/api/addVehicleRequest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestObj)
+                    });
+                    const responseObjVehicle = await response_vehicle.json(); 
+
+                    if(responseObjVehicle.ResponseCode == 1) {
+                        clearInterval(intervalID);
+                        window.alert(responseObjVehicle.ResponseText);
+                        window.location.replace('/citLogin/pendingRequest');
+                    }
+                }
+
+                var intervalID = await setInterval(requestVehicle, 60000);
+                console.log('fuck you')
                 //Redirect
             } else {
                 //Error

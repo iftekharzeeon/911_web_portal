@@ -88,6 +88,10 @@ app.get('/adminPanel/adminDashboard', (req, res) => {
     res.sendFile('./views/adminDashboard.html', {root: __dirname});
 });
 
+app.get('/insertData', (req, res) => {
+    res.sendFile('./views/insertData.html', {root: __dirname});
+});
+
 //For testing    
 app.get('/googleMap', (req, res) => {
     res.sendFile('./views/google_map.html', {root: __dirname});
