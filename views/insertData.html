@@ -1,0 +1,50 @@
+<label>name</label>
+<input type="text" id = "name"><br>
+<label>job_id</label>
+<input type="text" id = "job_id"><br>
+<label>from</label>
+<input type="text" id ="i"><br>
+<label>to</label>
+<input type="text" id ="size"><br>
+<label>shift_id</label>
+<input type="text" id ="shift_id"><br>
+<button id="push" onclick="push()">push</button>
+
+<script>
+    const push = async() => {
+        i = parseInt(document.getElementById("i").value)
+        size = parseInt(document.getElementById("size").value)
+        while(i <= size){
+            const regObj = {
+            "first_name" : document.getElementById("name").value,
+            "last_name" : document.getElementById("shift_id").value + i,
+            "username" : document.getElementById("name").value + document.getElementById("shift_id").value + i,
+            "email" : document.getElementById("name").value + document.getElementById("shift_id").value + i + '@outlook.com',
+            "phone_number" : 12345,
+            "block" : 'A',
+            "street" : 'B',
+            "house_no" : 'C',
+            "password" : '12345',
+            "job_id" : document.getElementById("job_id").value,
+            "shift_id" : document.getElementById("shift_id").value,
+            "member_type" : 3
+            }
+            const regJSON = JSON.stringify(regObj)
+            console.log(regJSON)
+
+            const response = await fetch('http://localhost:3000/api/addEmployee',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: regJSON
+            });
+        
+            responseObj = await response.json();
+            console.log(responseObj);
+
+            i++
+        }
+      
+    }
+</script>
