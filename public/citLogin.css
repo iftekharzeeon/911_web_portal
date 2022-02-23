@@ -1,5 +1,5 @@
 body{
-    background-color: #000000bd;
+    background-color: #40b872f3;
     background-blend-mode: overlay, soft-light, difference, normal;
     position: relative;
     font-family: 'Rajdhani','Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -33,12 +33,12 @@ body{
     width: 50%;
     padding: 35px;
     font-style: normal;
-    font-weight: normal;
+    font-weight: bold;
     font-size: 40px;
     line-height: 54px;
     /* identical to box height */
     text-align: center;
-    color: #FFFFFF;
+    color: #281616;
 }
 
 .innerLabel{
@@ -53,7 +53,7 @@ body{
 
     text-align: left;
 
-    color: #FFFFFF;
+    color: #281616;
 }
 
 .innerInput{

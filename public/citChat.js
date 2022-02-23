@@ -26,6 +26,9 @@ window.onload = async () => {
     }
     ///done
 
+    document.getElementById("topBar").innerHTML = '';
+    document.getElementById("send").style.pointerEvents = "none";
+
     const response = await fetch('http://localhost:3000/api/getAvailableCCList', {
         method: 'GET',
         headers: {
@@ -45,6 +48,8 @@ window.onload = async () => {
 };
 
 const getMessages = async (ccID, ccName) => {
+
+    document.getElementById("send").style.pointerEvents = "auto";
 
     console.log(ccID, ' ', ccName);
     console.log(document.getElementById("employee_id").value, '', document.getElementById("topBar").innerHTML)
@@ -93,6 +98,9 @@ const getMessages = async (ccID, ccName) => {
 
 const sendMsg = async () => {
     let message_text = document.getElementById("messageText").value;
+    if (message_text == '') {
+        return;
+    }
     document.getElementById("messageText").value = '';
     const citizen_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     const employee_id = document.getElementById("employee_id").value;

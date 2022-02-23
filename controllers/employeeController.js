@@ -89,9 +89,13 @@ const get_employee_request_info = async (req, res) => {
 
                     let current_time = new Date();
                     hour = current_time.getHours();
+                    var formattedHour = ("0" + hour).slice(-2);
+                    console.log(formattedHour);
                     minute = current_time.getMinutes();
 
-                    let nowTime = String(hour) + String(minute);
+                    let nowTime = formattedHour + String(minute);
+
+                    console.log(nowTime);
 
                     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                     let firstDayNo;

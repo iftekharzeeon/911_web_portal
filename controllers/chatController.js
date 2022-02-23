@@ -138,8 +138,10 @@ const get_chat_citizen_list = async (req, res) => {
         if (result.rows.length) {
             responses.ResponseCode = 1;
             responses.ResponseData = result.rows;
+            responses.ResponseText = 'Data Found';
         } else {
             responses.ResponseCode = 0;
+            responses.ResponseText = 'No inbox data found';
         }
 
     } catch (err) {

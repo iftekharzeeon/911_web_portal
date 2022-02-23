@@ -1,5 +1,5 @@
 body{
-    background-color: #000000bd;
+    background-color: #40b872f3;
     background-blend-mode: overlay, soft-light, difference, normal;
     position: relative;
     font-family: 'Rajdhani', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -175,7 +175,7 @@ input[type = button] {
     /* identical to box height */
 
 
-    color: #FFFFFF;
+    color: #281616;
 }
 
 #motto{

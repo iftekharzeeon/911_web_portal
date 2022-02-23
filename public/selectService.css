@@ -1,5 +1,5 @@
 body{
-    background-color: #000000bd;background-blend-mode: overlay, soft-light, difference, normal;
+    background-color: #40b872f3;background-blend-mode: overlay, soft-light, difference, normal;
     position: relative;
     font-family: 'Rajdhani', 'Ropa Sans', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
@@ -20,7 +20,7 @@ body{
     position: relative;
     top: 173px;
 
-    color: gainsboro;
+    color: #1c1b1b;
 }
 
 .selectGrid {
@@ -105,7 +105,7 @@ body{
     font-size: 28px;
     line-height: 75px;
 
-    color: #FFFFFF;
+    color: #1c1b1b;
 }
 
 #ExtraText{
@@ -115,11 +115,11 @@ body{
     left: 323px;
     top: 33px;
 
-    font-weight: normal;
+    font-weight: bold;
     font-size: 40px;
     line-height: 75px;
 
-    color: #FFFFFF;  
+    color: #281616;  
 }
 
 #back{

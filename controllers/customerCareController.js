@@ -234,8 +234,11 @@ const get_available_cc_list = async (req, res) => {
         let current_time = new Date();
         hour = current_time.getHours();
         minute = current_time.getMinutes();
+        var formattedHour = ("0" + hour).slice(-2);
+        console.log(formattedHour);
+        minute = current_time.getMinutes();
 
-        let nowTime = String(hour) + String(minute);
+        let nowTime = formattedHour + String(minute);
 
         let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 

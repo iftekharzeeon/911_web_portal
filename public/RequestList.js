@@ -15,8 +15,8 @@
 //     ]
 // }
 
-window.onload = async() => {
-    if(sessionStorage.getItem("user") == null){
+window.onload = async () => {
+    if (sessionStorage.getItem("user") == null) {
         window.location.replace("/empLogin")
     }
 
@@ -26,7 +26,7 @@ window.onload = async() => {
         "employee_id": Member_Id
     }
     const fetchJSON = JSON.stringify(fetchObj);
-    const response = await fetch('http://localhost:3000/api/getEmployeeRequestInfo',{
+    const response = await fetch('http://localhost:3000/api/getEmployeeRequestInfo', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ window.onload = async() => {
     RequestObj = await response.json();
     console.log(RequestObj);
 
-    if(RequestObj.ResponseCode == 2){
+    if (RequestObj.ResponseCode == 2) {
         const MainText = document.getElementById("readyToHelp");
         MainText.innerHTML = RequestObj.ResponseText
         const MainContent = document.getElementById("MainContent");
@@ -44,7 +44,7 @@ window.onload = async() => {
         var dateArr = Time.split(' ');
         var timeArr = dateArr[1].split('.');
         Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-        if(RequestObj.RequestInfo.LATITUDE != null){
+        if (RequestObj.RequestInfo.LATITUDE != null) {
             MainContent.innerHTML = `
             <div class="option">
                 <div class="content">
@@ -55,7 +55,7 @@ window.onload = async() => {
                 </div>
             </div>
             `
-        }else{
+        } else {
             MainContent.innerHTML = `
             <div class="option">
                 <div class="content">
@@ -67,36 +67,50 @@ window.onload = async() => {
             </div>
             `
         }
-    }else if(RequestObj.ResponseCode == 0){
+    } else if (RequestObj.ResponseCode == 0) {
         const MainText = document.getElementById("readyToHelp");
         MainText.innerHTML = RequestObj.ResponseText
-    }else{
+    } else {
         const MainContent = document.getElementById("MainContent");
         const arrContent = []
-        for(var i = 0; i < RequestObj.RequestInfo.length; i++){
+        for (var i = 0; i < RequestObj.RequestInfo.length; i++) {
+
+            let street = '';
+            let block = '';
+            let house_no = '';
+            let lat = '';
+            let long = '';
+
+            if (RequestObj.RequestInfo[i].BLOCK) block = RequestObj.RequestInfo[i].BLOCK;
+            if (RequestObj.RequestInfo[i].STREET) street = RequestObj.RequestInfo[i].STREET;
+            if (RequestObj.RequestInfo[i].HOUSE_NO) house_no = RequestObj.RequestInfo[i].HOUSE_NO;
+            if (RequestObj.RequestInfo[i].LATITUDE) lat = RequestObj.RequestInfo[i].LATITUDE;
+            if (RequestObj.RequestInfo[i].LONGITUDE) long = RequestObj.RequestInfo[i].LONGITUDE;
+
+
             let Time = RequestObj.RequestInfo[i].REQUEST_TIME;
             var dateArr = Time.split(' ');
             var timeArr = dateArr[1].split('.');
             Time = dateArr[0] + ' ' + timeArr[0] + ':' + timeArr[1] + ' ' + dateArr[2];
-            if(block == ''){
+            if (block == '') {
                 arrContent.push(`
                 <div class="option">
                         <div class="content">
-                            Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                            Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
                             Location : Latitude: ${lat}, Longitude: ${long}&nbsp&nbsp
                             Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                            <button onclick ="requestDetails(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
                         </div>
                 </div>
                 `)
-            }else{
+            } else {
                 arrContent.push(`
                 <div class="option">
                         <div class="content">
-                            Citizen Name : ${RequestObj.RequestInfos[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
+                            Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
                             Location : Block#${block}, Street#${street}, House#${house_no}&nbsp&nbsp
                             Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <button onclick ="requestDetails(${RequestObj.RequestInfos[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                            <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
                         </div>
                 </div>
                 `)
@@ -106,16 +120,16 @@ window.onload = async() => {
     }
 }
 
-const accept = async(requestID) => {
+const accept = async (requestID) => {
     const acceptObj = {
-        "employee_id" : JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
-        "request_id" : requestID,
-        "service_id" : JSON.parse(sessionStorage.getItem("user")).EMPLOYEE_INFO.SERVICE_ID
+        "employee_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
+        "request_id": requestID,
+        "service_id": JSON.parse(sessionStorage.getItem("user")).EMPLOYEE_INFO.SERVICE_ID
     }
     const acceptJSON = JSON.stringify(acceptObj);
     console.log(acceptJSON)
-    
-    const response = await fetch('http://localhost:3000/api/acceptRequest',{
+
+    const response = await fetch('http://localhost:3000/api/acceptRequest', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -124,18 +138,25 @@ const accept = async(requestID) => {
     });
     RequestObj = await response.json();
     console.log(RequestObj);
+
+    if (RequestObj.ResponseCode == 1) {
+        window.alert(RequestObj.ResponseText);
+        window.location.reload();1
+    } else {
+
+    }
 }
 
-const finish = async(requestID, requestEmployeeId) => {
+const finish = async (requestID, requestEmployeeId) => {
     const acceptObj = {
-        "employee_id" : JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
-        "request_id" : requestID,
-        "request_employee_id" : requestEmployeeId
+        "employee_id": JSON.parse(sessionStorage.getItem("user")).MEMBER_ID,
+        "request_id": requestID,
+        "request_employee_id": requestEmployeeId
     }
     const acceptJSON = JSON.stringify(acceptObj);
     console.log(acceptJSON)
-    
-    const response = await fetch('http://localhost:3000/api/finishRequest',{
+
+    const response = await fetch('http://localhost:3000/api/finishRequest', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -145,18 +166,18 @@ const finish = async(requestID, requestEmployeeId) => {
     RequestObj = await response.json();
     console.log(RequestObj);
     location.reload();
-    
+
 }
 
-const Refresh = async() => {
+const Refresh = async () => {
     location.reload();
 }
 
-const History = async() => {
+const History = async () => {
     window.location.replace("/empLogin/empHistory")
 }
 
-const Logout = async() => {
+const Logout = async () => {
     sessionStorage.removeItem("user")
     window.location.replace("/empLogin")
 }

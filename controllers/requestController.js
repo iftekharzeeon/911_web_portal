@@ -336,10 +336,6 @@ const finish_request = async (req, res) => {
 
                 result = await connection.execute(queries.updateVehicleAcceptedStatusto1Query, [vehicle_accepted_status, request_id, service_id]);
 
-                //Update Employee Occupied Status
-
-                result = await connection.execute(queries.updateEmployeeOccupiedStatusQuery, [occupied_status, employee_id]);
-
                 //Update all same service employees
                 result = await connection.execute(queries.updateAllEmployeesAcceptedStatusto1Query, [employee_accepted_status, request_id, service_id]);
 

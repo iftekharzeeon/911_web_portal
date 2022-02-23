@@ -5,6 +5,7 @@ var currentCitizen;
 window.onload = async () => {
     document.getElementById("topBar").innerHTML = '';
     document.getElementById("helpButton").innerHTML = '';
+    document.getElementById("send").style.pointerEvents = "none";
 
     const employee_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
 
@@ -39,6 +40,9 @@ window.onload = async () => {
 };
 
 const getMessages = async (citizenId, citizenName) => {
+
+    document.getElementById("send").style.pointerEvents = "auto";
+
 
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
@@ -99,6 +103,9 @@ const getMessages = async (citizenId, citizenName) => {
 
 const sendMsg = async () => {
     let message_text = document.getElementById("messageText").value;
+    if (message_text == '') {
+        return;
+    }
     document.getElementById("messageText").value = '';
     const employee_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     const citizen_id = document.getElementById("citizen_id").value;

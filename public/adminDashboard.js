@@ -95,19 +95,47 @@ const usersList = async () => {
   MainContent.innerHTML = design;
 };
 
-const employeeList = async () => {
+const employeeList = async (service_id) => {
   const MainContent = document.getElementById("mainContents");
 
+  const response_service = await fetch(
+    "http://localhost:3000/api/getServices",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  RequestObjService = await response_service.json();
+  console.log(RequestObjService);
+  let selectDesign = '<option selected value="all">All</option>';
+
+  RequestObjService.forEach((element) => {
+    if (element.SERVICE_ID != 104) {
+      if (element.SERVICE_ID == service_id) {
+        selectDesign += `<option selected value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+      } else {
+        selectDesign += `<option value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+      }
+    }
+  });
+
   const response = await fetch("http://localhost:3000/api/getAllEmployees", {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ "service_id": service_id })
   });
   RequestObj = await response.json();
   console.log(RequestObj);
 
-  let design = `<table class="table" style="font-size:larger">
+  ` <div id="deptTable"></div>`;
+
+  let design = '<div class="row"> <div class="col-md-8"> <h4> Employees </h4> </div> <div class="col-md-2"> <label>Select Service</label> <select onchange="employeeList(this.value)" id="service_name_2" class="form-control" aria-label="Default select example"></select> <hr> </div> </div> <hr>';
+  design += `<table class="table" style="font-size:larger">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -129,33 +157,42 @@ const employeeList = async () => {
                     <tbody>`;
 
   let count = 1;
-  RequestObj.ResponseData.forEach((element) => {
-    design += `<tr>
-                        <th scope="row">${count}</th>
-                        <td>${element.MEMBER_ID}</td>
-                        <td>${element.USER_FULLNAME}</td>
-                        <td>${element.USER_NAME}</td>
-                        <td>${element.EMAIL}</td>
-                        <td>${element.PHONE_NUMBER}</td>
-                        <td>${element.HIRE_DATE}</td>
-                        <td>${element.FULL_LOCATION}</td>
-                        <td>${element.SERVICE_DESC}</td>
-                        <td>${element.DEPARTMENT_NAME}</td>
-                        <td>${element.JOB_TITLE}</td>
-                        <td>${element.SHIFT_DESC}</td>
-                        <td>${element.REQ_COUNT}</td>
-                        <td>
-                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="editEmployee(this.value, 2)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Edit Info</button>
-                        <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0, 2)" class="btn btn-danger">Unapprove</button>
-                        </td>
-                    </tr>`;
 
-    count++;
-  });
+  if (RequestObj.ResponseCode == 1) {
+    RequestObj.ResponseData.forEach((element) => {
+      design += `<tr>
+                          <th scope="row">${count}</th>
+                          <td>${element.MEMBER_ID}</td>
+                          <td>${element.USER_FULLNAME}</td>
+                          <td>${element.USER_NAME}</td>
+                          <td>${element.EMAIL}</td>
+                          <td>${element.PHONE_NUMBER}</td>
+                          <td>${element.HIRE_DATE}</td>
+                          <td>${element.FULL_LOCATION}</td>
+                          <td>${element.SERVICE_DESC}</td>
+                          <td>${element.DEPARTMENT_NAME}</td>
+                          <td>${element.JOB_TITLE}</td>
+                          <td>${element.SHIFT_DESC}</td>
+                          <td>${element.REQ_COUNT}</td>
+                          <td>
+                          <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="editEmployee(this.value, 2)" class="btn btn-info m-1" data-bs-toggle="modal" data-bs-target="#oneModal">Edit Info</button>
+                          <button id="employee_id_${element.MEMBER_ID}" value="${element.MEMBER_ID}" onclick="actionEmployee(this.value, 0, 2)" class="btn btn-danger">Unapprove</button>
+                          </td>
+                      </tr>`;
+
+      count++;
+    });
+
+  } else {
+    design += 'No Data Found';
+  }
 
   design += `</tbody>
-                </table>`;
+                  </table>`;
+
+
   MainContent.innerHTML = design;
+  document.getElementById("service_name_2").innerHTML = selectDesign;
 };
 
 const unapprovedEmployeeList = async () => {
@@ -1317,7 +1354,7 @@ const addDepartmentInfo = async () => {
     window.alert('Location can not be empty');
   } else if (!house_no) {
     window.alert('Location can not be empty');
-  } else if(!service_id) {
+  } else if (!service_id) {
     window.alert('Service ID Not found.');
   } else {
 
@@ -1365,7 +1402,7 @@ const addJobInfo = async () => {
     window.alert('Job Title can not be empty');
   } else if (!salary) {
     window.alert('Salary can not be empty');
-  } else if(!department_id) {
+  } else if (!department_id) {
     window.alert('Department ID Not found.');
   } else {
 

@@ -313,6 +313,8 @@ const get_all_employees = async (req, res) => {
 
     let responses = {};
 
+    let service_id;
+
     try {
         connection = await oracledb.getConnection({
             user: serverInfo.dbUser,
@@ -322,7 +324,14 @@ const get_all_employees = async (req, res) => {
 
         console.log('Database Connected');
 
-        result = await connection.execute(queries.getAllEmployeesQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        service_id = req.body.service_id;
+        console.log(service_id);
+
+        if (service_id == undefined || service_id == 'all') {
+            result = await connection.execute(queries.getAllEmployeesQuery, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        } else {
+            result = await connection.execute(queries.getAllEmployeesByServiceQuery, [service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        }
 
         if (result.rows.length) {
             responses.ResponseCode = 1;

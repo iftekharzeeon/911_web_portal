@@ -233,6 +233,17 @@ let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NA
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1';
 
+let getAllEmployeesByServiceQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
+                            'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
+                            'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
+                            'AND M.LOCATION_ID = L.LOCATION_ID ' +
+                            'AND E.JOB_ID = J.JOB_ID ' +
+                            'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
+                            'AND D.SERVICE_ID = S.SERVICE_ID ' +
+                            'AND E.SHIFT_ID = SH.SHIFT_ID ' +
+                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1 ' + 
+                            'AND S.SERVICE_ID = :service_id';
+
 let getAllUnapprovedEmployeeQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC ` +
                             'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
                             'WHERE M.MEMBER_ID = E.MEMBER_ID ' +
@@ -241,7 +252,8 @@ let getAllUnapprovedEmployeeQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || 
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
-                            'AND E.STATUS = 0';
+                            'AND E.STATUS = 0 ' + 
+                            'ORDER BY M.REGISTRATION_DATE DESC';
 
 
 let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
@@ -413,5 +425,6 @@ module.exports = {
     updateAllEmployeesAcceptedStatusto1Query,
     checkRequestStatusQuery,
     getAvailableCCListQuery,
-    passwordUpdateQuery
+    passwordUpdateQuery,
+    getAllEmployeesByServiceQuery
 }
