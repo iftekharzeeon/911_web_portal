@@ -49,6 +49,15 @@ window.onload = async () => {
 
 const getMessages = async (ccID, ccName) => {
 
+    let s = 'newmsg_' + ccID;
+    let temp = document.getElementById(s);
+    if (temp != undefined) {
+        let tempempid = `${ccID}`;
+
+        document.getElementById(tempempid).removeChild(document.getElementById(tempempid).firstElementChild);
+        ccName = document.getElementById(tempempid).innerHTML;
+    }
+
     document.getElementById("send").style.pointerEvents = "auto";
 
     console.log(ccID, ' ', ccName);
@@ -138,12 +147,28 @@ const sendMsg = async () => {
 }
 
 const addMessage = async (messageObj) => {
+    const employee_id = document.getElementById("employee_id").value;
     console.log(messageObj);
     let design = '';
     if (messageObj.sender_id == messageObj.citizen_id) {
         design = `<div class="text User"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
     } else {
-        design = `<div class="text CustomerCare"><i><b>${messageObj.employee_name}: </b></i>${messageObj.message_text}</div>`;
+        if (employee_id == messageObj.employee_id) {
+            design = `<div class="text CustomerCare"><i><b>${messageObj.employee_name}: </b></i>${messageObj.message_text}</div>`;
+        } else {
+            let tempempid = `${messageObj.employee_id}`;
+            console.log(tempempid);
+            const newMsgDesign = `<span id="newmsg_${tempempid}"> &#128308</span>`;
+            
+            let temp = document.getElementById(tempempid);
+            if (temp != undefined) {
+                $(`#${tempempid}`).append(newMsgDesign);
+            } else {
+                let newDesign = `<div onclick="getMessages(this.id, this.innerHTML)" id="${messageObj.employee_id}" class="people">${messageObj.employee_name} <span id="newmsg_${tempempid}"> &#128308</span> </div>`;
+                document.getElementById("peopleList").innerHTML += newDesign;
+            }
+        }
+        
     }
 
     document.getElementById("chatContent").innerHTML = design + document.getElementById("chatContent").innerHTML;

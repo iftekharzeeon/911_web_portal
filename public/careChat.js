@@ -41,6 +41,15 @@ window.onload = async () => {
 
 const getMessages = async (citizenId, citizenName) => {
 
+    let s = 'newmsg_' + citizenId;
+    let temp = document.getElementById(s);
+    if (temp != undefined) {
+        let tempcitid = `${citizenId}`;
+
+        document.getElementById(tempcitid).removeChild(document.getElementById(tempcitid).firstElementChild);
+        citizenName = document.getElementById(tempcitid).innerHTML;
+    }
+
     document.getElementById("send").style.pointerEvents = "auto";
 
 
@@ -148,7 +157,23 @@ const addMessage = async (messageObj) => {
     let design = '';
     console.log(messageObj.citizen_name)
     if (messageObj.sender_id == messageObj.citizen_id) {
-        design = `<div class="text User"><i><b>${messageObj.citizen_name}:</b> </i>${messageObj.message_text}</div>`;
+        // design = `<div class="text User"><i><b>${messageObj.citizen_name}:</b> </i>${messageObj.message_text}</div>`;
+        if (currentCitizen == messageObj.citizen_id) {
+            design = `<div class="text User"><i>${messageObj.citizen_name}: </i>${messageObj.message_text}</div>`;
+        } else {
+            let tempcitid = `${messageObj.citizen_id}`;
+            console.log(tempcitid);
+            const newMsgDesign = `<span id="newmsg_${tempcitid}"> &#128308</span>`;
+            
+            let temp = document.getElementById(tempcitid);
+            if (temp != undefined) {
+                $(`#${tempcitid}`).append(newMsgDesign);
+            } else {
+                let newDesign = `<div onclick="getMessages(this.id, this.innerHTML)" id="${messageObj.citizen_id}" class="people">${messageObj.citizen_name} <span id="newmsg_${tempcitid}"> &#128308</span> </div>`;
+                document.getElementById("peopleList").innerHTML += newDesign;
+            }
+            
+        }
     } else {
         design = `<div class="text CustomerCare"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
     }
