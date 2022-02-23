@@ -135,6 +135,23 @@ const sendRequest = async () => {
             } else if(responseObjVehicle.ResponseCode == 0) {
                 //No vehicle available
                 window.alert(responseObjVehicle.ResponseText);
+
+                var isVehicleAvailable = false
+                var intervalID = setInterval(requestVehicle, 60000);
+
+                const requestVehicle = async() =>
+                {
+                    response_vehicle = await fetch('http://localhost:3000/api/addVehicleRequest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestObj)
+                    });
+                    const responseObjVehicle = await response_vehicle.json(); 
+                }
+
+
                 //Redirect
             } else {
                 //Error
