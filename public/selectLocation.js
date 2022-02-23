@@ -146,7 +146,7 @@ const sendRequest = async () => {
                     body: JSON.stringify(requestObj)
                     });
                     const responseObjVehicle = await response_vehicle.json(); 
-
+                    console.log(responseObjVehicle);
                     if(responseObjVehicle.ResponseCode == 1) {
                         clearInterval(intervalID);
                         window.alert(responseObjVehicle.ResponseText);
@@ -154,8 +154,8 @@ const sendRequest = async () => {
                     }
                 }
 
-                var intervalID = await setInterval(requestVehicle, 60000);
-                console.log('fuck you')
+                var intervalID = setInterval(requestVehicle, 60000);
+                console.log(intervalID);
                 //Redirect
             } else {
                 //Error

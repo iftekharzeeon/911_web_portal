@@ -180,7 +180,7 @@ let updateAllEmployeesAcceptedStatusto1Query = `UPDATE request_employee SET empl
 
 //Vehicle Controller
 //Add Vehicle Request
-let vehicleCheckQuery = 'SELECT * FROM vehicle WHERE service_id = :service_id AND occupied = 0';
+let vehicleCheckQuery = 'SELECT * FROM vehicle v, employees e WHERE v.service_id = :service_id AND v.driver_id = e.member_id AND v.occupied = 0 AND e.occupied = 0 AND e.status = 1';
 
 let updateRequestVehicleInfoQuery = 'UPDATE request_employee SET vehicle_id = :vehicle_id, vehicle_accepted = :vehicle_accepted_status WHERE request_id = :request_id AND service_id = :service_id';
 
@@ -221,7 +221,7 @@ let adminCheckUsernameQuery = 'SELECT * FROM member WHERE user_name = :username 
 let getAllUsersQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, (SELECT COUNT(*) FROM REQUEST R WHERE R.CITIZEN_ID = M.MEMBER_ID) AS REQ_COUNT ` +
                     'FROM MEMBER M, LOCATION L ' +
                     'WHERE M.MEMBER_TYPE = 1 ' +
-                    'AND L.LOCATION_ID = M.LOCATION_ID';
+                    'AND L.LOCATION_ID = M.LOCATION_ID ORDER BY M.MEMBER_ID ASC';
 
 let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
                             'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
@@ -231,7 +231,7 @@ let getAllEmployeesQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NA
                             'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
-                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1';
+                            'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1 ORDER BY M.MEMBER_ID ASC';
 
 let getAllEmployeesByServiceQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.EMPLOYEE_ID = M.MEMBER_ID) AS REQ_COUNT ` +
                             'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
@@ -242,7 +242,7 @@ let getAllEmployeesByServiceQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || 
                             'AND D.SERVICE_ID = S.SERVICE_ID ' +
                             'AND E.SHIFT_ID = SH.SHIFT_ID ' +
                             'AND M.MEMBER_TYPE = 2 AND E.STATUS = 1 ' + 
-                            'AND S.SERVICE_ID = :service_id';
+                            'AND S.SERVICE_ID = :service_id ORDER BY M.MEMBER_ID ASC';
 
 let getAllUnapprovedEmployeeQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS USER_FULLNAME, M.USER_NAME, M.EMAIL, M.PHONE_NUMBER, M.REGISTRATION_DATE, E.HIRE_DATE, L.LOCATION_ID, L.HOUSE_NO || ' ' || L.BLOCK || ' ' || L.STREET AS FULL_LOCATION, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, J.JOB_ID, J.JOB_TITLE, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC ` +
                             'FROM MEMBER M, EMPLOYEES E, LOCATION L, SERVICE S, DEPARTMENTS D, JOBS J, SHIFT SH ' +
@@ -264,7 +264,7 @@ let getAllCCQuery = `SELECT M.MEMBER_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS U
                         'AND J.DEPARTMENT_ID = D.DEPARTMENT_ID ' +
                         'AND D.SERVICE_ID = S.SERVICE_ID ' +
                         'AND E.SHIFT_ID = SH.SHIFT_ID ' +
-                        'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1';
+                        'AND M.MEMBER_TYPE = 3 AND E.STATUS = 1 ORDER BY M.MEMBER_ID ASC';
 
 
 let getAllVehicleQuery = `SELECT V.VEHICLE_ID, E.MEMBER_ID, E.HIRE_DATE, E.SHIFT_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS DRIVER_NAME, M.PHONE_NUMBER, M.EMAIL, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.VEHICLE_ID = V.VEHICLE_ID) AS REQ_COUNT 
@@ -274,7 +274,18 @@ let getAllVehicleQuery = `SELECT V.VEHICLE_ID, E.MEMBER_ID, E.HIRE_DATE, E.SHIFT
                             AND V.SERVICE_ID = S.SERVICE_ID 
                             AND V.DEPARTMENT_ID = D.DEPARTMENT_ID 
                             AND E.SHIFT_ID = SH.SHIFT_ID 
-                            AND E.STATUS = :employee_status`;                        
+                            AND E.STATUS = :employee_status ORDER BY V.VEHICLE_ID`;                        
+
+
+let getAllVehicleServiceWiseQuery = `SELECT V.VEHICLE_ID, E.MEMBER_ID, E.HIRE_DATE, E.SHIFT_ID, M.FIRST_NAME || ' ' || M.LAST_NAME AS DRIVER_NAME, M.PHONE_NUMBER, M.EMAIL, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESC, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESC, (SELECT COUNT(DISTINCT RE.REQUEST_ID) FROM REQUEST_EMPLOYEE RE WHERE RE.VEHICLE_ID = V.VEHICLE_ID) AS REQ_COUNT 
+                            FROM VEHICLE V, EMPLOYEES E, MEMBER M, SERVICE S, DEPARTMENTS D, SHIFT SH 
+                            WHERE V.DRIVER_ID = E.MEMBER_ID 
+                            AND E.MEMBER_ID = M.MEMBER_ID 
+                            AND V.SERVICE_ID = S.SERVICE_ID 
+                            AND V.DEPARTMENT_ID = D.DEPARTMENT_ID 
+                            AND E.SHIFT_ID = SH.SHIFT_ID 
+                            AND E.STATUS = :employee_status 
+                            AND S.SERVICE_ID = :service_id ORDER BY V.VEHICLE_ID`;
 
 let getEmployeeInfoForEditQuery = 'SELECT E.HIRE_DATE, E.MEMBER_ID, J.JOB_ID, J.JOB_TITLE, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, S.SERVICE_ID, S.DESCRIPTION AS SERVICE_DESCRIPTION, SH.SHIFT_ID, SH.DESCRIPTION AS SHIFT_DESCRIPTION, J.SALARY, E.STATUS, M.FIRST_NAME, M.LAST_NAME, M.EMAIL, M.PHONE_NUMBER, M.USER_NAME, L.LOCATION_ID, L.BLOCK, L.STREET, L.HOUSE_NO ' +
                                 'FROM EMPLOYEES E, JOBS J, DEPARTMENTS D, SERVICE S, SHIFT SH, MEMBER M, LOCATION L ' +
@@ -426,5 +437,6 @@ module.exports = {
     checkRequestStatusQuery,
     getAvailableCCListQuery,
     passwordUpdateQuery,
-    getAllEmployeesByServiceQuery
+    getAllEmployeesByServiceQuery,
+    getAllVehicleServiceWiseQuery
 }

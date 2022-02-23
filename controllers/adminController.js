@@ -396,6 +396,8 @@ const get_all_vehicle = async (req, res) => {
 
     let responses = {};
 
+    let service_id;
+
     try {
         connection = await oracledb.getConnection({
             user: serverInfo.dbUser,
@@ -405,9 +407,16 @@ const get_all_vehicle = async (req, res) => {
 
         console.log('Database Connected');
 
+        service_id = req.body.service_id;
+        console.log(service_id);
+
         let employee_status = 1;
 
-        result = await connection.execute(queries.getAllVehicleQuery, [employee_status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        if (service_id == undefined || service_id == 'all') {
+            result = await connection.execute(queries.getAllVehicleQuery, [employee_status], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        } else {
+            result = await connection.execute(queries.getAllVehicleServiceWiseQuery, [employee_status, service_id], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        }
 
         if (result.rows.length) {
             responses.ResponseCode = 1;

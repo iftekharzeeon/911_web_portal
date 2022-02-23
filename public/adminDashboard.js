@@ -331,11 +331,11 @@ const customerCareList = async () => {
   MainContent.innerHTML = design;
 };
 
-const vehicleList = async () => {
+const vehicleList = async (service_id) => {
   const MainContent = document.getElementById("mainContents");
 
-  const response = await fetch(
-    "http://localhost:3000/api/getAllVehicle",
+  const response_service = await fetch(
+    "http://localhost:3000/api/getServices",
     {
       method: "GET",
       headers: {
@@ -343,10 +343,36 @@ const vehicleList = async () => {
       },
     }
   );
+
+  RequestObjService = await response_service.json();
+  console.log(RequestObjService);
+  let selectDesign = '<option selected value="all">All</option>';
+
+  RequestObjService.forEach((element) => {
+    if (element.SERVICE_ID != 104) {
+      if (element.SERVICE_ID == service_id) {
+        selectDesign += `<option selected value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+      } else {
+        selectDesign += `<option value="${element.SERVICE_ID}">${element.DESCRIPTION}</option>`;
+      }
+    }
+  });
+
+
+  const response = await fetch(
+    "http://localhost:3000/api/getAllVehicle",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "service_id": service_id })
+    }
+  );
   RequestObj = await response.json();
   console.log(RequestObj);
 
-  let design = '<div class="row"> <div class="col-md-10"> <h4> Vehicles </h4> </div> <div class="col-md-2"> <p align="right"><button class="btn btn-info" onclick="addVehicle()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Vehicle</button></p></div> </div> <hr>';
+  let design = '<div class="row"> <div class="col-md-8"> <h4> Vehicles </h4> </div> <div class="col-md-4"> <div class="row"> <div class="col-md-6"> <label>Select Service</label> <select onchange="vehicleList(this.value)" id="service_name_2" class="form-control" aria-label="Default select example"></select> </div> <div class="col-md-6"> <button class="btn btn-info" onclick="addVehicle()" data-bs-toggle="modal" data-bs-target="#oneModal"> Add a Vehicle</button> </div> </div></div> </div> <hr>';
 
   if (RequestObj.ResponseCode) {
     design += `<table class="table" style="font-size:larger">
@@ -392,6 +418,7 @@ const vehicleList = async () => {
     design = "No Data Found";
   }
   MainContent.innerHTML = design;
+  document.getElementById("service_name_2").innerHTML = selectDesign;
 };
 
 const addVehicle = async () => {

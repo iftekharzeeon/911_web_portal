@@ -99,7 +99,7 @@ window.onload = async () => {
                             Citizen Name : ${RequestObj.RequestInfo[i].CITIZEN_NAME} &nbsp&nbsp&nbsp
                             Location : Latitude: ${lat}, Longitude: ${long}&nbsp&nbsp
                             Request Time : ${Time}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <button onclick ="requestDetails(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Details</button>
+                            <button onclick ="accept(${RequestObj.RequestInfo[i].REQUEST_ID})" class="AcceptButton" style="font-family: 'Rajdhani'">Accept</button>
                         </div>
                 </div>
                 `)
