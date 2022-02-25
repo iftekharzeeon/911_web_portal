@@ -21,7 +21,7 @@ window.onload = async () => {
     console.log(responseObja);
 
     const ResponseCodea = responseObja.ResponseCode;
-    if(ResponseCodea == 1){
+    if (ResponseCodea == 1) {
         window.location.replace("/citLogin/pendingRequest")
     }
     ///done
@@ -62,15 +62,15 @@ const getMessages = async (ccID, ccName) => {
 
     console.log(ccID, ' ', ccName);
     console.log(document.getElementById("employee_id").value, '', document.getElementById("topBar").innerHTML)
-   
+
 
     document.getElementById("employee_id").value = ccID;
     const citizen_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     document.getElementById("topBar").innerHTML = ccName;
 
     let requestObj = {
-        "citizen_id" : citizen_id,
-        "employee_id" : ccID
+        "citizen_id": citizen_id,
+        "employee_id": ccID
     }
 
     requestObj = JSON.stringify(requestObj);
@@ -116,14 +116,14 @@ const sendMsg = async () => {
 
     const citizen_name = JSON.parse(sessionStorage.getItem("user")).FIRST_NAME;
     const employee_name = document.getElementById("topBar").innerHTML;
-    
+
     let requestObj = {
-        "citizen_id" : citizen_id,
-        "employee_id" : employee_id,
-        "message_text" : message_text,
-        "sender_id" : citizen_id,
-        "citizen_name" : citizen_name,
-        "employee_name" : employee_name
+        "citizen_id": citizen_id,
+        "employee_id": employee_id,
+        "message_text": message_text,
+        "sender_id": citizen_id,
+        "citizen_name": citizen_name,
+        "employee_name": employee_name
     }
 
     requestObj = JSON.stringify(requestObj);
@@ -148,27 +148,32 @@ const sendMsg = async () => {
 
 const addMessage = async (messageObj) => {
     const employee_id = document.getElementById("employee_id").value;
+    const citizen_id = JSON.parse(sessionStorage.getItem("user")).MEMBER_ID;
     console.log(messageObj);
     let design = '';
     if (messageObj.sender_id == messageObj.citizen_id) {
-        design = `<div class="text User"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
+        if (messageObj.sender_id == citizen_id) {
+            design = `<div class="text User"><i><b>You: </b></i></i>${messageObj.message_text}</div>`;
+        }
     } else {
-        if (employee_id == messageObj.employee_id) {
-            design = `<div class="text CustomerCare"><i><b>${messageObj.employee_name}: </b></i>${messageObj.message_text}</div>`;
-        } else {
-            let tempempid = `${messageObj.employee_id}`;
-            console.log(tempempid);
-            const newMsgDesign = `<span id="newmsg_${tempempid}"> &#128308</span>`;
-            
-            let temp = document.getElementById(tempempid);
-            if (temp != undefined) {
-                $(`#${tempempid}`).append(newMsgDesign);
+        if (citizen_id == messageObj.citizen_id) {
+            if (employee_id == messageObj.employee_id) {
+                design = `<div class="text CustomerCare"><i><b>${messageObj.employee_name}: </b></i>${messageObj.message_text}</div>`;
             } else {
-                let newDesign = `<div onclick="getMessages(this.id, this.innerHTML)" id="${messageObj.employee_id}" class="people">${messageObj.employee_name} <span id="newmsg_${tempempid}"> &#128308</span> </div>`;
-                document.getElementById("peopleList").innerHTML += newDesign;
+                let tempempid = `${messageObj.employee_id}`;
+                console.log(tempempid);
+                const newMsgDesign = `<span id="newmsg_${tempempid}"> &#128308</span>`;
+
+                let temp = document.getElementById(tempempid);
+                if (temp != undefined) {
+                    $(`#${tempempid}`).append(newMsgDesign);
+                } else {
+                    let newDesign = `<div onclick="getMessages(this.id, this.innerHTML)" id="${messageObj.employee_id}" class="people">${messageObj.employee_name} <span id="newmsg_${tempempid}"> &#128308</span> </div>`;
+                    document.getElementById("peopleList").innerHTML += newDesign;
+                }
             }
         }
-        
+
     }
 
     document.getElementById("chatContent").innerHTML = design + document.getElementById("chatContent").innerHTML;

@@ -35,7 +35,7 @@ const loginEmp = async() => {
         if(responseObj.ResponseCode != 1){
             window.alert(responseObj.ResponseText);
         }else if(responseObj.ResponseCode == 1){
-            window.alert("Login Successful");
+            // window.alert("Login Successful");
             sessionStorage.setItem("user", JSON.stringify(responseObj.MemberInfo));
             console.log(JSON.parse(sessionStorage.getItem("user")).MEMBER_ID);
             window.location.replace("/careLogin/careChat");

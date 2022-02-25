@@ -12,7 +12,7 @@ window.onload = async () => {
   document.getElementById("admin_name").innerHTML = Admin_Name;
   document.getElementById(
     "mainContents"
-  ).innerHTML = `<h4> Welcome, ${Admin_Name} </h4>`;
+  ).innerHTML = `<h4> Welcome, ${Admin_Name} to the 911 Web Service </h4>`;
 };
 
 const logout = async () => {
@@ -700,7 +700,7 @@ const editEmployee = async (empId, memType) => {
   <div class="row">
       <div class="col-md-6">
           <label for="salary" class="col-form-label">Salary:</label>
-          <input type="text" class="form-control" id="salary">
+          <input disabled type="text" class="form-control" id="salary">
       </div>
       <div class="col-md-6">
           <label for="shift" class="col-form-label">Shift:</label>
