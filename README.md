@@ -19,6 +19,8 @@ The database used in this app is Oracle 19c Database. If you don't have oracle i
 
 After completing the installation, you will need to setup the database schema. You can create your own schema and provide the credentials into the ```serverInformation.js``` file located in the root directory. I have given here the snippets for our schema we had created and used. Run them in SQL Plus connected as sysdba.
 
+**Please note that ```serverInformation.js``` file should not be public. When you will add the real server details here, make sure to remove the file from git repo.**
+
 ```
 CREATE USER c##911_web_portal IDENTIFIED BY admin;
 GRANT CREATE SESSION TO c##911_web_portal;
